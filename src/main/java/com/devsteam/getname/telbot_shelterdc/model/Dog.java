@@ -1,11 +1,11 @@
-package entity;
-
+package com.devsteam.getname.telbot_shelterdc.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.List;
 
 @Entity
-public class Cat {
+public class Dog {
 
     @Id
     @GeneratedValue
@@ -18,16 +18,9 @@ public class Cat {
     private String breed;
 
     private String description;
+    
 
-    public Cat() {
-    }
-
-    public Cat(long id, String birthYear, String name, String breed, String description) {
-        this.id = id;
-        this.birthYear = birthYear;
-        this.name = name;
-        this.breed = breed;
-        this.description = description;
+    public Dog() {
     }
 
     public Long getId() {
