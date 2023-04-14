@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-//
+//сервис для работы с базой данных приюта
 public class ShelterService {
 
     private final ShelterRepository shelterRepository;
@@ -15,11 +15,11 @@ public class ShelterService {
     public ShelterService(ShelterRepository shelterRepository) {
         this.shelterRepository = shelterRepository;
     }
-    //
+
     public void save(Shelter shelter){
         shelterRepository.save(shelter);
     }
-    //
+
     public Shelter getByID(int id){
         return shelterRepository.findById(1).get();
     }
