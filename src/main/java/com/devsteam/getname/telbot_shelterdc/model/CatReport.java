@@ -14,7 +14,7 @@ public class CatReport {
     private long id;
 
     @Column(nullable = false)
-    private long ownerId;
+    private CatOwner CatOwner;
     @Column(nullable = false)
     private File photo;
     @Column(nullable = false)
@@ -48,5 +48,33 @@ public class CatReport {
 
     public LocalDateTime getReportDateTime() {
         return reportDateTime;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setCatOwner(CatOwner catOwner) {
+        CatOwner = catOwner;
+    }
+
+    public void setPhoto(File photo) {
+        this.photo = photo;
+    }
+
+    public void setMeals(String meals) {
+        this.meals = meals;
+    }
+
+    public void setWellBeingAndAdaptation(String wellBeingAndAdaptation) {
+        this.wellBeingAndAdaptation = wellBeingAndAdaptation;
+    }
+
+    public void setBehaviorChanges(String behaviorChanges) {
+        this.behaviorChanges = behaviorChanges;
+    }
+
+    public void setReportDateTime(LocalDateTime reportDateTime) {
+        this.reportDateTime = reportDateTime;
     }
 }

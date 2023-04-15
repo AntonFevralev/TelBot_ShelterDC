@@ -13,6 +13,9 @@ public class DogReport {
     @GeneratedValue
     private long id;
     @Column(nullable = false)
+
+    private DogOwner dogOwner;
+    @Column(nullable = false)
     private File photo;
     @Column(nullable = false)
     private String meals;
