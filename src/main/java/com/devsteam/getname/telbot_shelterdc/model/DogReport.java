@@ -12,8 +12,9 @@ public class DogReport {
     @Id
     @GeneratedValue
     private long id;
-    @Column(nullable = false)
 
+    @ManyToOne
+    @Column(nullable = false)
     private DogOwner dogOwner;
     @Column(nullable = false)
     private File photo;

@@ -13,6 +13,7 @@ public class CatReport {
     @GeneratedValue
     private long id;
 
+    @ManyToOne
     @Column(nullable = false)
     private CatOwner CatOwner;
     @Column(nullable = false)
