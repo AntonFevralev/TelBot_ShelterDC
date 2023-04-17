@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ReportService {
+public class CatReportService {
     private final LinkedList<CatReport> catReports = new LinkedList<>();
 
     public void addReport(CatReport catReport){
