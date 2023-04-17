@@ -41,12 +41,13 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         telegramBot.setUpdatesListener(this);
 
     }
-    //основное метод по работе с обновлениями чата
+    //основной метод по работе с обновлениями чата
     @Override
     public int process(List<Update> updates) {
         try {
             updates.forEach(update -> {
                 logger.info("Handles update: {}", update);
+                //если была нажата кнопка
                 if (update.callbackQuery() != null) {
                     Long chatId = update.callbackQuery().message().chat().id();
                     CallbackQuery callbackQuery = update.callbackQuery();
@@ -62,16 +63,19 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                         case "SafetyRecommendationsDogsShelter"->sendMessageWithMainMenuButtonFromDogsInfo(chatId, dogsShelter.getSafetyPrecautions());
                         case "DogsShelterContact"-> dogsShelterContact(chatId);
                     }
-                }
+                } //если сообщение не пустое
                 if (update.message() != null) {
                     Message message = update.message();
                     String text = message.text();
                     long chatId = message.chat().id();
+                    //если тест сообщения старт
                     if ("/start".equals(text)) {
                         startMessage(chatId);
+                        //если к сообщению прикреплен контакт и сообщение является ответом на сообщение, содержащее определенный текст
                     }if(message.contact()!=null&&message.replyToMessage().text().contains("Нажмите на кнопку оставить контакты для приюта собак")){
                         Contact contact = message.contact();
                         SendContact sendContact = new SendContact(dogsShelter.getChatId(), contact.phoneNumber(), contact.firstName());
+                        //отправляем контакт волонтеру приюта собак
                         telegramBot.execute(sendContact);
                     }
                 }
