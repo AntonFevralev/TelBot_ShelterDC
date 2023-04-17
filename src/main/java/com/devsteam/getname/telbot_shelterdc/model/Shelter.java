@@ -44,6 +44,16 @@ public class Shelter {
     private String recommendedCynologists;
     //список причин, почему могут отказать и не дать забрать собаку из приюта.
     private String rejectReasonsList;
+    //chatID волонтера
+    private long chatId;
+
+    public long getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(long chatId) {
+        this.chatId = chatId;
+    }
 
     public long getID() {
         return ID;
