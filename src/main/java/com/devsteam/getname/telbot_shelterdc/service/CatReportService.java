@@ -2,11 +2,12 @@ package com.devsteam.getname.telbot_shelterdc.service;
 
 import com.devsteam.getname.telbot_shelterdc.exception.ReportListIsEmptyException;
 import com.devsteam.getname.telbot_shelterdc.model.CatReport;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
-
+@Service
 public class CatReportService {
     private final LinkedList<CatReport> catReports = new LinkedList<>();
 
