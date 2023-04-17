@@ -57,7 +57,7 @@ public class CatReport {
     }
 
     public CatOwner getCatOwner() {
-        return CatOwner;
+        return catOwner;
     }
 
     public boolean isReportIsComplete() {
@@ -73,7 +73,7 @@ public class CatReport {
     }
 
     public void setCatOwner(CatOwner catOwner) {
-        CatOwner = catOwner;
+        this.catOwner = catOwner;
     }
 
     public void setPhoto(File photo) {

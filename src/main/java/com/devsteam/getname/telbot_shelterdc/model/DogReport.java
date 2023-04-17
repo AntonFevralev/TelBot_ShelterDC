@@ -50,4 +50,32 @@ public class DogReport {
     public LocalDateTime getReportDateTime() {
         return reportDateTime;
     }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setDogOwner(DogOwner dogOwner) {
+        this.dogOwner = dogOwner;
+    }
+
+    public void setPhoto(File photo) {
+        this.photo = photo;
+    }
+
+    public void setMeals(String meals) {
+        this.meals = meals;
+    }
+
+    public void setWellBeingAndAdaptation(String wellBeingAndAdaptation) {
+        this.wellBeingAndAdaptation = wellBeingAndAdaptation;
+    }
+
+    public void setBehaviorChanges(String behaviorChanges) {
+        this.behaviorChanges = behaviorChanges;
+    }
+
+    public void setReportDateTime(LocalDateTime reportDateTime) {
+        this.reportDateTime = reportDateTime;
+    }
 }
