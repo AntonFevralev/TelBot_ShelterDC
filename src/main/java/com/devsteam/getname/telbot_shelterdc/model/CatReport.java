@@ -13,7 +13,7 @@ public class CatReport {
     @GeneratedValue
     private long id;
 
-    @ManyToOne
+    @ManyToOne(targetEntity = CatOwner.class, cascade = CascadeType.ALL)
     @Column(nullable = false)
     private CatOwner CatOwner;
     @Column(nullable = false)
