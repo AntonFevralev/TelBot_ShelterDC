@@ -27,6 +27,11 @@ public class CatReport {
     @Column(nullable = false)
     private LocalDateTime reportDateTime;
 
+    @Column(nullable = false)
+    private boolean reportIsComplete;
+    @Column(nullable = false)
+    private boolean ownerIsOnTrialPeriod;
+
     public long getId() {
         return id;
     }
@@ -49,6 +54,18 @@ public class CatReport {
 
     public LocalDateTime getReportDateTime() {
         return reportDateTime;
+    }
+
+    public CatOwner getCatOwner() {
+        return CatOwner;
+    }
+
+    public boolean isReportIsComplete() {
+        return reportIsComplete;
+    }
+
+    public boolean isOwnerIsOnTrialPeriod() {
+        return ownerIsOnTrialPeriod;
     }
 
     public void setId(long id) {
@@ -77,5 +94,13 @@ public class CatReport {
 
     public void setReportDateTime(LocalDateTime reportDateTime) {
         this.reportDateTime = reportDateTime;
+    }
+
+    public void setReportIsComplete(boolean reportIsComplete) {
+        this.reportIsComplete = reportIsComplete;
+    }
+
+    public void setOwnerIsOnTrialPeriod(boolean ownerIsOnTrialPeriod) {
+        this.ownerIsOnTrialPeriod = ownerIsOnTrialPeriod;
     }
 }
