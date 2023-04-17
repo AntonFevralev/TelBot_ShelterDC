@@ -1,6 +1,9 @@
 package com.devsteam.getname.telbot_shelterdc.model;
 
+import com.devsteam.getname.telbot_shelterdc.exception.ReportListIsEmptyException;
+
 import java.io.File;
+import java.sql.Blob;
 import java.time.LocalDateTime;
 
 public class Report {
@@ -10,7 +13,6 @@ public class Report {
     private final String meals;
     private final String wellBeingAndAdaptation;
     private final String behaviorChanges;
-
     private final LocalDateTime reportDateTime;
 
     public Report(long id, File photo, String meals, String wellBeingAndAdaptation, String behaviorChanges, LocalDateTime localDateTime) {
