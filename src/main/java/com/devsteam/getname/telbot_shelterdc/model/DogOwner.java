@@ -1,29 +1,32 @@
 package com.devsteam.getname.telbot_shelterdc.model;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-//@Entity
-//@Table(name = "dog_owner")
+@Entity
+@Table(name = "dog_owner")
 public class DogOwner {               // Модель базы данных владельцев собак
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "id_do",nullable = false)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_do",nullable = false)
    private Long idDO;
-//    @Column(name = "chat_id")
+    @Column(name = "chat_id")
    private Long chatId;
-//    @Column(name = "full_name")
+    @Column(name = "full_name")
    private String fullName;
-//    @Column(name = "phone")
+    @Column(name = "phone")
    private String phone;
-//    @Column(name = "address")
+    @Column(name = "address")
    private String address;
-//    @Column(name = "status")
+    @Column(name = "status")
    private StatusOwner status;
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "cat_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cat_id")
    private Dog dog;    // Правило приюта: На испытательный срок - одно животное в одни руки.
-//    @OneToMany(mappedBy = "cat_owner", cascade = CascadeType.ALL, orphanRemoval = true)
-   private List<Report> reportList; // Архив ежедневных отчетов "усыновителя" питомца.
+    @OneToMany(mappedBy = "cat_owner", cascade = CascadeType.ALL, orphanRemoval = true)
+   private List<DogReport> reportList = new LinkedList<>(); // Архив ежедневных отчетов "усыновителя" питомца.
 
 //-------------------- Constructors ---------------------------------------------------
 
@@ -103,11 +106,11 @@ public class DogOwner {               // Модель базы данных вл
       this.dog = dog;
    }
 
-   public List<Report> getReportList() {
+   public List<DogReport> getReportList() {
       return reportList;
    }
 
-   public void setReportList(List<Report> reportList) {
+   public void setReportList(List<DogReport> reportList) {
       this.reportList = reportList;
    }
 }

@@ -1,31 +1,33 @@
 package com.devsteam.getname.telbot_shelterdc.model;
 
+import javax.persistence.*;
+import java.util.LinkedList;
 import java.util.List;
 
-//@Entity
-//@Table(name = "cat_owner")
+@Entity
+@Table(name = "cat_owner")
 public class CatOwner {             // Модель базы данных владельцев кошек
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "id_do",nullable = false)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_do",nullable = false)
     private Long idDO;
-//    @Column(name = "chat_id")
+    @Column(name = "chat_id")
     private Long chatId;
-//    @Column(name = "full_name")
+    @Column(name = "full_name")
     private String fullName;
-//    @Column(name = "phone")
+    @Column(name = "phone")
     private String phone;
-//    @Column(name = "address")
+    @Column(name = "address")
     private String address;
-//    @Column(name = "status")
+    @Column(name = "status")
     private StatusOwner status;
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "cat_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cat_id")
     private Cat cat;    // На испытательный срок - одно животное в одни руки.
 
-//    @OneToMany(mappedBy = "cat_owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Report> reportList;  // Архив ежедневных отчетов "усыновителя" питомца.
+    @OneToMany(mappedBy = "cat_owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CatReport> reportList = new LinkedList<>();;  // Архив ежедневных отчетов "усыновителя" питомца.
 
 // --------------------- Constructors ---------------------------------------------------
     public CatOwner() {}
@@ -103,11 +105,11 @@ public class CatOwner {             // Модель базы данных вла
         this.cat = cat;
     }
 
-    public List<Report> getReportList() {
+    public List<CatReport> getReportList() {
         return reportList;
     }
 
-    public void setReportList(List<Report> reportList) {
+    public void setReportList(List<CatReport> reportList) {
         this.reportList = reportList;
     }
 }
