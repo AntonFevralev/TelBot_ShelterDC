@@ -1,7 +1,6 @@
 package com.devsteam.getname.telbot_shelterdc.model;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
