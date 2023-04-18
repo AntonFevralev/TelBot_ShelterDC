@@ -7,6 +7,10 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 //сервис для работы с базой данных приюта
+
+/**
+ * Сервис для работы с БД приютов
+ */
 @Service
 public class ShelterService {
 
@@ -16,10 +20,19 @@ public class ShelterService {
         this.shelterRepository = shelterRepository;
     }
 
+    /**
+     * сохраняет объект приют в БД
+     * @param shelter сущность приют
+     */
     public void save(Shelter shelter){
         shelterRepository.save(shelter);
     }
 
+    /**
+     * получает объект приют из БД по идентификатору
+     * @param id идентификатор приюта
+     * @return объект приют
+     */
     public Shelter getByID(int id){
         return shelterRepository.findById(id).get();
     }
