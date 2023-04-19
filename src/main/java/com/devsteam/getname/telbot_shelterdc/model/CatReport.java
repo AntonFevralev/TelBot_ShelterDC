@@ -12,11 +12,11 @@ public class CatReport {
     @Id
     @GeneratedValue
     private long id;
-    @OneToOne(targetEntity = Cat.class, cascade = CascadeType.ALL)
-    @Column(nullable = false)
+    @ManyToOne(targetEntity = Cat.class, cascade = CascadeType.ALL)
+//    @Column(nullable = false)
     private Cat cat;
     @ManyToOne(targetEntity = CatOwner.class, cascade = CascadeType.ALL)
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private CatOwner catOwner;
     @Column(nullable = false)
     private File photo;
