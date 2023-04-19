@@ -12,7 +12,9 @@ public class CatReport {
     @Id
     @GeneratedValue
     private long id;
-
+    @OneToOne(targetEntity = Cat.class, cascade = CascadeType.ALL)
+    @Column(nullable = false)
+    private Cat cat;
     @ManyToOne(targetEntity = CatOwner.class, cascade = CascadeType.ALL)
     @Column(nullable = false)
     private CatOwner catOwner;
@@ -36,6 +38,14 @@ public class CatReport {
         return id;
     }
 
+    public Cat getCat() {
+        return cat;
+    }
+
+    public CatOwner getCatOwner() {
+        return catOwner;
+    }
+
     public File getPhoto() {
         return photo;
     }
@@ -56,10 +66,6 @@ public class CatReport {
         return reportDateTime;
     }
 
-    public CatOwner getCatOwner() {
-        return catOwner;
-    }
-
     public boolean isReportIsComplete() {
         return reportIsComplete;
     }
@@ -70,6 +76,10 @@ public class CatReport {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public void setCat(Cat cat) {
+        this.cat = cat;
     }
 
     public void setCatOwner(CatOwner catOwner) {
