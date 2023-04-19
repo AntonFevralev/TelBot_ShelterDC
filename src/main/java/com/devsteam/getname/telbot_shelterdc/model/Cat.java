@@ -19,15 +19,24 @@ public class Cat {
 
     private String description;
 
+    private Enum color;
+
+    private Enum status;
+
+    private Long ownerId;
+
     public Cat() {
     }
 
-    public Cat(long id, String birthYear, String name, String breed, String description) {
+    public Cat(long id, String birthYear, String name, String breed, String description, Enum color, Enum status, Long ownerId) {
         this.id = id;
         this.birthYear = birthYear;
         this.name = name;
         this.breed = breed;
         this.description = description;
+        this.color = color;
+        this.status = status;
+        this.ownerId = ownerId;
     }
 
     public Long getId() {
@@ -74,4 +83,27 @@ public class Cat {
         this.id = id;
     }
 
+    public Enum getColor() {
+        return color;
+    }
+
+    public Enum getStatus() {
+        return status;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public void setColor(Enum color) {
+        this.color = color;
+    }
+
+    public void setStatus(Enum status) {
+        this.status = status;
+    }
 }
