@@ -1,6 +1,7 @@
 package com.devsteam.getname.telbot_shelterdc.listener;
 
 import com.devsteam.getname.telbot_shelterdc.model.Shelter;
+import com.devsteam.getname.telbot_shelterdc.repository.ShelterRepository;
 import com.devsteam.getname.telbot_shelterdc.service.ShelterService;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
@@ -31,7 +32,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     public static Shelter catsShelter;
     private final TelegramBot telegramBot;
 
-
     private final ShelterService service;
 
 
@@ -44,11 +44,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     @PostConstruct
     public void init() {
         telegramBot.setUpdatesListener(this);
-
         this.dogsShelter = service.getByID(1);
-
         this.catsShelter = service.getByID(2);
-
     }
 
     /**
@@ -66,7 +63,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 if (update.callbackQuery() != null) {
                     callBackQueryHandler(update);
                 }//если сообщение не пустое
-            if (update.message() != null) {
+            if (update.message() != null){
                 Message message = update.message();
                 String text = message.text();
                 long chatId = message.chat().id();

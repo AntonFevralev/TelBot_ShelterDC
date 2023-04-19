@@ -1,16 +1,6 @@
-package com.devsteam.getname.telbot_shelterdc.model;
+package com.devsteam.getname.telbot_shelterdc.DTO;
 
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-/**
- * класс содердит основную информацию о приюте собак
- */
-@Entity
-public class Shelter {
-    @Id
+public class ShelterDTO {
     private int ID;
     /**
      * название приюта
@@ -81,20 +71,12 @@ public class Shelter {
      */
     private long chatId;
 
-    public long getChatId() {
-        return chatId;
-    }
-
-    public void setChatId(long chatId) {
-        this.chatId = chatId;
-    }
-
-    public long getID() {
+    public int getID() {
         return ID;
     }
 
-    public void setID(int id) {
-        this.ID = id;
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
     public String getTitle() {
@@ -224,5 +206,12 @@ public class Shelter {
     public void setRejectReasonsList(String rejectReasonsList) {
         this.rejectReasonsList = rejectReasonsList;
     }
-}
 
+    public long getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(long chatId) {
+        this.chatId = chatId;
+    }
+}

@@ -22,10 +22,10 @@ public class DogOwner {               // Модель базы данных вл
     @Column(name = "status")
    private StatusOwner status;
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cat_id")
+    @JoinColumn(name = "dog_id")
    private Dog dog;    // Правило приюта: На испытательный срок - одно животное в одни руки.
-   /* @OneToMany(mappedBy = "cat_owner", cascade = CascadeType.ALL, orphanRemoval = true)
-   private List<DogReport> reportList = new LinkedList<>();*/ // Архив ежедневных отчетов "усыновителя" питомца.
+   @OneToMany(mappedBy = "dogOwner", cascade = CascadeType.ALL, orphanRemoval = true)
+   private List<DogReport> reportList = new LinkedList<>(); // Архив ежедневных отчетов "усыновителя" питомца.
 
 //-------------------- Constructors ---------------------------------------------------
 
@@ -105,11 +105,11 @@ public class DogOwner {               // Модель базы данных вл
       this.dog = dog;
    }
 
-/*   public List<DogReport> getReportList() {
+ public List<DogReport> getReportList() {
       return reportList;
    }
 
    public void setReportList(List<DogReport> reportList) {
       this.reportList = reportList;
-   }*/
+   }
 }
