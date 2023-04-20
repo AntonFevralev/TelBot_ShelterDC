@@ -1,6 +1,7 @@
 package com.devsteam.getname.telbot_shelterdc.listener;
 
 import com.devsteam.getname.telbot_shelterdc.model.Shelter;
+import com.devsteam.getname.telbot_shelterdc.repository.ShelterRepository;
 import com.devsteam.getname.telbot_shelterdc.service.ShelterService;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
@@ -31,7 +32,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     public static Shelter catsShelter;
     private final TelegramBot telegramBot;
 
-
     private final ShelterService service;
 
 
@@ -41,14 +41,14 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     }
 
+    /**
+     * ининициализирует бота
+     */
     @PostConstruct
     public void init() {
         telegramBot.setUpdatesListener(this);
-
         this.dogsShelter = service.getByID(1);
-
         this.catsShelter = service.getByID(2);
-
     }
 
     /**
@@ -66,29 +66,27 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 if (update.callbackQuery() != null) {
                     callBackQueryHandler(update);
                 }//если сообщение не пустое
-            if (update.message() != null) {
-                Message message = update.message();
-                String text = message.text();
-                long chatId = message.chat().id();
-                //если тест сообщения старт
-                if ("/start".equals(text)) {
-                    startMessage(chatId);
-                    //если к сообщению прикреплен контакт и сообщение является ответом на сообщение, содержащее определенный текст
-                } else if ("/id".equals(text)) {
-                    sendChatId(chatId);
+                if (update.message() != null) {
+                    Message message = update.message();
+                    String text = message.text();
+                    long chatId = message.chat().id();
+                    //если тест сообщения старт
+                    if ("/start".equals(text)) {
+                        startMessage(chatId);
+                        //если к сообщению прикреплен контакт и сообщение является ответом на сообщение, содержащее определенный текст
+                    } else if ("/id".equals(text)) {
+                        sendChatId(chatId);
+                    }
+                    if (message.contact() != null && message.replyToMessage().text().contains("Нажмите на кнопку оставить контакты для приюта собак")) {
+                        sendContact(message, chatId);
+                    }
                 }
-                if (message.contact() != null && message.replyToMessage().text().contains("Нажмите на кнопку оставить контакты для приюта собак")) {
-                    sendContact(message, chatId);
-                }
-            }
-        });
-    } catch(
-    Exception e)
-
-    {
-    }
+            });
+        } catch (
+                Exception e) {
+        }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
-}
+    }
 
     /**
      * стартовое сообщение-приветствие и начальное меню
@@ -213,6 +211,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         telegramBot.execute(message);
     }
 
+    /**
+     * Ветвление кода по кнопкам, работает с callbackQuery.data()
+     *
+     * @param update
+     */
     public void callBackQueryHandler(Update update) {
         Long chatId = update.callbackQuery().message().chat().id();
         CallbackQuery callbackQuery = update.callbackQuery();
@@ -235,10 +238,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Отправляет контакты пользователя волонтеру
+     *
      * @param message входящее сообщение
-     * @param chatId идентификатор чата
+     * @param chatId  идентификатор чата
      */
-    public void sendContact(Message message, long chatId){
+    public void sendContact(Message message, long chatId) {
         Contact contact = message.contact();
         SendContact sendContact = new SendContact(dogsShelter.getChatId(), contact.phoneNumber(), contact.firstName());
         //отправляем контакт волонтеру приюта собак

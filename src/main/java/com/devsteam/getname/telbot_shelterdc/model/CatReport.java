@@ -14,7 +14,6 @@ public class CatReport {
     private long id;
 
     @ManyToOne(targetEntity = CatOwner.class, cascade = CascadeType.ALL)
-    @Column(nullable = false)
     private CatOwner catOwner;
     @Column(nullable = false)
     private File photo;
