@@ -1,6 +1,5 @@
 package com.devsteam.getname.telbot_shelterdc.service;
 
-import com.devsteam.getname.telbot_shelterdc.DTO.ShelterDTO;
 import com.devsteam.getname.telbot_shelterdc.model.Shelter;
 import com.devsteam.getname.telbot_shelterdc.repository.ShelterRepository;
 import org.springframework.stereotype.Service;
@@ -24,100 +23,176 @@ public class ShelterService {
 
     /**
      * сохраняет объект приют в БД
+     *
      * @param shelter сущность приют
      */
-    public void save(Shelter shelter){
+    public void save(Shelter shelter) {
         shelterRepository.save(shelter);
     }
 
     /**
      * получает объект приют из БД по идентификатору
+     *
      * @param id идентификатор приюта
      * @return объект приют
      */
-    public Shelter getByID(int id){
+    public Shelter getByID(int id) {
         return shelterRepository.findByID(id);
     }
 
-    public Shelter editShelter(ShelterDTO shelterDTO){
-
-        if(shelterDTO.getID()!=0){
-           Shelter shelterToEdit = shelterRepository.findByID(shelterDTO.getID());
-
-        if(stringValidation(shelterDTO.getTransportingRules())){
-            shelterToEdit.setTransportingRules(shelterDTO.getTransportingRules());
-        }
-        if(stringValidation(shelterDTO.getMeetAndGreatRules())){
-            shelterToEdit.setMeetAndGreatRules(shelterDTO.getMeetAndGreatRules());
-        }
-        if(stringValidation(shelterDTO.getRecommendations())){
-            shelterToEdit.setRecommendations(shelterDTO.getRecommendations());
-        }
-        if(stringValidation(shelterDTO.getRecommendationsAdult())){
-            shelterToEdit.setRecommendationsAdult(shelterDTO.getRecommendationsAdult());
-        }
-        if(stringValidation(shelterDTO.getRecommendedCynologists())){
-            shelterToEdit.setRecommendedCynologists(shelterDTO.getRecommendedCynologists());
-        }
-        if(stringValidation(shelterDTO.getCynologistAdvice())){
-            shelterToEdit.setCynologistAdvice(shelterDTO.getCynologistAdvice());
-        }
-        if(stringValidation(shelterDTO.getDocList())){
-            shelterToEdit.setDocList(shelterDTO.getDocList());
-        }
-        if(stringValidation(shelterDTO.getRecommendationsDisabled())){
-            shelterToEdit.setRecommendationsDisabled(shelterDTO.getRecommendationsDisabled());
-        }
-            if(stringValidation(shelterDTO.getAddress())){
-                shelterToEdit.setAddress(shelterDTO.getAddress());
-            }
-            if(stringValidation(shelterDTO.getMapLink())){
-                shelterToEdit.setMapLink(shelterDTO.getMapLink());
-            }
-            if(stringValidation(shelterDTO.getTitle())){
-                shelterToEdit.setTitle(shelterDTO.getTitle());
-            }
-
-            if(stringValidation(shelterDTO.getSchedule())){
-                shelterToEdit.setSchedule(shelterDTO.getSchedule());
-            }
-            if(stringValidation(shelterDTO.getSecurity())){
-                shelterToEdit.setSecurity(shelterDTO.getSecurity());
-            }
-            if(stringValidation(shelterDTO.getSafetyPrecautions())){
-                shelterToEdit.setSecurity(shelterDTO.getSecurity());
-            }
-
-        return shelterRepository.save(shelterToEdit);}
-        return null;
-    }
-
-
-    public Shelter editShelterAdress(int id, String address, String schedule, String security, String title, String mapLink ) {
+    /**
+     * Редакирует контакты приюта, а именно поля адрес, расписание, контакты охраны, название, ссылку на карты
+     *
+     * @param id идентификатор приюта
+     * @return объект приют
+     */
+    public Shelter editShelterAddress(int id, String address, String schedule, String security, String title, String mapLink) {
         Shelter shelterToEdit = getByID(id);
-        if(stringValidation(address)){
+        if (stringValidation(address)) {
             shelterToEdit.setAddress(address);
         }
-        if(stringValidation(mapLink)){
+        if (stringValidation(mapLink)) {
             shelterToEdit.setMapLink(mapLink);
         }
-        if(stringValidation(title)){
+        if (stringValidation(title)) {
             shelterToEdit.setTitle(title);
         }
 
-        if(stringValidation(schedule)){
+        if (stringValidation(schedule)) {
             shelterToEdit.setSchedule(schedule);
         }
-        if(stringValidation(security)){
+        if (stringValidation(security)) {
             shelterToEdit.setSecurity(security);
         }
 
         return shelterRepository.save(shelterToEdit);
     }
 
+    /**
+     * измененяет правиля безопасности в приюте
+     *
+     * @param id идентификатор приюта
+     * @return объект приют
+     */
     public Shelter editSafetyRules(int id, String safetyPrescriptions) {
         Shelter shelterToEdit = getByID(id);
         shelterToEdit.setSafetyPrecautions(safetyPrescriptions);
-       return shelterRepository.save(shelterToEdit);
+        return shelterRepository.save(shelterToEdit);
+    }
+
+    /**
+     * изменяет правила транспортировки животных
+     *
+     * @param id идентификатор приюта
+     * @return объект приют
+     */
+    public Shelter editTransportingRules(int id, String transportingRules) {
+        Shelter shelterToEdit = shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        if (stringValidation(transportingRules)) {
+            shelterToEdit.setTransportingRules(transportingRules);
+        }
+        return shelterRepository.save(shelterToEdit);
+    }
+
+    /**
+     * изменяет рекомендации по обустройству дома
+     *
+     * @param id идентификатор приюта
+     * @return объект приют
+     */
+    public Shelter editRecommendations(int id, String recommendations) {
+        Shelter shelterToEdit = shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        if (stringValidation(recommendations)) {
+            shelterToEdit.setRecommendations(recommendations);
+        }
+        return shelterRepository.save(shelterToEdit);
+    }
+
+    /**
+     * изменяет правила знакомства с животным
+     *
+     * @param id идентификатор приюта
+     * @return объект приют
+     */
+    public Shelter editMeetAndGreetRules(int id, String meetAndGreetRules) {
+        Shelter shelterToEdit = shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        if (stringValidation(meetAndGreetRules)) {
+            shelterToEdit.setMeetAndGreatRules(meetAndGreetRules);
+        }
+        return shelterRepository.save(shelterToEdit);
+    }
+
+    /**
+     * изменяет советы кинологов
+     * * @return объект приют
+     */
+    public Shelter editCynologistsAdvice(String cynologistAdvice) {
+        Shelter shelterToEdit = shelterRepository.findById(1).orElseThrow(IllegalArgumentException::new);
+        if (stringValidation(cynologistAdvice)) {
+            shelterToEdit.setCynologistAdvice(cynologistAdvice);
+        }
+        return shelterRepository.save(shelterToEdit);
+    }
+
+    /**
+     * изменяет список документов для усыновления
+     *
+     * @param id идентификатор приюта
+     * @return объект приют
+     */
+    public Shelter editDocList(int id, String docList) {
+
+        Shelter shelterToEdit = shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        if (stringValidation(docList)) {
+            shelterToEdit.setDocList(docList);
+        }
+        return shelterRepository.save(shelterToEdit);
+    }
+
+    /**
+     * изменяет список причин для отказа в усыновлении
+     *
+     * @param id идентификатор приюта
+     * @return объект приют
+     */
+    public Shelter editRejectReasonList(int id, String rejectReasonList) {
+        Shelter shelterToEdit = shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        if (stringValidation(rejectReasonList)) {
+            shelterToEdit.setRejectReasonsList(rejectReasonList);
+        }
+        return shelterRepository.save(shelterToEdit);
+
+    }
+
+    /**
+     * изменяет список кинологов
+     *
+     * @return объект приют
+     */
+    public Shelter editCynologistList(String cynologistList) {
+        Shelter shelterToEdit = shelterRepository.findById(1).orElseThrow(IllegalArgumentException::new);
+        if (stringValidation(cynologistList)) {
+            shelterToEdit.setRecommendedCynologists(cynologistList);
+        }
+        return shelterRepository.save(shelterToEdit);
+    }
+
+    /**
+     * изменяет описание приюта
+     *
+     * @return объект приют
+     */
+    public Shelter editDescription(int id, String about) {
+        Shelter shelterToEdit = shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        if (stringValidation(about)) {
+            shelterToEdit.setInfo(about);
+        }
+        return shelterRepository.save(shelterToEdit);
+
+
+    }
+
+    public Shelter getShelterInfo(int id) {
+        return shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 }
