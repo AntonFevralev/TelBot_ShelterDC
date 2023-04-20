@@ -46,17 +46,17 @@ public class CatReportService {
 
     }
 
-    public LinkedList<CatReport> getReportByDate(LocalDate date) {
+    public List<CatReport> getReportByDate(LocalDate date) {
         if (!catReports.isEmpty()) {
-            return (LinkedList<CatReport>) catReports.stream().filter(r -> r.getReportDateTime().toLocalDate().equals(date)).toList();
+            return catReports.stream().filter(r -> r.getReportDateTime().toLocalDate().equals(date)).toList();
         } else {
             throw new NoReportsOnThisDateException();
         }
     }
 
-    public LinkedList<CatReport> getAllReports() {
+    public List<CatReport> getAllReports() {
         if (!catReports.isEmpty()) {
-            return (LinkedList<CatReport>) List.copyOf(catReports);
+            return List.copyOf(catReports);
         }
         throw new ReportListIsEmptyException();
     }

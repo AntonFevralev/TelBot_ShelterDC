@@ -3,6 +3,7 @@ package com.devsteam.getname.telbot_shelterdc.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.time.LocalDate;
 
 @Entity
 public class Cat {
@@ -11,7 +12,7 @@ public class Cat {
     @GeneratedValue
     private Long id;
 
-    private String birthYear;
+    private LocalDate birthYear;
 
     private String name;
 
@@ -22,7 +23,7 @@ public class Cat {
     public Cat() {
     }
 
-    public Cat(long id, String birthYear, String name, String breed, String description) {
+    public Cat(long id, LocalDate birthYear, String name, String breed, String description) {
         this.id = id;
         this.birthYear = birthYear;
         this.name = name;
@@ -34,7 +35,7 @@ public class Cat {
         return id;
     }
 
-    public String getBirthYear() {
+    public LocalDate getBirthYear() {
         return birthYear;
     }
 
@@ -54,7 +55,7 @@ public class Cat {
         this.id = id;
     }
 
-    public void setBirthYear(String birthYear) {
+    public void setBirthYear(LocalDate birthYear) {
         this.birthYear = birthYear;
     }
 

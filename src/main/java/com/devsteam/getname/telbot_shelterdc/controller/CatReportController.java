@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.LinkedList;
+import java.util.List;
 
 @RestController
 @RequestMapping("cats/report")
@@ -29,12 +30,12 @@ public class CatReportController {
         return ResponseEntity.ok().body(catReportService.getReportByCatId(catId));
     }
     @GetMapping("/date")
-    public ResponseEntity<LinkedList<CatReport>> getReportsByDate(@RequestParam(name = "date") LocalDate date){
+    public ResponseEntity<List<CatReport>> getReportsByDate(@RequestParam(name = "date") LocalDate date){
         return ResponseEntity.ok().body(catReportService.getReportByDate(date));
     }
 
     @GetMapping
-    public ResponseEntity<LinkedList<CatReport>> getAllCatReports(){
+    public ResponseEntity<List<CatReport>> getAllCatReports(){
         return ResponseEntity.ok().body(catReportService.getAllReports());
     }
 

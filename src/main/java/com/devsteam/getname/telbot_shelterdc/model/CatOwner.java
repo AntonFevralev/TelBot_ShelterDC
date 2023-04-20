@@ -26,7 +26,8 @@ public class CatOwner {             // Модель базы данных вла
     @JoinColumn(name = "cat_id")
     private Cat cat;    // На испытательный срок - одно животное в одни руки.
 
-    @OneToMany(mappedBy = "cat_owner", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @OneToMany(mappedBy = "cat_owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany
     private List<CatReport> reportList = new LinkedList<>();;  // Архив ежедневных отчетов "усыновителя" питомца.
 
 // --------------------- Constructors ---------------------------------------------------
