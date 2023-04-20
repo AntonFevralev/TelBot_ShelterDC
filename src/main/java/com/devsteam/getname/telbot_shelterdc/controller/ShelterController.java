@@ -83,7 +83,7 @@ private final ShelterService service;
             )
     }
     )
-    public ResponseEntity<Shelter> editShelter(@RequestBody() ShelterDTO shelterDTO){
+    public ResponseEntity<Shelter> editShelter(@RequestBody ShelterDTO shelterDTO){
         return ResponseEntity.ok(service.editShelter(shelterDTO));
     }
 }
