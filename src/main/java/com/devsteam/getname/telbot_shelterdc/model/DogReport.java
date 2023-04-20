@@ -54,9 +54,9 @@ public class DogReport {
         this.id = id;
     }
 
-  /*  public void setDogOwner(DogOwner dogOwner) {
+    public void setDogOwner(DogOwner dogOwner) {
         this.dogOwner = dogOwner;
-    }*/
+    }
 
     public void setPhoto(File photo) {
         this.photo = photo;
