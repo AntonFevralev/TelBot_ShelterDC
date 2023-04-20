@@ -97,11 +97,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         SendMessage sendMessage = new SendMessage(chatId, "   Привет! Данный бот предоставляет информацию о двух приютах. Кошачий приют \"" + TelegramBotUpdatesListener.catsShelter.getTitle() + "\"" +
                 " и собачий приют \"" + TelegramBotUpdatesListener.dogsShelter.getTitle() + "\". Выберите один");
         sendMessage.parseMode(ParseMode.HTML);
-        InlineKeyboardButton button1 = new InlineKeyboardButton("Кошки");
-        button1.callbackData("Cats");
-        InlineKeyboardButton button2 = new InlineKeyboardButton("Собаки");
-        button2.callbackData("Dogs");
-        Keyboard keyboard = new InlineKeyboardMarkup(button1, button2);
+        InlineKeyboardButton cats = new InlineKeyboardButton("Кошки");
+        cats.callbackData("Cats");
+        InlineKeyboardButton dogs = new InlineKeyboardButton("Собаки");
+        dogs.callbackData("Dogs");
+        Keyboard keyboard = new InlineKeyboardMarkup(cats, dogs);
         sendMessage.replyMarkup(keyboard);
         telegramBot.execute(sendMessage);
     }
@@ -113,11 +113,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      */
     public void startMessageWithoutGreeting(long chatId) {
         SendMessage sendMessage = new SendMessage(chatId, "Выберите приют");
-        InlineKeyboardButton button1 = new InlineKeyboardButton("Кошки");
-        button1.callbackData("Cats");
-        InlineKeyboardButton button2 = new InlineKeyboardButton("Собаки");
-        button2.callbackData("Dogs");
-        Keyboard keyboard = new InlineKeyboardMarkup(button1, button2);
+        InlineKeyboardButton cats = new InlineKeyboardButton("Кошки");
+        cats.callbackData("Cats");
+        InlineKeyboardButton dogs = new InlineKeyboardButton("Собаки");
+        dogs.callbackData("Dogs");
+        Keyboard keyboard = new InlineKeyboardMarkup(cats, dogs);
         sendMessage.replyMarkup(keyboard);
         telegramBot.execute(sendMessage);
     }
@@ -129,15 +129,15 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      */
     public void dogsShelter(long chatId) {
         SendMessage sendMessage = new SendMessage(chatId, "Вы выбрали приют " + TelegramBotUpdatesListener.dogsShelter.getTitle());
-        InlineKeyboardButton button1 = new InlineKeyboardButton("Основная информация");
-        button1.callbackData("InfoDogs");
-        InlineKeyboardButton button2 = new InlineKeyboardButton("Как взять питомца?");
-        button2.callbackData("HowToTakeDog");
-        InlineKeyboardButton button3 = new InlineKeyboardButton("Назад");
-        button3.callbackData("BackFromDogsShelter");
-        InlineKeyboardButton button4 = new InlineKeyboardButton("Главное меню");
-        button4.callbackData("MainMenu");
-        Keyboard keyboard = new InlineKeyboardMarkup().addRow(button1).addRow(button2).addRow(button3).addRow(button4).addRow(
+        InlineKeyboardButton mainInfoDogs = new InlineKeyboardButton("Основная информация");
+        mainInfoDogs.callbackData("InfoDogs");
+        InlineKeyboardButton howToTakeDog = new InlineKeyboardButton("Как взять питомца?");
+        howToTakeDog.callbackData("HowToTakeDog");
+        InlineKeyboardButton back = new InlineKeyboardButton("Назад");
+        back.callbackData("BackFromDogsShelter");
+        InlineKeyboardButton mainMenu = new InlineKeyboardButton("Главное меню");
+        mainMenu.callbackData("MainMenu");
+        Keyboard keyboard = new InlineKeyboardMarkup().addRow(mainInfoDogs).addRow(howToTakeDog).addRow(back).addRow(mainMenu).addRow(
                 new InlineKeyboardButton("Позвать волонтера").url("https://t.me/fevralevanton"));
         sendMessage.replyMarkup(keyboard);
         telegramBot.execute(sendMessage);
@@ -150,21 +150,22 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      */
     public void infoDogs(long chatId) {
         SendMessage sendMessage = new SendMessage(chatId, "Приют " + TelegramBotUpdatesListener.dogsShelter.getTitle());
-        InlineKeyboardButton button1 = new InlineKeyboardButton("Информация о приюте");
-        button1.callbackData("InfoDogsShelter");
-        InlineKeyboardButton button2 = new InlineKeyboardButton("Расписание, схема проезда, адрес");
-        button2.callbackData("ScheduleDogs");
-        InlineKeyboardButton button3 = new InlineKeyboardButton("Оформить пропуск");
-        button3.callbackData("DogsShelterSecurity");
-        InlineKeyboardButton button4 = new InlineKeyboardButton("Техника безопасности в приюте");
-        button4.callbackData("SafetyRecommendationsDogsShelter");
-        InlineKeyboardButton button5 = new InlineKeyboardButton("Оставить контакты");
-        button5.callbackData("DogsShelterContact");
-        InlineKeyboardButton button6 = new InlineKeyboardButton("Назад");
-        button6.callbackData("BackFromDogsInfo");
-        InlineKeyboardButton button7 = new InlineKeyboardButton("Главное меню");
-        button7.callbackData("MainMenu");
-        Keyboard keyboard = new InlineKeyboardMarkup().addRow(button1).addRow(button2).addRow(button3).addRow(button4).addRow(button5).addRow(button6).addRow(button7).addRow(
+        InlineKeyboardButton infoDogsShelter = new InlineKeyboardButton("Информация о приюте");
+        infoDogsShelter.callbackData("InfoDogsShelter");
+        InlineKeyboardButton scheduleDogsShelter = new InlineKeyboardButton("Расписание, схема проезда, адрес");
+        scheduleDogsShelter.callbackData("ScheduleDogs");
+        InlineKeyboardButton dogsShelterSecurity = new InlineKeyboardButton("Оформить пропуск");
+        dogsShelterSecurity.callbackData("DogsShelterSecurity");
+        InlineKeyboardButton safetyRecommendationsDogs = new InlineKeyboardButton("Техника безопасности в приюте");
+        safetyRecommendationsDogs.callbackData("SafetyRecommendationsDogsShelter");
+        InlineKeyboardButton dogsShelterContact = new InlineKeyboardButton("Оставить контакты");
+        dogsShelterContact.callbackData("DogsShelterContact");
+        InlineKeyboardButton back = new InlineKeyboardButton("Назад");
+        back.callbackData("BackFromDogsInfo");
+        InlineKeyboardButton mainMenu = new InlineKeyboardButton("Главное меню");
+        mainMenu.callbackData("MainMenu");
+        Keyboard keyboard = new InlineKeyboardMarkup().addRow(infoDogsShelter).addRow(scheduleDogsShelter)
+                .addRow(dogsShelterContact).addRow(safetyRecommendationsDogs).addRow(dogsShelterContact).addRow(back).addRow(mainMenu).addRow(
                 new InlineKeyboardButton("Позвать волонтера").url("https://t.me/fevralevanton"));
         sendMessage.replyMarkup(keyboard);
         telegramBot.execute(sendMessage);
@@ -195,8 +196,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      */
     public void dogsShelterContact(long chatId) {
         SendMessage sendMessage = new SendMessage(chatId, "Нажмите на кнопку оставить контакты для приюта собак");
-        KeyboardButton keyboardButton = new KeyboardButton("Оставить контакты").requestContact(true);
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(keyboardButton).oneTimeKeyboard(true);
+        KeyboardButton sendContacts = new KeyboardButton("Оставить контакты").requestContact(true);
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(sendContacts).oneTimeKeyboard(true);
         sendMessage.replyMarkup(replyKeyboardMarkup);
         SendResponse sendResponse = telegramBot.execute(sendMessage);
     }
