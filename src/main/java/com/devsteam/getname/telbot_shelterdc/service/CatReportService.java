@@ -9,6 +9,8 @@ import com.devsteam.getname.telbot_shelterdc.repository.CatReportRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -46,9 +48,10 @@ public class CatReportService {
 
     }
 
-    public List<CatReport> getReportByDate(LocalDate date) {
-        if (!catReports.isEmpty()) {
-            return catReports.stream().filter(r -> r.getReportDateTime().toLocalDate().equals(date)).toList();
+    public List<CatReport> getReportsByDate(LocalDate date) {
+        List<CatReport> report = getAllReports().stream().filter(r -> r.getReportDateTime().toLocalDate().equals(date)).toList();
+        if (!report.isEmpty()) {
+            return report;
         } else {
             throw new NoReportsOnThisDateException();
         }

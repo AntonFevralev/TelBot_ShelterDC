@@ -2,11 +2,11 @@ package com.devsteam.getname.telbot_shelterdc.controller;
 
 import com.devsteam.getname.telbot_shelterdc.model.CatReport;
 import com.devsteam.getname.telbot_shelterdc.service.CatReportService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.LinkedList;
 import java.util.List;
 
 @RestController
@@ -30,8 +30,9 @@ public class CatReportController {
         return ResponseEntity.ok().body(catReportService.getReportByCatId(catId));
     }
     @GetMapping("/date")
-    public ResponseEntity<List<CatReport>> getReportsByDate(@RequestParam(name = "date") LocalDate date){
-        return ResponseEntity.ok().body(catReportService.getReportByDate(date));
+    public ResponseEntity<List<CatReport>> getReportsByDate(@RequestParam("date")
+                                                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
+        return ResponseEntity.ok().body(catReportService.getReportsByDate(date));
     }
 
     @GetMapping
