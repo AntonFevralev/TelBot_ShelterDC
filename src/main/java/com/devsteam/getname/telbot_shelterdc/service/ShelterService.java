@@ -191,8 +191,37 @@ public class ShelterService {
 
 
     }
-
+    /**
+     * получает всю информацию о приюте
+     *
+     * @return объект приют
+     */
     public Shelter getShelterInfo(int id) {
         return shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    }
+
+    /**
+     * изменяет рекомендации для усыновителей взрослых животных
+     *
+     * @return объект приют
+     */
+    public Shelter editRecommendationsAdult(int id, String recommendationAdults) {
+        Shelter shelterToEdit = shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        if (stringValidation(recommendationAdults)) {
+            shelterToEdit.setRecommendationsAdult(recommendationAdults);
+        }
+        return shelterRepository.save(shelterToEdit);
+    }
+    /**
+     * изменяет для усыновителей животных-инвалидов
+     *
+     * @return объект приют
+     */
+    public Shelter editRecommendationsDisabled(int id, String recommendationDisabled) {
+        Shelter shelterToEdit = shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        if (stringValidation(recommendationDisabled)) {
+            shelterToEdit.setRecommendationsDisabled(recommendationDisabled);
+        }
+        return shelterRepository.save(shelterToEdit);
     }
 }

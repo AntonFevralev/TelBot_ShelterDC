@@ -34,6 +34,10 @@ public class ShelterController {
             @ApiResponse(
                     responseCode = "400",
                     description = "Введены неверные параметры запроса"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Приют не найден"
             )
     }
     )
@@ -57,6 +61,10 @@ public class ShelterController {
             @ApiResponse(
                     responseCode = "400",
                     description = "Введены неверные параметры запроса"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Приют не найден"
             )
     }
     )
@@ -67,7 +75,7 @@ public class ShelterController {
 
 
     @PutMapping("/transportingRules")
-    @Operation(summary = "Редактирование рекомандаций по обсутройству дома")
+    @Operation(summary = "Редактирование рекомандаций транспортировке")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -76,6 +84,10 @@ public class ShelterController {
             @ApiResponse(
                     responseCode = "400",
                     description = "Введены неверные параметры запроса"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Приют не найден"
             )
     }
     )
@@ -95,11 +107,15 @@ public class ShelterController {
             @ApiResponse(
                     responseCode = "400",
                     description = "Введены неверные параметры запроса"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Приют не найден"
             )
     }
     )
     public ResponseEntity<Shelter> editRecommendations(@RequestParam(name = "ID приюта. Собаки:1. Кошки:2") int id,
-                                                       @RequestParam(name = "Рекомендации по благоустройству дома") String recommendations) {
+                                                       @RequestParam(name = "Рекомендации по обустройству дома") String recommendations) {
 
         return ResponseEntity.ok(service.editRecommendations(id, recommendations));
     }
@@ -114,6 +130,10 @@ public class ShelterController {
             @ApiResponse(
                     responseCode = "400",
                     description = "Введены неверные параметры запроса"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Приют не найден"
             )
     }
     )
@@ -134,6 +154,10 @@ public class ShelterController {
             @ApiResponse(
                     responseCode = "400",
                     description = "Введены неверные параметры запроса"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Приют не найден"
             )
     }
     )
@@ -173,6 +197,10 @@ public class ShelterController {
             @ApiResponse(
                     responseCode = "400",
                     description = "Введены неверные параметры запроса"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Приют не найден"
             )
     }
     )
@@ -211,6 +239,10 @@ public class ShelterController {
             @ApiResponse(
                     responseCode = "400",
                     description = "Введены неверные параметры запроса"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Приют не найден"
             )
     }
     )
@@ -219,6 +251,51 @@ public class ShelterController {
 
         return ResponseEntity.ok(service.editDescription(id, about));
     }
+    @PutMapping("/recommendationAdult")
+    @Operation(summary = "Редактирование рекомендаций для взрослых животных")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Рекомендации изменены"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Введены неверные параметры запроса"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Приют не найден"
+            )
+    }
+    )
+    public ResponseEntity<Shelter> editRecommendationsAdult(@RequestParam(name = "ID приюта. Собаки:1. Кошки:2") int id,
+                                                   @RequestParam(name = "Рекомендации для взрослых животных") String recommendationAdults) {
+
+        return ResponseEntity.ok(service.editRecommendationsAdult(id, recommendationAdults));
+    }
+    @PutMapping("/recommendationDisabled")
+    @Operation(summary = "Редактирование рекомендаций для животных-инвалидов")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Рекомендации изменены"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Введены неверные параметры запроса"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Приют не найден"
+            )
+    }
+    )
+    public ResponseEntity<Shelter> editRecommendationsDisabled(@RequestParam(name = "ID приюта. Собаки:1. Кошки:2") int id,
+                                                            @RequestParam(name = "Рекомендации для животных-инвалидов") String recommendationDisabled) {
+
+        return ResponseEntity.ok(service.editRecommendationsDisabled(id, recommendationDisabled));
+    }
+
 
     @GetMapping("/about")
     @Operation(summary = "Получение всей информацию о приюте")
@@ -230,10 +307,14 @@ public class ShelterController {
             @ApiResponse(
                     responseCode = "400",
                     description = "Введены неверные параметры запроса"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Приют не найден"
             )
     }
     )
-    public ResponseEntity<Shelter> editDescription(@RequestParam(name = "ID приюта. Собаки:1. Кошки:2") int id) {
+    public ResponseEntity<Shelter> getDescription(@RequestParam(name = "ID приюта. Собаки:1. Кошки:2") int id) {
 
         return ResponseEntity.ok(service.getShelterInfo(id));
     }
