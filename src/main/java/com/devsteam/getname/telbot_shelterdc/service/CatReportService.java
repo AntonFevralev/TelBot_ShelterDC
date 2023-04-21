@@ -21,6 +21,10 @@ public class CatReportService {
 
     private CatReportRepository catReportRepository;
 
+    public CatReportService(CatReportRepository catReportRepository) {
+        this.catReportRepository = catReportRepository;
+    }
+
     public void save(CatReport catReport) {
         catReportRepository.save(catReport);
     }
@@ -28,6 +32,7 @@ public class CatReportService {
     public void addReport(CatReport catReport) {
         if (catReport != null) {
             catReports.add(catReport);
+            save(catReport);
         }
     }
 
