@@ -1,6 +1,9 @@
 package com.devsteam.getname.telbot_shelterdc.controller;
 
+import com.devsteam.getname.telbot_shelterdc.model.Cat;
+import com.devsteam.getname.telbot_shelterdc.model.Color;
 import com.devsteam.getname.telbot_shelterdc.model.Dog;
+import com.devsteam.getname.telbot_shelterdc.model.Status;
 import com.devsteam.getname.telbot_shelterdc.service.DogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -70,8 +73,12 @@ public class DogController {
             )
     }
     )
-    public ResponseEntity<Dog> createDog(@RequestBody Dog dog) {
-        return ResponseEntity.ok().body(dogService.addDog(dog));
+    public ResponseEntity<Dog> createDog(@RequestParam (name = "Имя песика") String name,
+                                         @RequestParam (required = false, name = "Год рождения песика") String birthYear,
+                                         @RequestParam (required = false, name = "Порода песика") String breed,
+                                         @RequestParam (required = false, name = "Описание песика") String description,
+                                         @RequestParam(required = false, name = "Окрас песика") Color color) {
+        return ResponseEntity.ok().body(dogService.addDog(new Dog(birthYear, name, breed, description, color, Status.FREE)));
     }
     @DeleteMapping("/{id}")
     @Operation(
