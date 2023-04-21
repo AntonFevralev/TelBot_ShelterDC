@@ -14,6 +14,7 @@ public class DogReport {
     private long id;
 
     @ManyToOne(targetEntity = DogOwner.class, cascade = CascadeType.ALL)
+//    @Column(nullable = false)
     private DogOwner dogOwner;
     @Column(nullable = false)
     private File photo;

@@ -12,11 +12,14 @@ public class CatReport {
     @Id
     @GeneratedValue
     private long id;
-
+    @ManyToOne(targetEntity = Cat.class, cascade = CascadeType.ALL)
+//    @Column(nullable = false)
+    private Cat cat;
     @ManyToOne(targetEntity = CatOwner.class, cascade = CascadeType.ALL)
+//    @Column(name = "cat_owner", nullable = false)
     private CatOwner catOwner;
     @Column(nullable = false)
-    private File photo;
+    private String photo;
     @Column(nullable = false)
     private String meals;
     @Column(nullable = false)
@@ -31,11 +34,22 @@ public class CatReport {
     @Column(nullable = false)
     private boolean ownerIsOnTrialPeriod;
 
+    public CatReport() {
+    }
+
     public long getId() {
         return id;
     }
 
-    public File getPhoto() {
+    public Cat getCat() {
+        return cat;
+    }
+
+    public CatOwner getCatOwner() {
+        return catOwner;
+    }
+
+    public String getPhoto() {
         return photo;
     }
 
@@ -55,10 +69,6 @@ public class CatReport {
         return reportDateTime;
     }
 
-/*    public CatOwner getCatOwner() {
-        return catOwner;
-    }*/
-
     public boolean isReportIsComplete() {
         return reportIsComplete;
     }
@@ -71,11 +81,15 @@ public class CatReport {
         this.id = id;
     }
 
-/*    public void setCatOwner(CatOwner catOwner) {
-        this.catOwner = catOwner;
-    }*/
+    public void setCat(Cat cat) {
+        this.cat = cat;
+    }
 
-    public void setPhoto(File photo) {
+    public void setCatOwner(CatOwner catOwner) {
+        this.catOwner = catOwner;
+    }
+
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 
