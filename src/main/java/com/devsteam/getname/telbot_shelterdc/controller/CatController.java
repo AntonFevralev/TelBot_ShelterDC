@@ -74,9 +74,8 @@ public class CatController {
                                          @RequestParam (required = false, name = "Год рождения кошки") String birthYear,
                                          @RequestParam (required = false, name = "Порода кошки") String breed,
                                          @RequestParam (required = false, name = "Описание кошки") String description,
-                                         @RequestParam(required = false, name = "Окрас кошки") Color color,
-                                         @RequestParam(required = false, name = "Статус кошки") Status status) {
-        return ResponseEntity.ok().body(catService.addCat(new Cat(birthYear, name, breed, description, color, status)));
+                                         @RequestParam(required = false, name = "Окрас кошки") Color color) {
+        return ResponseEntity.ok().body(catService.addCat(new Cat(birthYear, name, breed, description, color, Status.FREE)));
     }
     @DeleteMapping("/{id}")
     @Operation(
