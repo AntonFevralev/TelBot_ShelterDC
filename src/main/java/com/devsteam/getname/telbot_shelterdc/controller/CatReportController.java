@@ -13,7 +13,11 @@ import java.util.List;
 @RequestMapping("cats/report")
 public class CatReportController {
 
-    private final CatReportService catReportService = new CatReportService();
+    private CatReportService catReportService;
+
+    public CatReportController(CatReportService catReportService) {
+        this.catReportService = catReportService;
+    }
 
     @PostMapping
     public ResponseEntity addCatReport(@RequestBody CatReport catReport){
@@ -38,6 +42,17 @@ public class CatReportController {
     @GetMapping
     public ResponseEntity<List<CatReport>> getAllCatReports(){
         return ResponseEntity.ok().body(catReportService.getAllReports());
+    }
+
+    @PutMapping("/isComplete")
+    public ResponseEntity setReportAsComplete(@RequestParam(name = "reportId") long reportId){
+        catReportService.setReportAsComplete(reportId);
+        return ResponseEntity.ok().build();
+    }
+    @PutMapping("/isInspected")
+    public ResponseEntity setReportAsInspected(@RequestParam(name = "reportId") long reportId){
+        catReportService.setReportAsInspected(reportId);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/catId")
