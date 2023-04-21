@@ -45,8 +45,7 @@ public class Cat {
         this.catOwner = catOwner;
     }
 
-    public Cat(Long id, String birthYear, String name, String breed, String description, Color color, Status status) {
-        this.id = id;
+    public Cat(String birthYear, String name, String breed, String description, Color color, Status status) {
         this.birthYear = birthYear;
         this.name = name;
         this.breed = breed;
