@@ -31,8 +31,8 @@ public class CatReport {
 
     @Column(nullable = false)
     private boolean reportIsComplete;
-    @Column(nullable = false)
-    private boolean ownerIsOnTrialPeriod;
+
+    private boolean reportIsInspected;
 
     public CatReport() {
     }
@@ -73,8 +73,8 @@ public class CatReport {
         return reportIsComplete;
     }
 
-    public boolean isOwnerIsOnTrialPeriod() {
-        return ownerIsOnTrialPeriod;
+    public boolean isReportIsInspected() {
+        return reportIsInspected;
     }
 
     public void setId(long id) {
@@ -113,7 +113,7 @@ public class CatReport {
         this.reportIsComplete = reportIsComplete;
     }
 
-    public void setOwnerIsOnTrialPeriod(boolean ownerIsOnTrialPeriod) {
-        this.ownerIsOnTrialPeriod = ownerIsOnTrialPeriod;
+    public void setReportIsInspected(boolean reportIsInspected) {
+        this.reportIsInspected = reportIsInspected;
     }
 }
