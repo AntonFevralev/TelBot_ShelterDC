@@ -9,7 +9,7 @@ import java.util.List;
 public class CatOwner {             // Модель базы данных владельцев кошек
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_do",nullable = false)
+    @Column(name = "id_do", nullable = false)
     private Long idDO;
     @Column(name = "chat_id")
     private Long chatId;
@@ -25,12 +25,13 @@ public class CatOwner {             // Модель базы данных вла
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cat_id")
     private Cat cat;    // На испытательный срок - одно животное в одни руки.
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CatReport> reportList = new LinkedList<>();
+    ;  // Архив ежедневных отчетов "усыновителя" питомца.
 
-   // @OneToMany(mappedBy = "cat_owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    //private List<CatReport> reportList = new LinkedList<>();;  // Архив ежедневных отчетов "усыновителя" питомца.
-
-// --------------------- Constructors ---------------------------------------------------
-    public CatOwner() {}
+    // --------------------- Constructors ---------------------------------------------------
+    public CatOwner() {
+    }
 
     public CatOwner(String fullName, String phone, String address, StatusOwner status) {
         this.fullName = fullName;
@@ -105,11 +106,11 @@ public class CatOwner {             // Модель базы данных вла
         this.cat = cat;
     }
 
-    /*public List<CatReport> getReportList() {
+    public List<CatReport> getReportList() {
         return reportList;
     }
 
     public void setReportList(List<CatReport> reportList) {
         this.reportList = reportList;
-    }*/
+    }
 }

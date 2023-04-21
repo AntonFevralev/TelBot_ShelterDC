@@ -24,7 +24,7 @@ public class DogOwner {               // Модель базы данных вл
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dog_id")
    private Dog dog;    // Правило приюта: На испытательный срок - одно животное в одни руки.
-   @OneToMany(mappedBy = "dogOwner", cascade = CascadeType.ALL, orphanRemoval = true)
+   @OneToMany(mappedBy = "id", cascade = CascadeType.ALL, orphanRemoval = true)
    private List<DogReport> reportList = new LinkedList<>(); // Архив ежедневных отчетов "усыновителя" питомца.
 
 //-------------------- Constructors ---------------------------------------------------
