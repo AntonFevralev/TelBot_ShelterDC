@@ -19,6 +19,7 @@ public class CatOwner {             // Модель базы данных вла
     private String phone;
     @Column(name = "address")
     private String address;
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StatusOwner status;
 
@@ -26,8 +27,8 @@ public class CatOwner {             // Модель базы данных вла
     @JoinColumn(name = "cat_id")
     private Cat cat;    // На испытательный срок - одно животное в одни руки.
 
-   // @OneToMany(mappedBy = "cat_owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    //private List<CatReport> reportList = new LinkedList<>();;  // Архив ежедневных отчетов "усыновителя" питомца.
+  @OneToMany(mappedBy = "id", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CatReport> reportList = new LinkedList<>();;  // Архив ежедневных отчетов "усыновителя" питомца.
 
 // --------------------- Constructors ---------------------------------------------------
     public CatOwner() {}

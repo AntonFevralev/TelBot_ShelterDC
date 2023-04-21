@@ -24,7 +24,6 @@ public class Cat {
     @Column(name = "color")
     @Enumerated(EnumType.STRING)
     private Color color;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
