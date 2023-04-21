@@ -44,6 +44,17 @@ public class CatReportController {
         return ResponseEntity.ok().body(catReportService.getAllReports());
     }
 
+    @PutMapping("/isComplete")
+    public ResponseEntity setReportAsComplete(@RequestParam(name = "reportId") long reportId){
+        catReportService.setReportAsComplete(reportId);
+        return ResponseEntity.ok().build();
+    }
+    @PutMapping("/isInspected")
+    public ResponseEntity setReportAsInspected(@RequestParam(name = "reportId") long reportId){
+        catReportService.setReportAsInspected(reportId);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/catId")
     public ResponseEntity deleteCatReportByCatId(@RequestParam(name = "catId") long catId){
         catReportService.deleteReportByCatId(catId);
