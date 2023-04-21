@@ -30,10 +30,9 @@ public class CatReportService {
     }
 
     public void addReport(CatReport catReport) {
-//        if (catReport != null) {
-//            catReports.add(catReport);
-//            save(catReport);
-//        }
+        if (catReport != null) {
+            save(catReport);
+        }
 
     }
 
