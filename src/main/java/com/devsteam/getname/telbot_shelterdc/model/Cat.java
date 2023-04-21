@@ -1,33 +1,58 @@
 package com.devsteam.getname.telbot_shelterdc.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "cats")
 public class Cat {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(name = "birth_year")
     private String birthYear;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "breed")
     private String breed;
 
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "color")
+    private Color color;
+
+    @Column(name = "status")
+    private Status status;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idDo")
+    private CatOwner catOwner;
 
     public Cat() {
     }
 
-    public Cat(long id, String birthYear, String name, String breed, String description) {
+    public Cat(long id, String birthYear, String name, String breed, String description, Color color, Status status, CatOwner catOwner) {
         this.id = id;
         this.birthYear = birthYear;
         this.name = name;
         this.breed = breed;
         this.description = description;
+        this.color = color;
+        this.status = status;
+        this.catOwner = catOwner;
+    }
+
+    public Cat(Long id, String birthYear, String name, String breed, String description, Color color, Status status) {
+        this.id = id;
+        this.birthYear = birthYear;
+        this.name = name;
+        this.breed = breed;
+        this.description = description;
+        this.color = color;
+        this.status = status;
     }
 
     public Long getId() {
@@ -74,4 +99,28 @@ public class Cat {
         this.id = id;
     }
 
+    public Color getColor() {
+        return color;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+
+    public CatOwner getCatOwner() {
+        return catOwner;
+    }
+
+    public void setCatOwner(CatOwner catOwner) {
+        this.catOwner = catOwner;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 }

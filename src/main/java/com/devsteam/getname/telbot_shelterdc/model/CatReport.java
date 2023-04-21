@@ -14,7 +14,6 @@ public class CatReport {
     private long id;
 
     @ManyToOne(targetEntity = CatOwner.class, cascade = CascadeType.ALL)
-    @Column(nullable = false)
     private CatOwner catOwner;
     @Column(nullable = false)
     private File photo;
@@ -56,9 +55,9 @@ public class CatReport {
         return reportDateTime;
     }
 
-    public CatOwner getCatOwner() {
+/*    public CatOwner getCatOwner() {
         return catOwner;
-    }
+    }*/
 
     public boolean isReportIsComplete() {
         return reportIsComplete;
@@ -72,9 +71,9 @@ public class CatReport {
         this.id = id;
     }
 
-    public void setCatOwner(CatOwner catOwner) {
+/*    public void setCatOwner(CatOwner catOwner) {
         this.catOwner = catOwner;
-    }
+    }*/
 
     public void setPhoto(File photo) {
         this.photo = photo;
