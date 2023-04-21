@@ -1,5 +1,6 @@
 package com.devsteam.getname.telbot_shelterdc.controller;
 
+import com.devsteam.getname.telbot_shelterdc.dto.CatRequest;
 import com.devsteam.getname.telbot_shelterdc.model.Cat;
 import com.devsteam.getname.telbot_shelterdc.model.Color;
 import com.devsteam.getname.telbot_shelterdc.model.Status;
@@ -77,6 +78,7 @@ public class CatController {
                                          @RequestParam(required = false, name = "Окрас кошки") Color color) {
         return ResponseEntity.ok().body(catService.addCat(new Cat(birthYear, name, breed, description, color, Status.FREE)));
     }
+
     @DeleteMapping("/{id}")
     @Operation(
             summary = "Удаление котика",
@@ -93,8 +95,9 @@ public class CatController {
             )
     }
     )
-    public ResponseEntity<Cat> deleteCat(@PathVariable("id") long id) {
-        return ResponseEntity.ok().body(catService.removeCat(id));
+    public void deleteCat(@PathVariable("id") long id) {
+        catService.removeCat(id);
+        ResponseEntity.ok().build();
     }
     @PutMapping("/{id}")
     @Operation(

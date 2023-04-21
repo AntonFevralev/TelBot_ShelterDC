@@ -6,8 +6,8 @@ import com.devsteam.getname.telbot_shelterdc.repository.CatRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  * Сервис для работы с базой данных кошек
@@ -15,11 +15,8 @@ import java.util.Map;
 @Service
 public class CatService {
 
-    private Map<Long, Cat> cats = new HashMap<>();
-
     private final CatRepository catRepository;
 
-    private long counter = 1;
 
     public CatService(CatRepository catRepository) {
         this.catRepository = catRepository;
@@ -36,10 +33,10 @@ public class CatService {
         if (cat.getName().isBlank()) {
             throw new WrongCatException("Необходимо указать имя котика!");
         }
-        cats.put(counter++, cat);
         catRepository.save(cat);
         return cat;
     }
+
     /**
      * Получает кошку из базы данных по идентификатору
      *
@@ -48,11 +45,7 @@ public class CatService {
      * @throws WrongCatException в случае, если кошки с таким идентификатором нет в базе данных
      */
     public Cat getCat(Long id) {
-        if (!cats.containsKey(id)) {
-            throw new WrongCatException("Такого котика нет в базе данных");
-        }
-        catRepository.findById(id);
-        return cats.get(id);
+        return catRepository.findById(id).orElseThrow();
     }
     /**
      * Получает из базы данных список всех кошек
@@ -60,8 +53,7 @@ public class CatService {
      * @return список кошек (List)
      */
     public Collection<Cat> getAllCats() {
-        catRepository.findAll();
-        return cats.values();
+        return catRepository.findAll();
     }
     /**
      * Редакирует кошку по идентификатору путем передачи в метод объекта кошка с обновленными параметрами (цвет, владелец, статус, порода, описание, год рождения, имя) и сохраняет обновленную кошку в базу данных
@@ -72,10 +64,7 @@ public class CatService {
      * @throws WrongCatException в случае, если кошки с таким идентификатором нет в базе данных
      */
     public Cat updateCat(long id, Cat cat) {
-        if (!cats.containsKey(id)) {
-            throw new WrongCatException("Такого котика нет в списке");
-        }
-        Cat updatedCat = cats.get(id);
+        Cat updatedCat = catRepository.findById(id).orElseThrow();
         updatedCat.setColor(cat.getColor());
         updatedCat.setCatOwner(cat.getCatOwner());
         updatedCat.setStatus(cat.getStatus());
@@ -92,11 +81,7 @@ public class CatService {
      * @param id идентификатор кошки
      * @throws WrongCatException в случае, если кошки с таким идентификатором нет в базе данных
      */
-    public Cat removeCat(long id) {
-        if (!cats.containsKey(id)) {
-            throw new WrongCatException("Такого котика нет в базе данных");
-        }
-        catRepository.deleteById(id);
-        return cats.remove(id);
+    public void removeCat(long id) {
+       catRepository.deleteById(id);
     }
 }
