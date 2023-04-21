@@ -45,6 +45,16 @@ public class Dog {
         this.dogOwner = dogOwner;
     }
 
+    public Dog(Long id, String birthYear, String name, String breed, String description, Color color, Status status) {
+        this.id = id;
+        this.birthYear = birthYear;
+        this.name = name;
+        this.breed = breed;
+        this.description = description;
+        this.color = color;
+        this.status = status;
+    }
+
     public Long getId() {
         return id;
     }
