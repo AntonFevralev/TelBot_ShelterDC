@@ -9,8 +9,8 @@ import java.util.List;
 public class CatOwner {             // Модель базы данных владельцев кошек
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_do",nullable = false)
-    private Long idDO;
+    @Column(name = "id_co",nullable = false)
+    private Long idCO;
     @Column(name = "chat_id")
     private Long chatId;
     @Column(name = "full_name")
@@ -27,7 +27,7 @@ public class CatOwner {             // Модель базы данных вла
     @JoinColumn(name = "cat_id")
     private Cat cat;    // На испытательный срок - одно животное в одни руки.
 
-  @OneToMany(mappedBy = "id", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "catOwner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CatReport> reportList = new LinkedList<>();;  // Архив ежедневных отчетов "усыновителя" питомца.
 
 // --------------------- Constructors ---------------------------------------------------
@@ -41,7 +41,7 @@ public class CatOwner {             // Модель базы данных вла
     }
 
     public CatOwner(Long idDO, Long chatId, String fullName, String phone, String address, StatusOwner status) {
-        this.idDO = idDO;
+        this.idCO = idDO;
         this.chatId = chatId;
         this.fullName = fullName;
         this.phone = phone;
@@ -50,12 +50,12 @@ public class CatOwner {             // Модель базы данных вла
     }
 //------------ Getters & setters -------------------------------------------------------
 
-    public Long getIdDO() {
-        return idDO;
+    public Long getIdCO() {
+        return idCO;
     }
 
-    public void setIdDO(Long idDO) {
-        this.idDO = idDO;
+    public void setIdCO(Long idCO) {
+        this.idCO = idCO;
     }
 
     public Long getChatId() {

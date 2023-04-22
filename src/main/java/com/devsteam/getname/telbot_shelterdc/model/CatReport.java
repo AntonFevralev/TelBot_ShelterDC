@@ -12,10 +12,10 @@ public class CatReport {
     @Id
     @GeneratedValue
     private long id;
-    @ManyToOne(targetEntity = Cat.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Cat.class)
 //    @Column(nullable = false)
     private Cat cat;
-    @ManyToOne(targetEntity = CatOwner.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = CatOwner.class)
 //    @Column(name = "cat_owner", nullable = false)
     private CatOwner catOwner;
     @Column(nullable = false)
