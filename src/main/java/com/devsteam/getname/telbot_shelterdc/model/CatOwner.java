@@ -23,7 +23,7 @@ public class CatOwner {             // Модель базы данных вла
     @Column(name = "status")
     private StatusOwner status;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cat_id")
     private Cat cat;    // На испытательный срок - одно животное в одни руки.
 
