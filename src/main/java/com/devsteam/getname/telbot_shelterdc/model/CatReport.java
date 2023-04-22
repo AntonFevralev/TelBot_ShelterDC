@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
  * */
 public class CatReport {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     /**Поле id*/
     private long id;
-    @ManyToOne(targetEntity = Cat.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Cat.class)
 //    @Column(nullable = false)
     /**Поле животного, о котором пишется отчёт*/
     private Cat cat;
