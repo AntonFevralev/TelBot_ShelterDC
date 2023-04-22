@@ -13,27 +13,36 @@ import java.time.LocalDateTime;
 public class CatReport {
     @Id
     @GeneratedValue
+    /**Поле id*/
     private long id;
     @ManyToOne(targetEntity = Cat.class, cascade = CascadeType.ALL)
 //    @Column(nullable = false)
+    /**Поле животного, о котором пишется отчёт*/
     private Cat cat;
     @ManyToOne(targetEntity = CatOwner.class, cascade = CascadeType.ALL)
 //    @Column(name = "cat_owner", nullable = false)
+    /**Поле владельца животного, который пишет отчёт*/
     private CatOwner catOwner;
     @Column(nullable = false)
+    /**Поле содержащее ссылку на фото животного, которое прилагается к отчёту*/
     private String photo;
     @Column(nullable = false)
+    /**Поле с описанием рациона и режима питания животного*/
     private String meals;
     @Column(nullable = false)
+    /**Поле с описанием адаптации и состояния животного*/
     private String wellBeingAndAdaptation;
     @Column(nullable = false)
+    /**Поле с описанием изменений в поведении животного*/
     private String behaviorChanges;
     @Column(nullable = false)
+    /**Поле с датой и временем отправки отчёта*/
     private LocalDateTime reportDateTime;
 
     @Column(nullable = false)
+    /**Поле, отмечающее завершённость(полноценность) отчёта*/
     private boolean reportIsComplete;
-
+    /**Поле, указывающее на факт просмотра отчёта волонтёром*/
     private boolean reportIsInspected;
 
     public CatReport() {

@@ -49,6 +49,12 @@ public class CatReportController {
         catReportService.setReportAsComplete(reportId);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/isIncomplete")
+    public ResponseEntity setReportAsIncomplete(@RequestParam(name = "reportId") long reportId){
+        catReportService.setReportAsIncomplete(reportId);
+        return ResponseEntity.ok().build();
+    }
     @PutMapping("/isInspected")
     public ResponseEntity setReportAsInspected(@RequestParam(name = "reportId") long reportId){
         catReportService.setReportAsInspected(reportId);
