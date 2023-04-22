@@ -31,7 +31,7 @@ public class CatOwnerService {
     /** Метод возвращает лист всех сущностей "усыновителей" из базы.
      *
     */
-    public List<CatOwner> getAllCatOwner(){
+    public List<CatOwner> getAllCatOwners(){
         return catOwnerRepository.findAll();
     }
 
@@ -57,7 +57,7 @@ public class CatOwnerService {
     // Смену статуса животного дописать после создания Репозитория Кошек !!!
     }
 
-    /** Метод удаления "усыновителю" кошки (а также сотрудников приюта).
+    /** Метод удаления "усыновителя" кошки (а также сотрудников приюта).
      * @param idCO id "усыновителя" кошки.
      */
     public void deleteCatOwnerByIdCO(Integer idCO){

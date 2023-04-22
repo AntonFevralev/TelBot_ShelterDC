@@ -60,7 +60,7 @@ public class DogOwnerService {
     /** Метод удаления "усыновителю" пса (а также сотрудников приюта).
      * @param idDO id "усыновителя" пса.
      */
-    public void deleteCatOwnerByIdDO(Integer idDO){
+    public void deleteDogOwnerByIdDO(Integer idDO){
         dogOwnerRepository.deleteById(idDO);
     }
 }
