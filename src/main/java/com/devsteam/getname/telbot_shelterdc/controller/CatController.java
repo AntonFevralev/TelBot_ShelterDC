@@ -1,6 +1,5 @@
 package com.devsteam.getname.telbot_shelterdc.controller;
 
-import com.devsteam.getname.telbot_shelterdc.dto.CatRequest;
 import com.devsteam.getname.telbot_shelterdc.model.Cat;
 import com.devsteam.getname.telbot_shelterdc.model.Color;
 import com.devsteam.getname.telbot_shelterdc.model.Status;
