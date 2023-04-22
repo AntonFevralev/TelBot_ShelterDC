@@ -2,12 +2,14 @@ package com.devsteam.getname.telbot_shelterdc.model;
 
 
 import javax.persistence.*;
-import java.io.File;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "cat_reports")
-
+/**
+ * Класс отчёта присылаемого в приют владельцем взятого из этого приюта на испытательном сроке
+ * @author Черемисин Руслан
+ * */
 public class CatReport {
     @Id
     @GeneratedValue
