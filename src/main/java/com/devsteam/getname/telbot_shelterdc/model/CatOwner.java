@@ -106,11 +106,11 @@ public class CatOwner {             // Модель базы данных вла
         this.cat = cat;
     }
 
-    /*public List<CatReport> getReportList() {
+    public List<CatReport> getReportList() {
         return reportList;
     }
 
     public void setReportList(List<CatReport> reportList) {
         this.reportList = reportList;
-    }*/
+    }
 }
