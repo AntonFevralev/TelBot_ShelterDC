@@ -1,6 +1,8 @@
 package com.devsteam.getname.telbot_shelterdc.controller;
 
 import com.devsteam.getname.telbot_shelterdc.model.Cat;
+import com.devsteam.getname.telbot_shelterdc.model.Color;
+import com.devsteam.getname.telbot_shelterdc.model.Status;
 import com.devsteam.getname.telbot_shelterdc.service.CatService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -68,9 +70,14 @@ public class CatController {
             )
     }
     )
-    public ResponseEntity<Cat> createCat(@RequestBody Cat cat) {
-        return ResponseEntity.ok().body(catService.addCat(cat));
+    public ResponseEntity<Cat> createCat(@RequestParam (name = "Имя кошки") String name,
+                                         @RequestParam (required = false, name = "Год рождения кошки") String birthYear,
+                                         @RequestParam (required = false, name = "Порода кошки") String breed,
+                                         @RequestParam (required = false, name = "Описание кошки") String description,
+                                         @RequestParam(required = false, name = "Окрас кошки") Color color) {
+        return ResponseEntity.ok().body(catService.addCat(new Cat(birthYear, name, breed, description, color, Status.FREE)));
     }
+
     @DeleteMapping("/{id}")
     @Operation(
             summary = "Удаление котика",
@@ -87,8 +94,9 @@ public class CatController {
             )
     }
     )
-    public ResponseEntity<Cat> deleteCat(@PathVariable("id") long id) {
-        return ResponseEntity.ok().body(catService.removeCat(id));
+    public void deleteCat(@PathVariable("id") long id) {
+        catService.removeCat(id);
+        ResponseEntity.ok().build();
     }
     @PutMapping("/{id}")
     @Operation(

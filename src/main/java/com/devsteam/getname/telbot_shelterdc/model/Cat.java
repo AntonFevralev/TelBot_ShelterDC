@@ -22,8 +22,9 @@ public class Cat {
     private String description;
 
     @Column(name = "color")
+    @Enumerated(EnumType.STRING)
     private Color color;
-
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
 
@@ -45,8 +46,7 @@ public class Cat {
         this.catOwner = catOwner;
     }
 
-    public Cat(Long id, String birthYear, String name, String breed, String description, Color color, Status status) {
-        this.id = id;
+    public Cat(String birthYear, String name, String breed, String description, Color color, Status status) {
         this.birthYear = birthYear;
         this.name = name;
         this.breed = breed;

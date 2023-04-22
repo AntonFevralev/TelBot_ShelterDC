@@ -20,9 +20,11 @@ public class Dog {
     @Column(name = "description")
     private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "color")
     private Color color;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
 
@@ -45,8 +47,7 @@ public class Dog {
         this.dogOwner = dogOwner;
     }
 
-    public Dog(Long id, String birthYear, String name, String breed, String description, Color color, Status status) {
-        this.id = id;
+    public Dog(String birthYear, String name, String breed, String description, Color color, Status status) {
         this.birthYear = birthYear;
         this.name = name;
         this.breed = breed;

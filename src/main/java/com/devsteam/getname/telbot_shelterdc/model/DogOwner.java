@@ -19,6 +19,7 @@ public class DogOwner {               // Модель базы данных вл
    private String phone;
     @Column(name = "address")
    private String address;
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
    private StatusOwner status;
     @OneToOne(fetch = FetchType.LAZY)
