@@ -38,7 +38,6 @@ public class CatReportController {
                                                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
         return ResponseEntity.ok().body(catReportService.getReportsByDate(date));
     }
-
     @GetMapping
     public ResponseEntity<List<CatReport>> getAllCatReports(){
         return ResponseEntity.ok().body(catReportService.getAllReports());

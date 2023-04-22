@@ -1,6 +1,5 @@
 package com.devsteam.getname.telbot_shelterdc.model;
 
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 

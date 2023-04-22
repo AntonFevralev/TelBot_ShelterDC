@@ -18,7 +18,6 @@ import java.util.NoSuchElementException;
 @Service
 public class CatReportService {
     private final LinkedList<CatReport> catReports = new LinkedList<>();
-
     private CatReportRepository catReportRepository;
 
     public CatReportService(CatReportRepository catReportRepository) {
