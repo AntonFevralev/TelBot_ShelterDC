@@ -38,7 +38,6 @@ public class CatReportController {
                                                                 @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
         return ResponseEntity.ok().body(catReportService.getReportsByDate(date));
     }
-
     @GetMapping
     public ResponseEntity<List<CatReport>> getAllCatReports(){
         return ResponseEntity.ok().body(catReportService.getAllReports());
@@ -47,6 +46,12 @@ public class CatReportController {
     @PutMapping("/isComplete")
     public ResponseEntity setReportAsComplete(@RequestParam(name = "reportId") long reportId){
         catReportService.setReportAsComplete(reportId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/isIncomplete")
+    public ResponseEntity setReportAsIncomplete(@RequestParam(name = "reportId") long reportId){
+        catReportService.setReportAsIncomplete(reportId);
         return ResponseEntity.ok().build();
     }
     @PutMapping("/isInspected")
