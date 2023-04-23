@@ -15,8 +15,8 @@ public class CatReport {
     /**Поле id*/
     private long id;
     @ManyToOne(targetEntity = Cat.class)
-//    @Column(nullable = false)
-    /**Поле животного, о котором пишется отчёт*/
+/**Поле животного, о котором пишется отчёт*/
+    @JoinColumn(name = "cat_id")
     private Cat cat;
     @ManyToOne(targetEntity = CatOwner.class)
 //    @Column(name = "cat_owner", nullable = false)
