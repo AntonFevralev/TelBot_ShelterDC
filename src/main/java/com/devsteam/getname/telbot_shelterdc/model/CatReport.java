@@ -14,10 +14,12 @@ public class CatReport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     /**Поле id*/
     private long id;
+    @JoinColumn(name = "CAT_ID")
     @ManyToOne(targetEntity = Cat.class)
 //    @Column(nullable = false)
     /**Поле животного, о котором пишется отчёт*/
     private Cat cat;
+    @JoinColumn(name = "CAT_OWNER_ID_CO")
     @ManyToOne(targetEntity = CatOwner.class, cascade = CascadeType.ALL)
 //    @Column(name = "cat_owner", nullable = false)
     /**Поле владельца животного, который пишет отчёт*/
