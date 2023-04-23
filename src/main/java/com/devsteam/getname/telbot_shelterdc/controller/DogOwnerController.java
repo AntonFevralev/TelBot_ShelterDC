@@ -44,13 +44,13 @@ public class DogOwnerController {
     }
     @PutMapping
     @Operation(summary = "Добавление или замена пса в карте человека (БД приюта собак) по его id")
-    public void changeDog(@RequestParam Integer idDO, @RequestParam Dog dog){
-        dogOwnerService.changeDogByIdDO(idDO, dog);
+    public void changeDog(@RequestParam Integer idDO, @RequestParam Long id){
+        dogOwnerService.changeDogByIdDO(idDO, id);
     }
     @PutMapping
     @Operation(summary = "Удаление пса из карты человека (БД приюта собак) по id человека")
-    public void takeTheDogAway(@RequestParam Integer idDO, @RequestParam Dog dog){
-        dogOwnerService.takeTheDogAwayByIdDO(idDO,dog);
+    public void takeTheDogAway(@RequestParam Integer idDO){
+        dogOwnerService.takeTheDogAwayByIdDO(idDO);
     }
 
 }
