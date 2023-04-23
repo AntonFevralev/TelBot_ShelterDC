@@ -1,5 +1,6 @@
 package com.devsteam.getname.telbot_shelterdc.controller;
 
+import com.devsteam.getname.telbot_shelterdc.dto.DogDTO;
 import com.devsteam.getname.telbot_shelterdc.model.Cat;
 import com.devsteam.getname.telbot_shelterdc.model.Color;
 import com.devsteam.getname.telbot_shelterdc.model.Dog;
@@ -51,7 +52,7 @@ public class DogController {
             )
     }
     )
-    public ResponseEntity<Dog> getDog(@PathVariable long id) {
+    public ResponseEntity<DogDTO> getDog(@PathVariable long id) {
         return ResponseEntity.ok().body(dogService.getDog(id));
     }
     @PostMapping
@@ -73,12 +74,12 @@ public class DogController {
             )
     }
     )
-    public ResponseEntity<Dog> createDog(@RequestParam (name = "Имя песика") String name,
-                                         @RequestParam (required = false, name = "Год рождения песика") String birthYear,
-                                         @RequestParam (required = false, name = "Порода песика") String breed,
-                                         @RequestParam (required = false, name = "Описание песика") String description,
-                                         @RequestParam(required = false, name = "Окрас песика") Color color) {
-        return ResponseEntity.ok().body(dogService.addDog(new Dog(birthYear, name, breed, description, color, Status.FREE)));
+    public ResponseEntity<DogDTO> createDog(@RequestParam (name = "Имя песика") String name,
+                                            @RequestParam (required = false, name = "Год рождения песика") String birthYear,
+                                            @RequestParam (required = false, name = "Порода песика") String breed,
+                                            @RequestParam (required = false, name = "Описание песика") String description,
+                                            @RequestParam(required = false, name = "Окрас песика") Color color) {
+        return ResponseEntity.ok().body(dogService.addDog(birthYear, name, breed, description, color));
     }
     @DeleteMapping("/{id}")
     @Operation(
@@ -96,8 +97,9 @@ public class DogController {
             )
     }
     )
-    public ResponseEntity<Dog> deleteDog(@PathVariable("id") long id) {
-        return ResponseEntity.ok().body(dogService.removeDog(id));
+    public void deleteDog(@PathVariable("id") long id) {
+        dogService.removeDog(id);
+        ResponseEntity.ok().build();
     }
     @PutMapping("/{id}")
     @Operation(
@@ -121,8 +123,8 @@ public class DogController {
             )
     }
     )
-    public ResponseEntity<Dog> updateDog(@PathVariable("id") long id, @RequestBody Dog dog) {
-        return ResponseEntity.ok().body(dogService.updateDog(id, dog));
+    public ResponseEntity<DogDTO> updateDog(@RequestBody DogDTO dogDTO) {
+        return ResponseEntity.ok().body(dogService.updateDog(dogDTO));
     }
     @GetMapping
     @Operation(summary = "Вывод всех песиков")
@@ -144,7 +146,7 @@ public class DogController {
             )
     }
     )
-    public ResponseEntity<Collection<Dog>> getAllDogs() {
+    public ResponseEntity<Collection<DogDTO>> getAllDogs() {
         return ResponseEntity.ok().body(dogService.getAllDogs());
     }
 }

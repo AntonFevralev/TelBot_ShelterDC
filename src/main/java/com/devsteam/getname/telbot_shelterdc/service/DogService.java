@@ -1,14 +1,19 @@
 package com.devsteam.getname.telbot_shelterdc.service;
 
+import com.devsteam.getname.telbot_shelterdc.Utils;
+import com.devsteam.getname.telbot_shelterdc.dto.DogDTO;
 import com.devsteam.getname.telbot_shelterdc.exception.WrongCatException;
 import com.devsteam.getname.telbot_shelterdc.exception.WrongDogException;
-import com.devsteam.getname.telbot_shelterdc.model.Dog;
+import com.devsteam.getname.telbot_shelterdc.model.*;
 import com.devsteam.getname.telbot_shelterdc.repository.DogRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.devsteam.getname.telbot_shelterdc.dto.DogDTO.dogToDogDTO;
+import static com.devsteam.getname.telbot_shelterdc.model.Status.*;
 
 /**
  * Сервис для работы с базой данных собак
@@ -16,84 +21,97 @@ import java.util.Map;
 @Service
 public class DogService {
 
-    private Map<Long, Dog> dogs = new HashMap<>();
-
     private final DogRepository dogRepository;
 
-    private long counter = 1;
 
     public DogService(DogRepository dogRepository) {
         this.dogRepository = dogRepository;
     }
+
     /**
      * Сохраняет новую собаку в базу данных
      *
-     * @param dog собака
-     * @return добавленная собака
-     * @throws WrongDogException при попытке добавить собаку без имени
+     * @param name        имя собаки
+     * @param birthYear   год рождения собаки
+     * @param breed       порода собаки
+     * @param description описание собаки
+     * @param color       цвет
+     * @return объект dogDTO
+     * @throws WrongCatException при попытке добавить кошку без имени
      */
-    public Dog addDog(Dog dog) {
-        if (dog.getName().isBlank()) {
-            throw new WrongDogException("Необходимо указать имя песика!");
-        }
-        dogs.put(counter++, dog);
-        dogRepository.save(dog);
-        return dog;
+    public DogDTO addDog(String name, String birthYear, String breed, String description, Color color) {
+        Dog dog = new Dog(birthYear, name, breed, description, color, FREE);
+        return dogToDogDTO(dogRepository.save(dog));
     }
+
     /**
      * Получает собаку из базы данных по идентификатору
      *
      * @param id идентификатор собаки
-     * @return собака с заданным id
+     * @return объект DogDTO с заданным id
      * @throws WrongDogException в случае, если собаки с таким идентификатором нет в базе данных
      */
-    public Dog getDog(Long id) {
-        if (!dogs.containsKey(id)) {
-            throw new WrongCatException("Такого песика нет в базе данных");
-        }
-        dogRepository.findById(id);
-        return dogs.get(id);
+    public DogDTO getDog(Long id) {
+        return dogToDogDTO(dogRepository.findById(id).orElseThrow());
     }
+
     /**
      * Получает из базы данных список всех собак
      *
      * @return список собак (List)
      */
-    public Collection<Dog> getAllDogs() {
-        dogRepository.findAll();
-        return dogs.values();
+    public Collection<DogDTO> getAllDogs() {
+        List<Dog> dogList = dogRepository.findAll();
+        return dogList.stream().map(DogDTO::dogToDogDTO).collect(Collectors.toList());
     }
+
     /**
      * Редакирует собаку по идентификатору путем передачи в метод объекта кошка с обновленными параметрами (цвет, владелец, статус, порода, описание, год рождения, имя) и сохраняет обновленную кошку в базу данных
      *
-     * @param id идентификатор собаки
-     * @param dog собака с обновленными параметрами
-     * @return обновленная собака
+     * @param dogDTO собака с обновленными параметрами, объект DTO
+     * @return обновленная собака в виде объекта dogDTO
      * @throws WrongDogException в случае, если собаки с таким идентификатором нет в базе данных
      */
-    public Dog updateDog(long id, Dog dog) {
-        if (!dogs.containsKey(id)) {
-            throw new WrongDogException("Такого песика нет в списке");
+    public DogDTO updateDog(DogDTO dogDTO) {
+        Dog dog = dogRepository.findById(dogDTO.id()).orElseThrow();
+        if (Utils.stringValidation(dogDTO.name())) {
+            dog.setName(dogDTO.name());
         }
-        Dog updatedDog = dogs.get(id);
-        updatedDog.setColor(dog.getColor());
-        updatedDog.setDogOwner(dog.getDogOwner());
-        updatedDog.setStatus(dog.getStatus());
-        updatedDog.setBreed(dog.getBreed());
-        updatedDog.setDescription(dog.getDescription());
-        updatedDog.setBirthYear(dog.getBirthYear());
-        updatedDog.setName(dog.getName());
-        dogRepository.save(dog);
-        return updatedDog;
+        if (Utils.stringValidation(dogDTO.breed())) {
+            dog.setBreed(dogDTO.breed());
+        }
+        if (Utils.stringValidation(dogDTO.birthYear())) {
+            dog.setBirthYear(dogDTO.birthYear());
+        }
+        if (Utils.stringValidation(dogDTO.description())) {
+            dog.setDescription(dogDTO.description());
+        }
+        dog.setColor(dogDTO.color());
+        if (dogDTO.ownerId() != 0) {
+            dog.setDogOwner(dogOwnerRepository.findById(dogDTO.ownerId()).orElseThrow());
+            DogOwner dogOwner = dogOwnerRepository.findById(dogDTO.ownerId()).orElseThrow();
+            dogOwner.setDog(dog);
+            dogOwnerRepository.save(dogOwner);
+        }
+        if (dogDTO.status() == FREE || dogDTO.status() == BUSY || dogDTO.status() == ADOPTED) {
+            dog.setStatus(dogDTO.status());
+        }
+
+        return dogToDogDTO(dogRepository.save(dog));
     }
+
     /**
      * Удаляет собаку из базы данных по идентификатору
      *
      * @param id идентификатор собаки
      * @throws WrongDogException в случае, если собаки с таким идентификатором нет в базе данных
      */
-    public Dog removeDog(long id) {
+    public void removeDog(long id) {
+        Dog dog = dogRepository.findById(id).orElseThrow();
+        DogOwner dogOwner = dog.getDogOwner();
+        dogOwner.setDog(null);
+        dogOwnerRepository.save(dogOwner);
         dogRepository.deleteById(id);
-        return dogs.remove(id);
     }
 }
+
