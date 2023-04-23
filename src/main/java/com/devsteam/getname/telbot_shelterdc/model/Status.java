@@ -1,5 +1,5 @@
 package com.devsteam.getname.telbot_shelterdc.model;
 
 public enum Status {
-        FREE, ADOPTED
+        FREE, BUSY, ADOPTED
 }

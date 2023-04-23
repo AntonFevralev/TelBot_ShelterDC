@@ -1,34 +1,41 @@
 package com.devsteam.getname.telbot_shelterdc.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "cats")
 public class Cat {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(name = "birth_year")
     private String birthYear;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "breed")
     private String breed;
 
+    @Column(name = "description")
     private String description;
 
-    private Enum color;
+    @Column(name = "color")
+    @Enumerated(EnumType.STRING)
+    private Color color;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status;
 
-    private Enum status;
-
-    private Long ownerId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idDo")
+    private CatOwner catOwner;
 
     public Cat() {
     }
 
-    public Cat(long id, String birthYear, String name, String breed, String description, Enum color, Enum status, Long ownerId) {
+    public Cat(long id, String birthYear, String name, String breed, String description, Color color, Status status, CatOwner catOwner) {
         this.id = id;
         this.birthYear = birthYear;
         this.name = name;
@@ -36,7 +43,16 @@ public class Cat {
         this.description = description;
         this.color = color;
         this.status = status;
-        this.ownerId = ownerId;
+        this.catOwner = catOwner;
+    }
+
+    public Cat(String birthYear, String name, String breed, String description, Color color, Status status) {
+        this.birthYear = birthYear;
+        this.name = name;
+        this.breed = breed;
+        this.description = description;
+        this.color = color;
+        this.status = status;
     }
 
     public Long getId() {
@@ -83,27 +99,28 @@ public class Cat {
         this.id = id;
     }
 
-    public Enum getColor() {
+    public Color getColor() {
         return color;
     }
 
-    public Enum getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
+
+    public CatOwner getCatOwner() {
+        return catOwner;
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    public void setCatOwner(CatOwner catOwner) {
+        this.catOwner = catOwner;
     }
 
-    public void setColor(Enum color) {
+    public void setColor(Color color) {
         this.color = color;
     }
 
-    public void setStatus(Enum status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 }

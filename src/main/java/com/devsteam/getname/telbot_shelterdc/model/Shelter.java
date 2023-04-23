@@ -9,7 +9,6 @@ import javax.persistence.Table;
  * класс содердит основную информацию о приюте собак
  */
 @Entity
-@Table
 public class Shelter {
     @Id
     private int ID;
@@ -94,8 +93,8 @@ public class Shelter {
         return ID;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setID(int id) {
+        this.ID = id;
     }
 
     public String getTitle() {
