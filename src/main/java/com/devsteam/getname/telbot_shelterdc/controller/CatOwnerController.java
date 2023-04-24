@@ -1,6 +1,6 @@
 package com.devsteam.getname.telbot_shelterdc.controller;
 
-import com.devsteam.getname.telbot_shelterdc.model.CatOwner;
+import com.devsteam.getname.telbot_shelterdc.dto.CatOwnerDTO;
 import com.devsteam.getname.telbot_shelterdc.model.StatusOwner;
 import com.devsteam.getname.telbot_shelterdc.service.CatOwnerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Tag(name="КЛИЕНТЫ И ПЕРСОНАЛ ПРИЮТА КОШЕК", description = "Редактирование данных людей в БД приюта кашек")
 @RestController
-@RequestMapping(value = "/cat/owner")
+@RequestMapping(value = "/catowner")
 public class CatOwnerController {
     private final CatOwnerService catOwnerService;
     public CatOwnerController(CatOwnerService catOwnerService) {
@@ -34,12 +34,12 @@ public class CatOwnerController {
             @ApiResponse( responseCode = "500",
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
-    public void  addCatOwner(
+    public ResponseEntity<CatOwnerDTO>  addCatOwner(
             @RequestParam (required = false, name = "Чат id человека в Telegram") Long chatId,
             @RequestParam (required = false, name = "ФИО человека") String fullName,
             @RequestParam (required = false, name = "№ сотового телефна") String phone,
             @RequestParam (required = false, name = "Адрес проживания")String address) {
-        catOwnerService.creatCatOwner(chatId, fullName, phone, address);
+        return ResponseEntity.ok().body(catOwnerService.creatCatOwner(chatId, fullName, phone, address));
     }
     @GetMapping
     @Operation(summary = "Получение списка данных всех людей из БД")
@@ -52,7 +52,7 @@ public class CatOwnerController {
             @ApiResponse( responseCode = "500",
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
-    public ResponseEntity<List<CatOwner>> getAllCatOwners(){
+    public ResponseEntity<List<CatOwnerDTO>> getAllCatOwners(){
         return ResponseEntity.ok().body(catOwnerService.getAllCatOwners());
     }
     @DeleteMapping
@@ -66,7 +66,7 @@ public class CatOwnerController {
             @ApiResponse( responseCode = "500",
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
-    public void deleteCatOwnerById(@RequestParam Integer idCO){
+    public void deleteCatOwnerById(@RequestParam Long idCO){
         catOwnerService.deleteCatOwnerByIdCO(idCO);
     }
     @PutMapping("/status")
@@ -80,7 +80,7 @@ public class CatOwnerController {
             @ApiResponse( responseCode = "500",
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
-    public void changeStatusOwner(@RequestParam Integer idCO, @RequestParam StatusOwner statusOwner){
+    public void changeStatusOwner(@RequestParam Long idCO, @RequestParam StatusOwner statusOwner){
         catOwnerService.changeStatusOwnerByIdCO(idCO, statusOwner);
     }
     @PutMapping("/add")
@@ -94,7 +94,7 @@ public class CatOwnerController {
             @ApiResponse( responseCode = "500",
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
-    public void changeCat(@RequestParam Integer idCO, @RequestParam Long id){
+    public void changeCat(@RequestParam Long idCO, @RequestParam Long id){
         catOwnerService.changeCatByIdCO(idCO, id);
     }
     @PutMapping("/delete")
@@ -108,7 +108,7 @@ public class CatOwnerController {
             @ApiResponse( responseCode = "500",
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
-    public void takeTheCatAway(@RequestParam Integer idCO){
+    public void takeTheCatAway(@RequestParam Long idCO){
         catOwnerService.takeTheCatAwayByIdCO(idCO);
     }
 

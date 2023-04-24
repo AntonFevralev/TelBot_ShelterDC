@@ -1,5 +1,6 @@
 package com.devsteam.getname.telbot_shelterdc.service;
 
+import com.devsteam.getname.telbot_shelterdc.dto.CatOwnerDTO;
 import com.devsteam.getname.telbot_shelterdc.exception.NoOwnerWithSuchIdException;
 import com.devsteam.getname.telbot_shelterdc.exception.OwnerListIsEmptyException;
 import com.devsteam.getname.telbot_shelterdc.model.*;
@@ -10,8 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.devsteam.getname.telbot_shelterdc.Utils.stringValidation;
+import static com.devsteam.getname.telbot_shelterdc.dto.CatOwnerDTO.catOwnerToDTO;
+import static com.devsteam.getname.telbot_shelterdc.model.StatusOwner.SEARCH;
 
 @Service
 public class CatOwnerService {
@@ -26,34 +30,37 @@ public class CatOwnerService {
         this.catRepository = catRepository;
     }
 
-
-    /** Метод на вход принимает сущность "усыновителя" животного и сохраняет ее в базу.
-     *
-     * @param "усыновитель" или сотрудник приюта животных.
+    /** Метод на вход принимает данные человека и сохраняет ее в базу.
+     * @param chatId номер человека в чате.
+     * @param fullName ФИО человека.
+     * @param phone № телефона.
+     * @param address адрес проживания человека.
      */
-    public void creatCatOwner(Long chatId, String fullName, String phone, String address){
+    public CatOwnerDTO creatCatOwner(Long chatId, String fullName, String phone, String address){
         if (chatId != 0 && stringValidation(fullName)
                 && stringValidation(phone)
                 && stringValidation(address))
            {
-               catOwnerRepository.save(new CatOwner(fullName,phone,address,StatusOwner.SEARCH));
+               CatOwner catOwner = new CatOwner(chatId, fullName, phone, address,SEARCH);
+               return catOwnerToDTO(catOwnerRepository.save(catOwner));
+               
         } else throw new IllegalArgumentException("Данные человека заполнены не корректно.");
     }
 
     /** Метод возвращает лист всех сущностей "усыновителей" из базы.
      *
      */
-    public List<CatOwner> getAllCatOwners(){
+    public List<CatOwnerDTO> getAllCatOwners(){
         List<CatOwner> owners = catOwnerRepository.findAll();
         if (!owners.isEmpty()) {
-            return owners;
+            return owners.stream().map(CatOwnerDTO::catOwnerToDTO).collect(Collectors.toList());
         } else throw new OwnerListIsEmptyException();
     }
 
     /** Метод изменения статуса "усыновителя" кошки.
      * @param idCO id "усыновителя" кошки.
      */
-    public void changeStatusOwnerByIdCO(Integer idCO, StatusOwner status) {
+    public void changeStatusOwnerByIdCO(Long idCO, StatusOwner status) {
         CatOwner owner = catOwnerRepository.findById(idCO).orElseThrow(NoOwnerWithSuchIdException::new);
         owner.setStatusOwner(status);
         catOwnerRepository.save(owner);
@@ -63,7 +70,7 @@ public class CatOwnerService {
      * @param idCO id "усыновителя" кошки.
      * @param id id "усыновителя" кошки.
      */
-    public void changeCatByIdCO(Integer idCO, Long id) {
+    public void changeCatByIdCO(Long idCO, Long id) {
         CatOwner owner = catOwnerRepository.findById(idCO).orElseThrow(NoOwnerWithSuchIdException::new);
         Cat cat = catRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         owner.setCat(cat);
@@ -73,7 +80,7 @@ public class CatOwnerService {
     /** Метод удаления у "усыновителя" кота при отказе в усыновлении со сменой статуса кота.
      * @param idCO id "усыновителя" кошки.
      */
-    public void takeTheCatAwayByIdCO(Integer idCO) {
+    public void takeTheCatAwayByIdCO(Long idCO) {
         CatOwner owner = catOwnerRepository.findById(idCO).orElseThrow(NoOwnerWithSuchIdException::new);
         Cat cat = owner.getCat();
         cat.setStatus(Status.FREE);
@@ -86,7 +93,7 @@ public class CatOwnerService {
     /** Метод удаления "усыновителя" кошки (а также сотрудников приюта).
      * @param idCO id "усыновителя" кошки.
      */
-    public void deleteCatOwnerByIdCO(Integer idCO){
+    public void deleteCatOwnerByIdCO(Long idCO){
         try {
             CatOwner owner = catOwnerRepository.findById(idCO).orElseThrow();
             Cat cat = owner.getCat();
