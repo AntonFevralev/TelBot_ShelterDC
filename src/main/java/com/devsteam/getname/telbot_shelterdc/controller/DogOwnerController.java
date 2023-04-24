@@ -1,7 +1,6 @@
 package com.devsteam.getname.telbot_shelterdc.controller;
 
 import com.devsteam.getname.telbot_shelterdc.model.*;
-import com.devsteam.getname.telbot_shelterdc.service.DogOwnerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -82,7 +81,7 @@ public class DogOwnerController {
     public void changeStatusOwner(@RequestParam Integer idDO, @RequestParam StatusOwner statusOwner){
         dogOwnerService.changeStatusOwnerById(idDO, statusOwner);
     }
-    @PutMapping
+    @PutMapping("/changeDog")
     @Operation(summary = "Добавление или замена пса из БД приюта в карте человека по его id")
     @ApiResponses( {
             @ApiResponse( responseCode = "200",
@@ -96,7 +95,7 @@ public class DogOwnerController {
     public void changeDog(@RequestParam Integer idDO, @RequestParam Long id){
         dogOwnerService.changeDogByIdDO(idDO, id);
     }
-    @PutMapping
+    @PutMapping("/deleteDog")
     @Operation(summary = "Удаление пса из карты человека (БД приюта собак) по id человека")
     @ApiResponses( {
             @ApiResponse( responseCode = "200",

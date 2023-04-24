@@ -32,7 +32,7 @@ public class CatOwner {
     private Cat cat;
 
 /** Архив ежедневных отчетов "усыновителя" питомца в порядке поступления. */
-    @OneToMany(mappedBy = "cat_owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "catOwner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CatReport> reportList = new LinkedList<>();;  //
 
 // --------------------- Constructors ---------------------------------------------------

@@ -33,7 +33,7 @@ public class DogOwner {
 
 /** Архив ежедневных отчетов "усыновителя" питомца в порядке поступления.
     */
-   @OneToMany(mappedBy = "dog_owner", cascade = CascadeType.ALL, orphanRemoval = true)
+   @OneToMany(mappedBy = "dogOwner", cascade = CascadeType.ALL, orphanRemoval = true)
    private List<DogReport> reportList = new LinkedList<>();
 
 //-------------------- Constructors ---------------------------------------------------
