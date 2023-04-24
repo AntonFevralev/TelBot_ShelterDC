@@ -114,9 +114,13 @@ public class CatService {
     public void removeCat(long id) {
         Cat cat = catRepository.findById(id).orElseThrow();
         CatOwner catOwner = cat.getCatOwner();
-        catOwner.setCat(null);
-        catOwnerRepository.save(catOwner);
-        catRepository.deleteById(id);
+        if(catOwner == null) {
+            catRepository.deleteById(id);
+        } else {
+            catOwner.setCat(null);
+            catOwnerRepository.save(catOwner);
+            catRepository.deleteById(id);
+        }
     }
     }
 
