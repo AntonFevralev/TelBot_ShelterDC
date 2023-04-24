@@ -23,6 +23,14 @@ public class Dog {
     public Dog() {
     }
 
+    public Dog(Long id, String birthYear, String name, String breed, String description) {
+        this.id = id;
+        this.birthYear = birthYear;
+        this.name = name;
+        this.breed = breed;
+        this.description = description;
+    }
+
     public Long getId() {
         return id;
     }
