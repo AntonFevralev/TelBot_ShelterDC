@@ -25,16 +25,16 @@ public class CatReport {
     @Column(nullable = false)
     /**Поле содержащее ссылку на фото животного, которое прилагается к отчёту*/
     private String photo;
-    @Column(nullable = false)
+    @Column(nullable = true)
     /**Поле с описанием рациона и режима питания животного*/
     private String meals;
-    @Column(nullable = false)
+    @Column(nullable = true)
     /**Поле с описанием адаптации и состояния животного*/
     private String wellBeingAndAdaptation;
-    @Column(nullable = false)
+    @Column(nullable = true)
     /**Поле с описанием изменений в поведении животного*/
     private String behaviorChanges;
-    @Column(nullable = false)
+    @Column(nullable = true)
     /**Поле с датой и временем отправки отчёта*/
     private LocalDateTime reportDateTime;
 
