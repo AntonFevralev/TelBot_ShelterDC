@@ -6,7 +6,9 @@ import com.devsteam.getname.telbot_shelterdc.exception.WrongCatException;
 import com.devsteam.getname.telbot_shelterdc.model.Cat;
 import com.devsteam.getname.telbot_shelterdc.model.CatOwner;
 import com.devsteam.getname.telbot_shelterdc.model.Color;
+import com.devsteam.getname.telbot_shelterdc.repository.CatOwnerRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.CatRepository;
+import com.devsteam.getname.telbot_shelterdc.repository.ShelterRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -14,7 +16,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.devsteam.getname.telbot_shelterdc.dto.CatDTO.catToCatDTO;
-import static com.devsteam.getname.telbot_shelterdc.dto.CatDTO.dogToDogDTO;
 import static com.devsteam.getname.telbot_shelterdc.model.Status.*;
 
 /**
@@ -24,10 +25,15 @@ import static com.devsteam.getname.telbot_shelterdc.model.Status.*;
 public class CatService {
 
     private final CatRepository catRepository;
+    private final CatOwnerRepository catOwnerRepository;
+
+    private final ShelterRepository shelterRepository;
 
 
-    public CatService(CatRepository catRepository) {
+    public CatService(CatRepository catRepository, CatOwnerRepository catOwnerRepository, ShelterRepository shelterRepository) {
         this.catRepository = catRepository;
+        this.catOwnerRepository = catOwnerRepository;
+        this.shelterRepository = shelterRepository;
     }
 
     /**
