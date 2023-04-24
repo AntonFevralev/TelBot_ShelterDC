@@ -63,7 +63,6 @@ public final class CatReportDTO {
     }
 
     public CatReportDTO() {
-
     }
 
     public void setReportAsComplete() {

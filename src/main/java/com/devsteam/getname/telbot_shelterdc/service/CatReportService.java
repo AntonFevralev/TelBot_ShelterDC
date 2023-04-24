@@ -36,7 +36,6 @@ public class CatReportService {
                 catReport.isReportIsComplete(),
                 catReport.isReportIsInspected());
     }
-
     public void save(CatReport catReport) {
         catReportRepository.save(catReport);
     }
