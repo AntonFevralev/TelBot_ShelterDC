@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.devsteam.getname.telbot_shelterdc.Utils.stringValidation;
+
 @Service
 public class CatOwnerService {
 
@@ -27,12 +29,15 @@ public class CatOwnerService {
 
     /** Метод на вход принимает сущность "усыновителя" животного и сохраняет ее в базу.
      *
-     * @param catOwner  "усыновитель" или сотрудник приюта животных.
+     * @param "усыновитель" или сотрудник приюта животных.
      */
-    public void creatCatOwner(CatOwner catOwner){
-        if (catOwner != null) {
-            catOwnerRepository.save(catOwner);
-        } else throw new IllegalArgumentException();
+    public void creatCatOwner(Long chatId, String fullName, String phone, String address){
+        if (chatId != 0 && stringValidation(fullName)
+                && stringValidation(phone)
+                && stringValidation(address))
+           {
+               catOwnerRepository.save(new CatOwner(fullName,phone,address,StatusOwner.SEARCH));
+        } else throw new IllegalArgumentException("Данные человека заполнены не корректно.");
     }
 
     /** Метод возвращает лист всех сущностей "усыновителей" из базы.
@@ -54,7 +59,7 @@ public class CatOwnerService {
         catOwnerRepository.save(owner);
     }
 
-    /** Метод добавления кошки (или замены) к "усыновителю по id".
+    /** Метод добавления кошки (или замены) из БД к "усыновителю по id".
      * @param idCO id "усыновителя" кошки.
      * @param id id "усыновителя" кошки.
      */

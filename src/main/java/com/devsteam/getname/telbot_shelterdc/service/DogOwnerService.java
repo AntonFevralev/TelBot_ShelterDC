@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.devsteam.getname.telbot_shelterdc.Utils.stringValidation;
+
 @Service
 public class DogOwnerService {
 
@@ -27,12 +29,15 @@ public class DogOwnerService {
 
     /** Метод на вход принимает сущность "усыновителя" животного и сохраняет ее в базу.
      *
-     * @param dogOwner  "усыновитель" или сотрудник приюта животных.
+     * @param  chatId человека, его ФИО, телефон и адрес.
      */
-    public void creatDogOwner(DogOwner dogOwner){
-        if (dogOwner != null) {
-            dogOwnerRepository.save(dogOwner);
-        } else throw new IllegalArgumentException();
+    public void creatDogOwner(Long chatId, String fullName, String phone, String address){
+        if (chatId != 0 && stringValidation(fullName)
+                && stringValidation(phone)
+                && stringValidation(address))
+        {
+            dogOwnerRepository.save(new DogOwner(fullName,phone,address,StatusOwner.SEARCH));
+        } else throw new IllegalArgumentException("Данные человека заполнены не корректно.");
     }
 
     /** Метод возвращает лист всех сущностей "усыновителей" из базы.
@@ -54,7 +59,7 @@ public class DogOwnerService {
         dogOwnerRepository.save(owner);
     }
 
-    /** Метод добавления собаки (или замены) к "усыновителю по id".
+    /** Метод добавления собаки (или замены) из БД к "усыновителю по id".
      * @param idDO id "усыновителя" собаки.
      *  * @param id id "усыновителя" пса.
      */
