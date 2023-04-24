@@ -29,7 +29,7 @@ public class Cat {
     private Status status;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idDo")
+    @JoinColumn(name = "idCo")
     private CatOwner catOwner;
 
     public Cat() {
