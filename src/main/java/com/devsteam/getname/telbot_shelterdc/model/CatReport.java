@@ -18,7 +18,7 @@ public class CatReport {
 //    @Column(nullable = false)
     /**Поле животного, о котором пишется отчёт*/
     private Cat cat;
-    @ManyToOne(targetEntity = CatOwner.class)
+    @ManyToOne(targetEntity = CatOwner.class, cascade = CascadeType.ALL)
 //    @Column(name = "cat_owner", nullable = false)
     /**Поле владельца животного, который пишет отчёт*/
     private CatOwner catOwner;
