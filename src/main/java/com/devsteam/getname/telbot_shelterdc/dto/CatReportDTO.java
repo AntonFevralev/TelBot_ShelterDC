@@ -40,6 +40,28 @@ public final class CatReportDTO {
     /**Поле, указывающее на факт просмотра отчёта волонтёром*/
     private boolean reportIsInspected;
 
+    public CatReportDTO(long id,
+                        long catId,
+                        long catOwnerId,
+                        String photo,
+                        String meals,
+                        String wellBeingAndAdaptation,
+                        String behaviorChanges,
+                        LocalDateTime reportDateTime,
+                        boolean reportIsComplete,
+                        boolean reportIsInspected) {
+        this.id = id;
+        this.catId = catId;
+        this.catOwnerId = catOwnerId;
+        this.photo = photo;
+        this.meals = meals;
+        this.wellBeingAndAdaptation = wellBeingAndAdaptation;
+        this.behaviorChanges = behaviorChanges;
+        this.reportDateTime = reportDateTime;
+        this.reportIsComplete = reportIsComplete;
+        this.reportIsInspected = reportIsInspected;
+    }
+
     public CatReportDTO() {
 
     }
