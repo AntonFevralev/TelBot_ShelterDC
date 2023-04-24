@@ -1,6 +1,5 @@
 package com.devsteam.getname.telbot_shelterdc.service;
 
-import com.devsteam.getname.telbot_shelterdc.dto.CatDTO;
 import com.devsteam.getname.telbot_shelterdc.dto.CatReportDTO;
 import com.devsteam.getname.telbot_shelterdc.exception.NoReportWithSuchAnimalIdException;
 import com.devsteam.getname.telbot_shelterdc.exception.NoReportWithSuchIdException;
