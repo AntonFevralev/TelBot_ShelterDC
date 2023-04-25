@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import static com.devsteam.getname.telbot_shelterdc.Utils.stringValidation;
 import static com.devsteam.getname.telbot_shelterdc.dto.CatOwnerDTO.catOwnerToDTO;
+import static com.devsteam.getname.telbot_shelterdc.model.Status.FREE;
 import static com.devsteam.getname.telbot_shelterdc.model.StatusOwner.SEARCH;
 
 @Service
@@ -77,7 +78,8 @@ public class CatOwnerService {
         catOwnerRepository.save(owner);
     }
 
-    /** Метод удаления у "усыновителя" кота при отказе в усыновлении со сменой статуса кота.
+    /** Метод удаления у человека животного по какой-либо причине со сменой статуса кота.
+     * Например, при отказе в усыновлении или при форс-мажоре.
      * @param idCO id "усыновителя" кошки.
      */
     public void takeTheCatAwayByIdCO(Long idCO) {
@@ -90,15 +92,19 @@ public class CatOwnerService {
 
     }
 
-    /** Метод удаления "усыновителя" кошки (а также сотрудников приюта).
+    /** Метод удаления "усыновителя" животного (или сотрудника приюта) со сменой статуса животного
+     * и очистке у него поля "усыновителя".
      * @param idCO id "усыновителя" кошки.
      */
     public void deleteCatOwnerByIdCO(Long idCO){
         try {
             CatOwner owner = catOwnerRepository.findById(idCO).orElseThrow();
-            Cat cat = owner.getCat();
-            cat.setCatOwner(null);
-            catRepository.save(cat);
+            if (owner.getCat() != null) {
+                Cat cat = owner.getCat();
+                cat.setCatOwner(null);
+                cat.setStatus(FREE);
+                catRepository.save(cat);
+            }
             catOwnerRepository.deleteById(idCO);
         } catch (Exception e) {
             throw new IllegalArgumentException("Человека с таким id нет");
