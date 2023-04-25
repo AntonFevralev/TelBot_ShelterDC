@@ -10,7 +10,7 @@ import java.util.List;
 public class DogOwner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_do",nullable = false)
+    @Column(name = "id_do")
    private Long idDO;
     @Column(name = "chat_id", nullable = false)
    private Long chatId;
