@@ -80,7 +80,9 @@ public class CatOwnerService {
         if (cat.getStatus().equals(FREE)) {
             cat.setStatus(BUSY);
             owner.setCat(cat);
+            cat.setCatOwner(owner);
             catOwnerRepository.save(owner);
+            catRepository.save(cat);
         } else throw new PetIsNotFreeException("Животное занято другим человеком.");
     }
 
@@ -92,6 +94,7 @@ public class CatOwnerService {
         CatOwner owner = catOwnerRepository.findById(idCO).orElseThrow(NoOwnerWithSuchIdException::new);
         Cat cat = owner.getCat();
         cat.setStatus(Status.FREE);
+        cat.setCatOwner(null);
         catRepository.save(cat);
         owner.setCat(null);
         catOwnerRepository.save(owner);

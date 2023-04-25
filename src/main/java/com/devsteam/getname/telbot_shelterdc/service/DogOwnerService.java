@@ -81,7 +81,9 @@ public class DogOwnerService {
         if (dog.getStatus().equals(FREE)) {
             dog.setStatus(BUSY);
             owner.setDog(dog);
+            dog.setDogOwner(owner);
             dogOwnerRepository.save(owner);
+            dogRepository.save(dog);
         } else throw new PetIsNotFreeException("Животное занято другим человеком.");
     }
 
@@ -93,6 +95,7 @@ public class DogOwnerService {
         DogOwner owner = dogOwnerRepository.findById(idDO).orElseThrow(NoOwnerWithSuchIdException::new);
         Dog dog = owner.getDog();
         dog.setStatus(FREE);
+        dog.setDogOwner(null);
         dogRepository.save(dog);
         owner.setDog(null);
         dogOwnerRepository.save(owner);
