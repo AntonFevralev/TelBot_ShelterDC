@@ -84,7 +84,7 @@ public class DogOwnerController {
         dogOwnerService.changeStatusOwnerById(idDO, statusOwner);
     }
     @PutMapping("/add")
-    @Operation(summary = "Добавление или замена пса из БД приюта в карте человека по его id")
+    @Operation(summary = "Добавление или замена пса из БД приюта в карте человека по его id с проверкой и сменой статуса пса.")
     @ApiResponses( {
             @ApiResponse( responseCode = "200",
                     description = "Животное добавлено (заменено) в карту клиента.",
@@ -98,7 +98,7 @@ public class DogOwnerController {
         dogOwnerService.changeDogByIdDO(idDO, id);
     }
     @PutMapping("/delete")
-    @Operation(summary = "Удаление пса из карты человека (БД приюта собак) по id человека")
+    @Operation(summary = "Удаление пса из карты человека (по id человека) по какой-либо причине со сменой статуса пса.")
     @ApiResponses( {
             @ApiResponse( responseCode = "200",
                     description = "Животное стерто в карте клиента.",

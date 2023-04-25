@@ -3,6 +3,7 @@ package com.devsteam.getname.telbot_shelterdc.service;
 import com.devsteam.getname.telbot_shelterdc.dto.CatOwnerDTO;
 import com.devsteam.getname.telbot_shelterdc.exception.NoOwnerWithSuchIdException;
 import com.devsteam.getname.telbot_shelterdc.exception.OwnerListIsEmptyException;
+import com.devsteam.getname.telbot_shelterdc.exception.PetIsNotFreeException;
 import com.devsteam.getname.telbot_shelterdc.model.*;
 import com.devsteam.getname.telbot_shelterdc.repository.CatOwnerRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.CatRepository;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 
 import static com.devsteam.getname.telbot_shelterdc.Utils.stringValidation;
 import static com.devsteam.getname.telbot_shelterdc.dto.CatOwnerDTO.catOwnerToDTO;
+import static com.devsteam.getname.telbot_shelterdc.model.Status.BUSY;
 import static com.devsteam.getname.telbot_shelterdc.model.Status.FREE;
 import static com.devsteam.getname.telbot_shelterdc.model.StatusOwner.SEARCH;
 
@@ -31,7 +33,7 @@ public class CatOwnerService {
         this.catRepository = catRepository;
     }
 
-    /** Метод на вход принимает данные человека и сохраняет ее в базу.
+    /** Метод добавления человека в БД, на вход принимает данные и сохраняет их в базу.
      * @param chatId номер человека в чате.
      * @param fullName ФИО человека.
      * @param phone № телефона.
@@ -67,15 +69,19 @@ public class CatOwnerService {
         catOwnerRepository.save(owner);
     }
 
-    /** Метод добавления кошки (или замены) из БД к "усыновителю по id".
+    /** Метод добавления кота (или замены) из БД к "усыновителю" по id с проверкой и сменой статуса кота.
+     * Если у кота FREE, то можно передавать и статус меняется на BUSY. Если нет, то Exception.
      * @param idCO id "усыновителя" кошки.
      * @param id id "усыновителя" кошки.
      */
     public void changeCatByIdCO(Long idCO, Long id) {
         CatOwner owner = catOwnerRepository.findById(idCO).orElseThrow(NoOwnerWithSuchIdException::new);
         Cat cat = catRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        owner.setCat(cat);
-        catOwnerRepository.save(owner);
+        if (cat.getStatus().equals(FREE)) {
+            cat.setStatus(BUSY);
+            owner.setCat(cat);
+            catOwnerRepository.save(owner);
+        } else throw new PetIsNotFreeException("Животное занято другим человеком.");
     }
 
     /** Метод удаления у человека животного по какой-либо причине со сменой статуса кота.

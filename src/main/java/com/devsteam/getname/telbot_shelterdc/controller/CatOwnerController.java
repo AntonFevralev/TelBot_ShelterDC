@@ -84,7 +84,7 @@ public class CatOwnerController {
         catOwnerService.changeStatusOwnerByIdCO(idCO, statusOwner);
     }
     @PutMapping("/add")
-    @Operation(summary = "Добавление или замена кота из БД приюта в карте человека по id человека")
+    @Operation(summary = "Добавление или замена кота из БД приюта в карте человека по id человека с проверкой и сменой статуса кота.")
     @ApiResponses( {
             @ApiResponse( responseCode = "200",
                     description = "Животное добавлено (заменено) в карту клиента.",
@@ -98,7 +98,7 @@ public class CatOwnerController {
         catOwnerService.changeCatByIdCO(idCO, id);
     }
     @PutMapping("/delete")
-    @Operation(summary = "Удаление кота из карты человека по id человека и смена статуса кота")
+    @Operation(summary = "Удаление кота из карты человека (по id человека) по какой-либо причине со сменой статуса кота.")
     @ApiResponses( {
             @ApiResponse( responseCode = "200",
                     description = "Животное стерто в карте клиента.",
