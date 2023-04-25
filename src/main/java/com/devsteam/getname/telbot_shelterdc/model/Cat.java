@@ -3,7 +3,6 @@ package com.devsteam.getname.telbot_shelterdc.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "cats")
 public class Cat {
 
     @Id
