@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import static com.devsteam.getname.telbot_shelterdc.Utils.stringValidation;
 import static com.devsteam.getname.telbot_shelterdc.dto.DogOwnerDTO.dogOwnerToDTO;
+import static com.devsteam.getname.telbot_shelterdc.model.Status.FREE;
 import static com.devsteam.getname.telbot_shelterdc.model.StatusOwner.SEARCH;
 
 @Service
@@ -78,27 +79,32 @@ public class DogOwnerService {
         dogOwnerRepository.save(owner);
     }
 
-    /** Метод удаления у "усыновителя" пса при отказе в усыновлении со сменой статуса животного.
+    /** Метод удаления у человека животного по какой-либо причине со сменой статуса кота.
+     * Например, при отказе в усыновлении или при форс-мажоре.
      * @param idDO id "усыновителя" пса.
      */
     public void takeTheDogAwayByIdDO(Long idDO) {
         DogOwner owner = dogOwnerRepository.findById(idDO).orElseThrow(NoOwnerWithSuchIdException::new);
         Dog dog = owner.getDog();
-        dog.setStatus(Status.FREE);
+        dog.setStatus(FREE);
         dogRepository.save(dog);
         owner.setDog(null);
         dogOwnerRepository.save(owner);
     }
 
-    /** Метод удаления "усыновителю" пса (а также сотрудников приюта).
+    /** Метод удаления "усыновителя" животного (или сотрудника приюта) со сменой статуса животного
+     * и очистке у него поля "усыновителя".
      * @param idDO id "усыновителя" пса.
      */
     public void deleteDogOwnerByIdDO(Long idDO){
         try {
             DogOwner owner = dogOwnerRepository.findById(idDO).orElseThrow();
-            Dog dog = owner.getDog();
-            dog.setDogOwner(null);
-            dogRepository.save(dog);
+            if (owner.getDog() != null) {
+                Dog dog = owner.getDog();
+                dog.setDogOwner(null);
+                dog.setStatus(FREE);
+                dogRepository.save(dog);
+            }
             dogOwnerRepository.deleteById(idDO);
         } catch (Exception e) {
             throw new IllegalArgumentException("Человека с таким id нет");
