@@ -27,7 +27,7 @@ public class CatOwner {
 /** Поле животного, заполняется волонтером после заключения договора.
  * Правило: На испытательный срок - одно животное в одни руки.
  */
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cat_id")
     private Cat cat;
 
@@ -122,5 +122,9 @@ public class CatOwner {
 
     public void setReportList(List<CatReport> reportList) {
         this.reportList = reportList;
+    }
+
+    public void addReport(CatReport catReport) {
+        reportList.add(catReport);
     }
 }

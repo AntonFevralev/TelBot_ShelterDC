@@ -83,20 +83,22 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                         //если к сообщению прикреплен контакт и сообщение является ответом на сообщение, содержащее определенный текст
                     } else if ("/id".equals(text)) {
                         sendChatId(chatId);
-                    /*    CatReport catReport = new CatReport();
+                     CatReport catReport = new CatReport();
                         Cat cat = catRepository.findById(1L).orElseThrow();
-                        CatOwner catOwner = new CatOwner("FIO", "ggff", "address", StatusOwner.PROBATION);
-                        catOwner.setCat(cat);
+                        CatOwner catOwner = cat.getCatOwner();
                         catOwner.setChatId(chatId);
                         catOwnerRepository.save(catOwner);
                         catReport.setBehaviorChanges("id");
+                        catReport.setMeals("meals");
+                        catReport.setWellBeingAndAdaptation("adaptation");
                         catReport.setCatOwner(catOwner);
                         catReport.setCat(cat);
                         catReport.setReportDateTime(LocalDateTime.now());
                         catReport.setPhoto("photo");
                         catReport.setReportIsComplete(true);
                         catReport.setReportIsInspected(false);
-                        catReportService.save(catReport);*/
+                        catReportService.save(catReport);
+                        catOwner.addReport(catReport);
                     }
                     if (message.contact() != null && message.replyToMessage().text().contains("Нажмите на кнопку оставить контакты для приюта собак")) {
                         sendContact(message, chatId);

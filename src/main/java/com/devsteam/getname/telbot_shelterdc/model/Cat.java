@@ -28,7 +28,7 @@ public class Cat {
     @Column(name = "status")
     private Status status;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idCo")
     private CatOwner catOwner;
 
