@@ -1,5 +1,6 @@
 package com.devsteam.getname.telbot_shelterdc.controller;
 
+import com.devsteam.getname.telbot_shelterdc.dto.DogOwnerDTO;
 import com.devsteam.getname.telbot_shelterdc.model.*;
 import com.devsteam.getname.telbot_shelterdc.service.DogOwnerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 @Tag(name="КЛИЕНТЫ И ПЕРСОНАЛ ПРИЮТА СОБАК", description = "Редактирование данных людей в БД приюта собак")
 @RestController
-@RequestMapping(value = "/dog/owner")
+@RequestMapping(value = "/dogowner")
 public class DogOwnerController {
         private final DogOwnerService dogOwnerService;
         public DogOwnerController(DogOwnerService dogOwnerService) {
@@ -33,12 +34,12 @@ public class DogOwnerController {
             @ApiResponse( responseCode = "500",
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
-    public void addDogOwner(
+    public ResponseEntity<DogOwnerDTO> addDogOwner(
             @RequestParam (required = false, name = "Чат id человека в Telegram") Long chatId,
             @RequestParam (required = false, name = "ФИО человека") String fullName,
             @RequestParam (required = false, name = "№ сотового телефна") String phone,
             @RequestParam (required = false, name = "Адрес проживания")String address) {
-        dogOwnerService.creatDogOwner(chatId, fullName, phone, address);
+        return ResponseEntity.ok().body(dogOwnerService.creatDogOwner(chatId, fullName, phone, address));
     }
     @GetMapping
     @Operation(summary = "Получение списка данных всех людей из БД приюта собак")
@@ -51,7 +52,7 @@ public class DogOwnerController {
             @ApiResponse( responseCode = "500",
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
-    public ResponseEntity<List<DogOwner>> getAllDogOwners(){
+    public ResponseEntity<List<DogOwnerDTO>> getAllDogOwners(){
         return ResponseEntity.ok().body(dogOwnerService.getAllDogOwner());
     }
     @DeleteMapping
@@ -65,10 +66,10 @@ public class DogOwnerController {
             @ApiResponse( responseCode = "500",
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
-    public void deleteDogOwnerById(@RequestParam Integer idDO){
+    public void deleteDogOwnerById(@RequestParam Long idDO){
         dogOwnerService.deleteDogOwnerByIdDO(idDO);
     }
-    @PutMapping
+    @PutMapping("/status")
     @Operation(summary = "Изменение статуса человека в БД приюта собак по его id")
     @ApiResponses( {
             @ApiResponse( responseCode = "200",
@@ -79,11 +80,11 @@ public class DogOwnerController {
             @ApiResponse( responseCode = "500",
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
-    public void changeStatusOwner(@RequestParam Integer idDO, @RequestParam StatusOwner statusOwner){
+    public void changeStatusOwner(@RequestParam Long idDO, @RequestParam StatusOwner statusOwner){
         dogOwnerService.changeStatusOwnerById(idDO, statusOwner);
     }
-    @PutMapping
-    @Operation(summary = "Добавление или замена пса из БД приюта в карте человека по его id")
+    @PutMapping("/add")
+    @Operation(summary = "Добавление или замена пса из БД приюта в карте человека по его id с проверкой и сменой статуса пса.")
     @ApiResponses( {
             @ApiResponse( responseCode = "200",
                     description = "Животное добавлено (заменено) в карту клиента.",
@@ -93,11 +94,11 @@ public class DogOwnerController {
             @ApiResponse( responseCode = "500",
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
-    public void changeDog(@RequestParam Integer idDO, @RequestParam Long id){
+    public void changeDog(@RequestParam Long idDO, @RequestParam Long id){
         dogOwnerService.changeDogByIdDO(idDO, id);
     }
-    @PutMapping
-    @Operation(summary = "Удаление пса из карты человека (БД приюта собак) по id человека")
+    @PutMapping("/delete")
+    @Operation(summary = "Удаление пса из карты человека (по id человека) по какой-либо причине со сменой статуса пса.")
     @ApiResponses( {
             @ApiResponse( responseCode = "200",
                     description = "Животное стерто в карте клиента.",
@@ -107,7 +108,7 @@ public class DogOwnerController {
             @ApiResponse( responseCode = "500",
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
-    public void takeTheDogAway(@RequestParam Integer idDO){
+    public void takeTheDogAway(@RequestParam Long idDO){
         dogOwnerService.takeTheDogAwayByIdDO(idDO);
     }
 

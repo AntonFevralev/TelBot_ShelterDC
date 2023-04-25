@@ -10,8 +10,8 @@ import java.util.List;
 public class DogOwner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_do",nullable = false)
-   private int idDO;
+    @Column(name = "id_do")
+   private Long idDO;
     @Column(name = "chat_id", nullable = false)
    private Long chatId;
     @Column(name = "full_name",nullable = false)
@@ -33,7 +33,7 @@ public class DogOwner {
 
 /** Архив ежедневных отчетов "усыновителя" питомца в порядке поступления.
     */
-   @OneToMany(mappedBy = "dog_owner", cascade = CascadeType.ALL, orphanRemoval = true)
+   @OneToMany(mappedBy = "dogOwner", cascade = CascadeType.ALL, orphanRemoval = true) // было - "dog_owner"
    private List<DogReport> reportList = new LinkedList<>();
 
 //-------------------- Constructors ---------------------------------------------------
@@ -41,29 +41,34 @@ public class DogOwner {
    /** Пустой конструктор, что бы Hibernat мог осуществлять манипуляции с классом. */
    public DogOwner() {}
 
-   public DogOwner(String fullName, String phone, String address, StatusOwner statusOwner) {
+     public DogOwner(Long chatId, String fullName, String phone, String address,
+                   StatusOwner statusOwner) {
+      this.chatId = chatId;
       this.fullName = fullName;
       this.phone = phone;
       this.address = address;
       this.statusOwner = statusOwner;
+
    }
 
-   public DogOwner(int idDO, Long chatId, String fullName, String phone, String address, StatusOwner statusOwner) {
+   public DogOwner(Long idDO, Long chatId, String fullName, String phone, String address,
+                   StatusOwner statusOwner, Dog dog) {
       this.idDO = idDO;
       this.chatId = chatId;
       this.fullName = fullName;
       this.phone = phone;
       this.address = address;
       this.statusOwner = statusOwner;
+      this.dog = dog;
    }
 
 //------------ Getters & setters -------------------------------------------------------
 
-   public int getIdDO() {
+   public Long getIdDO() {
       return idDO;
    }
 
-   public void setIdDO(int idDO) {
+   public void setIdDO(Long idDO) {
       this.idDO = idDO;
    }
 

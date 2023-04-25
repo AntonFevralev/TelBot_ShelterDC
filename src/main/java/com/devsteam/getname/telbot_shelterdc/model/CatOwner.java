@@ -10,8 +10,8 @@ import java.util.List;
 public class CatOwner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_co",nullable = false)
-    private int idCO;
+    @Column(name = "id_co")
+    private Long idCO;
     @Column(name = "chat_id",nullable = false)
     private Long chatId;
     @Column(name = "full_name",nullable = false)
@@ -27,41 +27,44 @@ public class CatOwner {
 /** Поле животного, заполняется волонтером после заключения договора.
  * Правило: На испытательный срок - одно животное в одни руки.
  */
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cat_id")
     private Cat cat;
 
 /** Архив ежедневных отчетов "усыновителя" питомца в порядке поступления. */
-    @OneToMany(mappedBy = "cat_owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CatReport> reportList = new LinkedList<>();;  //
+    @OneToMany(mappedBy = "catOwner", cascade = CascadeType.ALL, orphanRemoval = true) // было - "cat_owner"
+    private List<CatReport> reportList = new LinkedList<>();  //
 
 // --------------------- Constructors ---------------------------------------------------
 
     /** Пустой конструктор, что бы Hibernat мог осуществлять манипуляции с классом. */
     public CatOwner() {}
 
-    public CatOwner(String fullName, String phone, String address, StatusOwner statusOwner) {
-        this.fullName = fullName;
-        this.phone = phone;
-        this.address = address;
-        this.statusOwner = statusOwner;
-    }
-
-    public CatOwner(int idCO, Long chatId, String fullName, String phone, String address, StatusOwner statusOwner) {
-        this.idCO = idCO;
+    public CatOwner(Long chatId, String fullName, String phone, String address, StatusOwner statusOwner) {
         this.chatId = chatId;
         this.fullName = fullName;
         this.phone = phone;
         this.address = address;
         this.statusOwner = statusOwner;
     }
+
+    public CatOwner(Long idCO, Long chatId, String fullName, String phone, String address,
+                    StatusOwner statusOwner, Cat cat) {
+        this.idCO = idCO;
+        this.chatId = chatId;
+        this.fullName = fullName;
+        this.phone = phone;
+        this.address = address;
+        this.statusOwner = statusOwner;
+        this.cat = cat;
+    }
 //------------ Getters & setters -------------------------------------------------------
 
-    public int getIdCO() {
+    public Long getIdCO() {
         return idCO;
     }
 
-    public void setIdCO(int idCO) {
+    public void setIdCO(Long idCO) {
         this.idCO = idCO;
     }
 
@@ -119,5 +122,9 @@ public class CatOwner {
 
     public void setReportList(List<CatReport> reportList) {
         this.reportList = reportList;
+    }
+
+    public void addReport(CatReport catReport) {
+        reportList.add(catReport);
     }
 }

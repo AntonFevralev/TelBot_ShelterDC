@@ -1,5 +1,6 @@
 package com.devsteam.getname.telbot_shelterdc.controller;
 
+import com.devsteam.getname.telbot_shelterdc.dto.CatReportDTO;
 import com.devsteam.getname.telbot_shelterdc.model.CatReport;
 import com.devsteam.getname.telbot_shelterdc.service.CatReportService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +21,7 @@ import java.util.List;
 @RequestMapping("cats/report")
 public class CatReportController {
 
-    private CatReportService catReportService;
+    private final CatReportService catReportService;
 
     public CatReportController(CatReportService catReportService) {
         this.catReportService = catReportService;
@@ -52,7 +53,7 @@ public class CatReportController {
             )
     }
     )
-    public ResponseEntity<CatReport> getCatReportById(@RequestParam(name = "reportId") long reportId) {
+    public ResponseEntity<CatReportDTO> getCatReportById(@RequestParam(name = "reportId") long reportId) {
         return ResponseEntity.ok().body(catReportService.getReportByReportId(reportId));
     }
 
@@ -74,7 +75,7 @@ public class CatReportController {
             )
     }
     )
-    public ResponseEntity<CatReport> getCatReportByCatId(@RequestParam(name = "catId") long catId) {
+    public ResponseEntity<CatReportDTO> getCatReportByCatId(@RequestParam(name = "catId") long catId) {
         return ResponseEntity.ok().body(catReportService.getReportByCatId(catId));
     }
 
@@ -96,7 +97,7 @@ public class CatReportController {
             )
     }
     )
-    public ResponseEntity<List<CatReport>> getReportsByDate(@RequestParam("date")
+    public ResponseEntity<List<CatReportDTO>> getReportsByDate(@RequestParam("date")
                                                             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return ResponseEntity.ok().body(catReportService.getReportsByDate(date));
     }
@@ -116,7 +117,7 @@ public class CatReportController {
             )
     }
     )
-    public ResponseEntity<List<CatReport>> getAllCatReports() {
+    public ResponseEntity<List<CatReportDTO>> getAllCatReports() {
         return ResponseEntity.ok().body(catReportService.getAllReports());
     }
 
