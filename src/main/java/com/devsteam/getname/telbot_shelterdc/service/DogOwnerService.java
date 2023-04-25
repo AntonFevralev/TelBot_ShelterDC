@@ -3,6 +3,7 @@ package com.devsteam.getname.telbot_shelterdc.service;
 import com.devsteam.getname.telbot_shelterdc.dto.DogOwnerDTO;
 import com.devsteam.getname.telbot_shelterdc.exception.NoOwnerWithSuchIdException;
 import com.devsteam.getname.telbot_shelterdc.exception.OwnerListIsEmptyException;
+import com.devsteam.getname.telbot_shelterdc.exception.PetIsNotFreeException;
 import com.devsteam.getname.telbot_shelterdc.model.*;
 import com.devsteam.getname.telbot_shelterdc.repository.DogOwnerRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.DogRepository;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 
 import static com.devsteam.getname.telbot_shelterdc.Utils.stringValidation;
 import static com.devsteam.getname.telbot_shelterdc.dto.DogOwnerDTO.dogOwnerToDTO;
+import static com.devsteam.getname.telbot_shelterdc.model.Status.BUSY;
 import static com.devsteam.getname.telbot_shelterdc.model.Status.FREE;
 import static com.devsteam.getname.telbot_shelterdc.model.StatusOwner.SEARCH;
 
@@ -32,7 +34,7 @@ public class DogOwnerService {
     }
 
 
-    /** Метод на вход принимает данные человека и сохраняет ее в базу.
+    /** Метод добавления человека в БД, на вход принимает данные и сохраняет их в базу.
      * @param chatId номер человека в чате.
      * @param fullName ФИО человека.
      * @param phone № телефона.
@@ -68,15 +70,19 @@ public class DogOwnerService {
         dogOwnerRepository.save(owner);
     }
 
-    /** Метод добавления собаки (или замены) из БД к "усыновителю по id".
+    /** Метод добавления пса (или замены) из БД к "усыновителю по id" с проверкой и сменой статуса пса.
+     * Если у пса FREE, то можно передавать и статус меняется на BUSY. Если нет, то Exception.
      * @param idDO id "усыновителя" собаки.
      *  * @param id id "усыновителя" пса.
      */
     public void changeDogByIdDO(Long idDO, Long id) {
         DogOwner owner = dogOwnerRepository.findById(idDO).orElseThrow(NoOwnerWithSuchIdException::new);
         Dog dog = dogRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        owner.setDog(dog);
-        dogOwnerRepository.save(owner);
+        if (dog.getStatus().equals(FREE)) {
+            dog.setStatus(BUSY);
+            owner.setDog(dog);
+            dogOwnerRepository.save(owner);
+        } else throw new PetIsNotFreeException("Животное занято другим человеком.");
     }
 
     /** Метод удаления у человека животного по какой-либо причине со сменой статуса кота.
