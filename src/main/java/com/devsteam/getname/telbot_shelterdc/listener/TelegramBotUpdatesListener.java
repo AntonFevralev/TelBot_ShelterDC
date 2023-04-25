@@ -1,7 +1,9 @@
 package com.devsteam.getname.telbot_shelterdc.listener;
 
-import com.devsteam.getname.telbot_shelterdc.model.Shelter;
-import com.devsteam.getname.telbot_shelterdc.repository.ShelterRepository;
+import com.devsteam.getname.telbot_shelterdc.model.*;
+import com.devsteam.getname.telbot_shelterdc.repository.CatOwnerRepository;
+import com.devsteam.getname.telbot_shelterdc.repository.CatRepository;
+import com.devsteam.getname.telbot_shelterdc.service.CatReportService;
 import com.devsteam.getname.telbot_shelterdc.service.ShelterService;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
@@ -15,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -31,14 +34,18 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      */
     public static Shelter catsShelter;
     private final TelegramBot telegramBot;
-
+  private final CatOwnerRepository catOwnerRepository;
     private final ShelterService service;
+    private final CatRepository catRepository;
+    private final CatReportService catReportService;
 
-
-    public TelegramBotUpdatesListener(TelegramBot telegramBot, ShelterService service) {
+    public TelegramBotUpdatesListener(TelegramBot telegramBot, CatOwnerRepository catOwnerRepository, ShelterService service, CatRepository catRepository, CatReportService catReportService) {
         this.telegramBot = telegramBot;
+        this.catOwnerRepository = catOwnerRepository;
         this.service = service;
 
+        this.catRepository = catRepository;
+        this.catReportService = catReportService;
     }
 
     /**
@@ -76,6 +83,20 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                         //если к сообщению прикреплен контакт и сообщение является ответом на сообщение, содержащее определенный текст
                     } else if ("/id".equals(text)) {
                         sendChatId(chatId);
+                    /*    CatReport catReport = new CatReport();
+                        Cat cat = catRepository.findById(1L).orElseThrow();
+                        CatOwner catOwner = new CatOwner("FIO", "ggff", "address", StatusOwner.PROBATION);
+                        catOwner.setCat(cat);
+                        catOwner.setChatId(chatId);
+                        catOwnerRepository.save(catOwner);
+                        catReport.setBehaviorChanges("id");
+                        catReport.setCatOwner(catOwner);
+                        catReport.setCat(cat);
+                        catReport.setReportDateTime(LocalDateTime.now());
+                        catReport.setPhoto("photo");
+                        catReport.setReportIsComplete(true);
+                        catReport.setReportIsInspected(false);
+                        catReportService.save(catReport);*/
                     }
                     if (message.contact() != null && message.replyToMessage().text().contains("Нажмите на кнопку оставить контакты для приюта собак")) {
                         sendContact(message, chatId);

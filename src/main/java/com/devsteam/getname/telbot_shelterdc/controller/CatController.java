@@ -1,5 +1,6 @@
 package com.devsteam.getname.telbot_shelterdc.controller;
 
+import com.devsteam.getname.telbot_shelterdc.dto.CatDTO;
 import com.devsteam.getname.telbot_shelterdc.model.Cat;
 import com.devsteam.getname.telbot_shelterdc.model.Color;
 import com.devsteam.getname.telbot_shelterdc.model.Status;
@@ -16,12 +17,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
+
 @RestController
 @RequestMapping("/cats")
 @Tag(name="Кошки", description =  "CRUD-операции и другие эндпоинты для работы с кошками")
 public class CatController {
 
     private final CatService catService;
+
 
     public CatController(CatService catService) {
         this.catService = catService;
@@ -48,7 +51,7 @@ public class CatController {
             )
     }
     )
-    public ResponseEntity<Cat> getCat(@PathVariable long id) {
+    public ResponseEntity<CatDTO> getCat(@PathVariable long id) {
         return ResponseEntity.ok().body(catService.getCat(id));
     }
     @PostMapping
@@ -70,12 +73,12 @@ public class CatController {
             )
     }
     )
-    public ResponseEntity<Cat> createCat(@RequestParam (name = "Имя кошки") String name,
+    public ResponseEntity<CatDTO> createCat(@RequestParam (name = "Имя кошки") String name,
                                          @RequestParam (required = false, name = "Год рождения кошки") String birthYear,
                                          @RequestParam (required = false, name = "Порода кошки") String breed,
                                          @RequestParam (required = false, name = "Описание кошки") String description,
                                          @RequestParam(required = false, name = "Окрас кошки") Color color) {
-        return ResponseEntity.ok().body(catService.addCat(new Cat(birthYear, name, breed, description, color, Status.FREE)));
+        return ResponseEntity.ok().body(catService.addCat(birthYear, name, breed, description, color));
     }
 
     @DeleteMapping("/{id}")
@@ -120,8 +123,8 @@ public class CatController {
             )
     }
     )
-    public ResponseEntity<Cat> updateCat(@PathVariable("id") long id, @RequestBody Cat cat) {
-        return ResponseEntity.ok().body(catService.updateCat(id, cat));
+    public ResponseEntity<CatDTO> updateCat(@RequestBody CatDTO catDTO) {
+        return ResponseEntity.ok().body(catService.updateCat(catDTO));
     }
     @GetMapping
     @Operation(summary = "Вывод всех котиков")
@@ -143,7 +146,7 @@ public class CatController {
             )
     }
     )
-    public ResponseEntity<Collection<Cat>> getAllCats() {
+    public ResponseEntity<Collection<CatDTO>> getAllCats() {
         return ResponseEntity.ok().body(catService.getAllCats());
     }
 }
