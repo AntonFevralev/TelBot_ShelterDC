@@ -102,7 +102,7 @@ public class ShelterService {
      * @return объект приют
      */
     public Shelter editRecommendations(int id, String recommendations) {
-        Shelter shelterToEdit = shelterRepository.findById(id).orElseThrow(NoSuchShelterException::new);
+        Shelter shelterToEdit = getByID(id);
         if (stringValidation(recommendations)) {
             shelterToEdit.setRecommendations(recommendations);
         }
