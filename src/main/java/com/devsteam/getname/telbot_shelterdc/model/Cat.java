@@ -1,41 +1,64 @@
 package com.devsteam.getname.telbot_shelterdc.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.time.LocalDate;
+import javax.persistence.*;
 
 @Entity
 public class Cat {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "birth_year")
+    private String birthYear;
 
-    private LocalDate birthYear;
-
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "breed")
     private String breed;
 
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "color")
+    @Enumerated(EnumType.STRING)
+    private Color color;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "idCo")
+    private CatOwner catOwner;
 
     public Cat() {
     }
 
-    public Cat(long id, LocalDate birthYear, String name, String breed, String description) {
+    public Cat(long id, String birthYear, String name, String breed, String description, Color color, Status status, CatOwner catOwner) {
         this.id = id;
         this.birthYear = birthYear;
         this.name = name;
         this.breed = breed;
         this.description = description;
+        this.color = color;
+        this.status = status;
+        this.catOwner = catOwner;
+    }
+
+    public Cat(String birthYear, String name, String breed, String description, Color color, Status status) {
+        this.birthYear = birthYear;
+        this.name = name;
+        this.breed = breed;
+        this.description = description;
+        this.color = color;
+        this.status = status;
     }
 
     public Long getId() {
         return id;
     }
 
-    public LocalDate getBirthYear() {
+    public String getBirthYear() {
         return birthYear;
     }
 
@@ -55,7 +78,7 @@ public class Cat {
         this.id = id;
     }
 
-    public void setBirthYear(LocalDate birthYear) {
+    public void setBirthYear(String birthYear) {
         this.birthYear = birthYear;
     }
 
@@ -75,4 +98,28 @@ public class Cat {
         this.id = id;
     }
 
+    public Color getColor() {
+        return color;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+
+    public CatOwner getCatOwner() {
+        return catOwner;
+    }
+
+    public void setCatOwner(CatOwner catOwner) {
+        this.catOwner = catOwner;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 }

@@ -14,33 +14,31 @@ public class CatReport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     /**Поле id*/
     private long id;
-    @JoinColumn(name = "CAT_ID")
     @ManyToOne(targetEntity = Cat.class)
-//    @Column(nullable = false)
+    @JoinColumn(name = "cat_id", nullable = false)
     /**Поле животного, о котором пишется отчёт*/
     private Cat cat;
-    @JoinColumn(name = "CAT_OWNER_ID_CO")
-    @ManyToOne(targetEntity = CatOwner.class, cascade = CascadeType.ALL)
-//    @Column(name = "cat_owner", nullable = false)
+    @ManyToOne(targetEntity = CatOwner.class)
+    @JoinColumn(name = "cat_owner_ID_co", nullable = false)
     /**Поле владельца животного, который пишет отчёт*/
     private CatOwner catOwner;
-    @Column(nullable = false)
+    @Column
     /**Поле содержащее ссылку на фото животного, которое прилагается к отчёту*/
     private String photo;
-    @Column(nullable = false)
+    @Column
     /**Поле с описанием рациона и режима питания животного*/
     private String meals;
-    @Column(nullable = false)
+    @Column()
     /**Поле с описанием адаптации и состояния животного*/
     private String wellBeingAndAdaptation;
-    @Column(nullable = false)
+    @Column()
     /**Поле с описанием изменений в поведении животного*/
     private String behaviorChanges;
-    @Column(nullable = false)
+    @Column()
     /**Поле с датой и временем отправки отчёта*/
     private LocalDateTime reportDateTime;
 
-    @Column(nullable = false)
+    @Column
     /**Поле, отмечающее завершённость(полноценность) отчёта*/
     private boolean reportIsComplete;
     /**Поле, указывающее на факт просмотра отчёта волонтёром*/

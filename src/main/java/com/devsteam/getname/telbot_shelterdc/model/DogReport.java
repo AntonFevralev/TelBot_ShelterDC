@@ -13,7 +13,7 @@ public class DogReport {
     @GeneratedValue
     private long id;
 
-    @ManyToOne(targetEntity = DogOwner.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = DogOwner.class)
 //    @Column(nullable = false)
     private DogOwner dogOwner;
     @Column(nullable = false)
