@@ -35,7 +35,8 @@ public class CatReportService {
                 catReport.getMeals(),
                 catReport.getWellBeingAndAdaptation(),
                 catReport.getBehaviorChanges(),
-                catReport.getReportDateTime(),
+                catReport.getReportDate(),
+                catReport.getReportTime(),
                 catReport.isReportIsComplete(),
                 catReport.isReportIsInspected());
     }
@@ -56,7 +57,8 @@ public class CatReportService {
             catReport.setWellBeingAndAdaptation(catReportDTO.wellBeingAndAdaptation());
             catReport.setReportIsComplete(true);
             catReport.setReportIsInspected(false);
-            catReport.setReportDateTime(LocalDateTime.now());
+            catReport.setReportDate(LocalDateTime.now().toLocalDate());
+            catReport.setReportTime(LocalDateTime.now().toLocalTime());
             catReportRepository.save(catReport);
         }
 
@@ -99,7 +101,7 @@ public class CatReportService {
      */
     public List<CatReportDTO> getReportsByDate(LocalDate date) {
         List<CatReportDTO> catReportDTOS = catReportRepository
-                .findCatReportsByReportDateTime(date)
+                .findCatReportsByReportDate(date)
                 .stream()
                 .map(catReport -> catReportToDTO(catReport)).toList();
         if (!catReportDTOS.isEmpty()) {
