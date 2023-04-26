@@ -81,7 +81,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     if ("/start".equals(text)) {
                         startMessage(chatId);
                         //если к сообщению прикреплен контакт и сообщение является ответом на сообщение, содержащее определенный текст
-                    } /*else if ("/id".equals(text)) {
+                    } else if ("/id".equals(text)) {
                         sendChatId(chatId);
                      CatReport catReport = new CatReport();
                         Cat cat = catRepository.findById(1L).orElseThrow();
@@ -99,7 +99,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                         catReport.setReportIsInspected(false);
                         catReportService.save(catReport);
                         catOwner.addReport(catReport);
-                    }*/
+                    }
                     if (message.contact() != null) {
                         sendContact(message, chatId);
                     }
