@@ -1,15 +1,15 @@
 package com.devsteam.getname.telbot_shelterdc.service;
 
 import com.devsteam.getname.telbot_shelterdc.dto.CatReportDTO;
-import com.devsteam.getname.telbot_shelterdc.exception.NoReportWithSuchAnimalIdException;
-import com.devsteam.getname.telbot_shelterdc.exception.NoReportWithSuchIdException;
-import com.devsteam.getname.telbot_shelterdc.exception.NoReportsOnThisDateException;
-import com.devsteam.getname.telbot_shelterdc.exception.ReportListIsEmptyException;
+import com.devsteam.getname.telbot_shelterdc.exception.*;
 import com.devsteam.getname.telbot_shelterdc.model.CatReport;
+import com.devsteam.getname.telbot_shelterdc.repository.CatOwnerRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.CatReportRepository;
+import com.devsteam.getname.telbot_shelterdc.repository.CatRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -17,9 +17,13 @@ import java.util.NoSuchElementException;
 public class CatReportService {
     //    private final LinkedList<CatReport> catReports = new LinkedList<>();
     private CatReportRepository catReportRepository;
+    private CatOwnerRepository catOwnerRepository;
+    private CatRepository catRepository;
 
-    public CatReportService(CatReportRepository catReportRepository) {
+    public CatReportService(CatReportRepository catReportRepository, CatOwnerRepository catOwnerRepository, CatRepository catRepository) {
         this.catReportRepository = catReportRepository;
+        this.catOwnerRepository = catOwnerRepository;
+        this.catRepository = catRepository;
     }
 
     private CatReportDTO catReportToDTO(CatReport catReport) {
@@ -31,22 +35,31 @@ public class CatReportService {
                 catReport.getMeals(),
                 catReport.getWellBeingAndAdaptation(),
                 catReport.getBehaviorChanges(),
-                catReport.getReportDateTime(),
+                catReport.getReportDate(),
+                catReport.getReportTime(),
                 catReport.isReportIsComplete(),
                 catReport.isReportIsInspected());
-    }
-    public void save(CatReport catReport) {
-        catReportRepository.save(catReport);
     }
 
     /**
      * Добавить отчёт в базу
      *
-     * @param catReport отчёт о кошке
+     * @param catReportDTO отчёт о кошке
      */
-    public void addReport(CatReport catReport) {
-        if (catReport != null) {
-            save(catReport);
+    public void addReport(CatReportDTO catReportDTO) {
+        if (catReportDTO != null) {
+            CatReport catReport = new CatReport();
+            catReport.setCat(catRepository.findById(catReportDTO.catId()).orElseThrow(NoCatWithSuchIdException::new));
+            catReport.setCatOwner(catOwnerRepository.findById(catReportDTO.catOwnerId()).orElseThrow(NoOwnerWithSuchIdException::new));
+            catReport.setBehaviorChanges(catReportDTO.behaviorChanges());
+            catReport.setMeals(catReportDTO.meals());
+            catReport.setPhoto(catReportDTO.photo());
+            catReport.setWellBeingAndAdaptation(catReportDTO.wellBeingAndAdaptation());
+            catReport.setReportIsComplete(true);
+            catReport.setReportIsInspected(false);
+            catReport.setReportDate(LocalDateTime.now().toLocalDate());
+            catReport.setReportTime(LocalDateTime.now().toLocalTime());
+            catReportRepository.save(catReport);
         }
 
     }
@@ -88,7 +101,7 @@ public class CatReportService {
      */
     public List<CatReportDTO> getReportsByDate(LocalDate date) {
         List<CatReportDTO> catReportDTOS = catReportRepository
-                .findCatReportsByReportDateTime(date)
+                .findCatReportsByReportDate(date)
                 .stream()
                 .map(catReport -> catReportToDTO(catReport)).toList();
         if (!catReportDTOS.isEmpty()) {

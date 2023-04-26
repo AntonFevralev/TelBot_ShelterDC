@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CatOwnerRepository extends JpaRepository <CatOwner, Long>{
-    }
+    CatOwner findCatOwnerByChatId(long chatId);
+}
 

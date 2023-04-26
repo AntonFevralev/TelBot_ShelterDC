@@ -1,7 +1,9 @@
 package com.devsteam.getname.telbot_shelterdc.model;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "cat_reports")
@@ -15,28 +17,31 @@ public class CatReport {
     /**Поле id*/
     private long id;
     @ManyToOne(targetEntity = Cat.class)
-//    @Column(nullable = false)
+    @JoinColumn(name = "cat_id", nullable = false)
     /**Поле животного, о котором пишется отчёт*/
     private Cat cat;
     @ManyToOne(targetEntity = CatOwner.class)
-//    @Column(name = "cat_owner", nullable = false)
+    @JoinColumn(name = "cat_owner_ID_co", nullable = false)
     /**Поле владельца животного, который пишет отчёт*/
     private CatOwner catOwner;
     @Column
     /**Поле содержащее ссылку на фото животного, которое прилагается к отчёту*/
     private String photo;
-    @Column(nullable = true)
+    @Column
     /**Поле с описанием рациона и режима питания животного*/
     private String meals;
-    @Column(nullable = true)
+    @Column()
     /**Поле с описанием адаптации и состояния животного*/
     private String wellBeingAndAdaptation;
-    @Column(nullable = true)
+    @Column()
     /**Поле с описанием изменений в поведении животного*/
     private String behaviorChanges;
-    @Column(nullable = true)
-    /**Поле с датой и временем отправки отчёта*/
-    private LocalDateTime reportDateTime;
+    @Column()
+    /**Поле с датой отправки отчёта*/
+    private LocalDate reportDate;
+    @Column()
+    /**Поле со временем отправки отчёта*/
+    private LocalTime reportTime;
 
     @Column
     /**Поле, отмечающее завершённость(полноценность) отчёта*/
@@ -75,9 +80,6 @@ public class CatReport {
         return behaviorChanges;
     }
 
-    public LocalDateTime getReportDateTime() {
-        return reportDateTime;
-    }
 
     public boolean isReportIsComplete() {
         return reportIsComplete;
@@ -115,9 +117,6 @@ public class CatReport {
         this.behaviorChanges = behaviorChanges;
     }
 
-    public void setReportDateTime(LocalDateTime reportDateTime) {
-        this.reportDateTime = reportDateTime;
-    }
 
     public void setReportIsComplete(boolean reportIsComplete) {
         this.reportIsComplete = reportIsComplete;
@@ -125,5 +124,21 @@ public class CatReport {
 
     public void setReportIsInspected(boolean reportIsInspected) {
         this.reportIsInspected = reportIsInspected;
+    }
+
+    public LocalDate getReportDate() {
+        return reportDate;
+    }
+
+    public void setReportDate(LocalDate reportDate) {
+        this.reportDate = reportDate;
+    }
+
+    public LocalTime getReportTime() {
+        return reportTime;
+    }
+
+    public void setReportTime(LocalTime reportTime) {
+        this.reportTime = reportTime;
     }
 }

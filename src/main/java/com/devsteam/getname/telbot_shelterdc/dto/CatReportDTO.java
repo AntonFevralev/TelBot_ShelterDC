@@ -1,6 +1,8 @@
 package com.devsteam.getname.telbot_shelterdc.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public record CatReportDTO(long id,
                            long catId,
@@ -9,7 +11,8 @@ public record CatReportDTO(long id,
                            String meals,
                            String wellBeingAndAdaptation,
                            String behaviorChanges,
-                           LocalDateTime reportDateTime,
+                           LocalDate reportDate,
+                           LocalTime reportTime,
                            boolean reportIsComplete,
                            boolean reportIsInspected) {
 }
