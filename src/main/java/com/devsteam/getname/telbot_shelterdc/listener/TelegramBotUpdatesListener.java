@@ -30,11 +30,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     /**
      * объект приюта собак, поля которого заполняются из БД для работы бота
      */
-    public static Shelter dogsShelter;
+    private final  Shelter dogsShelter;
     /**
      * объект приюта кошек, поля которого заполняются из БД для работы бота
      */
-    public static Shelter catsShelter;
+    private final Shelter catsShelter;
     private final TelegramBot telegramBot;
     private final OwnerRepository ownerRepository;
     private final ShelterService service;
@@ -48,6 +48,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         this.telegramBot = telegramBot;
         this.ownerRepository = ownerRepository;
         this.service = service;
+        this.dogsShelter = service.getByID(1);
+        this.catsShelter = service.getByID(2);
 
         this.petRepository = petRepository;
         this.catReportService = catReportService;
@@ -60,8 +62,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     @PostConstruct
     public void init() {
         telegramBot.setUpdatesListener(this);
-        this.dogsShelter = service.getByID(1);
-        this.catsShelter = service.getByID(2);
     }
 
     /**
@@ -119,8 +119,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * @param chatId идентификатор чата
      */
     public void startMessage(long chatId) {
-        SendMessage sendMessage = new SendMessage(chatId, "   Привет! Данный бот предоставляет информацию о двух приютах. Кошачий приют \"" + TelegramBotUpdatesListener.catsShelter.getTitle() + "\"" +
-                " и собачий приют \"" + TelegramBotUpdatesListener.dogsShelter.getTitle() + "\". Выберите один");
+        SendMessage sendMessage = new SendMessage(chatId, "   Привет! Данный бот предоставляет информацию о двух приютах. Кошачий приют \"" + this.catsShelter.getTitle() + "\"" +
+                " и собачий приют \"" + this.dogsShelter.getTitle() + "\". Выберите один");
         sendMessage.parseMode(ParseMode.HTML);
         InlineKeyboardButton cats = new InlineKeyboardButton("Кошки");
         cats.callbackData("Cats");
@@ -153,7 +153,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * @param chatId идентификатор чата
      */
     public void dogsShelter(long chatId) {
-        SendMessage sendMessage = new SendMessage(chatId, "Вы выбрали приют " + TelegramBotUpdatesListener.dogsShelter.getTitle());
+        SendMessage sendMessage = new SendMessage(chatId, "Вы выбрали приют " + this.dogsShelter.getTitle());
         InlineKeyboardButton mainInfoDogs = new InlineKeyboardButton("Основная информация");
         mainInfoDogs.callbackData("InfoDogs");
         InlineKeyboardButton howToTakeDog = new InlineKeyboardButton("Как взять питомца?");
@@ -174,7 +174,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * @param chatId идентификатор чата
      */
     public void infoDogs(long chatId) {
-        SendMessage sendMessage = new SendMessage(chatId, "Приют " + TelegramBotUpdatesListener.dogsShelter.getTitle());
+        SendMessage sendMessage = new SendMessage(chatId, "Приют " + this.dogsShelter.getTitle());
         InlineKeyboardButton infoDogsShelter = new InlineKeyboardButton("Информация о приюте");
         infoDogsShelter.callbackData("InfoDogsShelter");
         InlineKeyboardButton scheduleDogsShelter = new InlineKeyboardButton("Расписание, схема проезда, адрес");
