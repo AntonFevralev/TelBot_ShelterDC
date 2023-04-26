@@ -3,49 +3,63 @@ package com.devsteam.getname.telbot_shelterdc.model;
 import javax.persistence.*;
 import java.util.LinkedList;
 import java.util.List;
-
+/** Класс "усыновителей" собак, а также волонтёров и кинологов, работающих с собаками.
+ * При этом у волонтеров и кинологов поде животного будет путым. */
 @Entity
 @Table(name = "dog_owner")
-public class DogOwner {               // Модель базы данных владельцев собак
+public class DogOwner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_do",nullable = false)
+    @Column(name = "id_do")
    private Long idDO;
-    @Column(name = "chat_id")
+    @Column(name = "chat_id", nullable = false)
    private Long chatId;
-    @Column(name = "full_name")
+    @Column(name = "full_name",nullable = false)
    private String fullName;
-    @Column(name = "phone")
+    @Column(name = "phone",nullable = false)
    private String phone;
-    @Column(name = "address")
+    @Column(name = "address",nullable = false)
    private String address;
+    @Column(name = "status",nullable = false)
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-   private StatusOwner status;
-    @OneToOne(fetch = FetchType.LAZY)
+   private StatusOwner statusOwner;
+
+/** Поле животного, заполняется волонтером после заключения договора.
+    * Правило: На испытательный срок - одно животное в одни руки.
+    */
+   @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dog_id")
-   private Dog dog;    // Правило приюта: На испытательный срок - одно животное в одни руки.
-   @OneToMany(mappedBy = "dogOwner", cascade = CascadeType.ALL, orphanRemoval = true)
-   private List<DogReport> reportList = new LinkedList<>(); // Архив ежедневных отчетов "усыновителя" питомца.
+   private Dog dog;
+
+/** Архив ежедневных отчетов "усыновителя" питомца в порядке поступления.
+    */
+   @OneToMany(mappedBy = "dogOwner", cascade = CascadeType.ALL, orphanRemoval = true) // было - "dog_owner"
+   private List<DogReport> reportList = new LinkedList<>();
 
 //-------------------- Constructors ---------------------------------------------------
 
+   /** Пустой конструктор, что бы Hibernat мог осуществлять манипуляции с классом. */
    public DogOwner() {}
 
-   public DogOwner(String fullName, String phone, String address, StatusOwner status) {
+     public DogOwner(Long chatId, String fullName, String phone, String address,
+                   StatusOwner statusOwner) {
+      this.chatId = chatId;
       this.fullName = fullName;
       this.phone = phone;
       this.address = address;
-      this.status = status;
+      this.statusOwner = statusOwner;
+
    }
 
-   public DogOwner(Long idDO, Long chatId, String fullName, String phone, String address, StatusOwner status) {
+   public DogOwner(Long idDO, Long chatId, String fullName, String phone, String address,
+                   StatusOwner statusOwner, Dog dog) {
       this.idDO = idDO;
       this.chatId = chatId;
       this.fullName = fullName;
       this.phone = phone;
       this.address = address;
-      this.status = status;
+      this.statusOwner = statusOwner;
+      this.dog = dog;
    }
 
 //------------ Getters & setters -------------------------------------------------------
@@ -90,12 +104,12 @@ public class DogOwner {               // Модель базы данных вл
       this.address = address;
    }
 
-   public StatusOwner getStatus() {
-      return status;
+   public StatusOwner getStatusOwner() {
+      return statusOwner;
    }
 
-   public void setStatus(StatusOwner status) {
-      this.status = status;
+   public void setStatusOwner(StatusOwner statusOwner) {
+      this.statusOwner = statusOwner;
    }
 
    public Dog getDog() {

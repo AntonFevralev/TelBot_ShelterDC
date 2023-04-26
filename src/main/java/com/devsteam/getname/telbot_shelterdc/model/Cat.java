@@ -3,7 +3,6 @@ package com.devsteam.getname.telbot_shelterdc.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "cats")
 public class Cat {
 
     @Id
@@ -28,7 +27,7 @@ public class Cat {
     @Column(name = "status")
     private Status status;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idCo")
     private CatOwner catOwner;
 

@@ -18,11 +18,11 @@ public class CatReport {
 //    @Column(nullable = false)
     /**Поле животного, о котором пишется отчёт*/
     private Cat cat;
-    @ManyToOne(targetEntity = CatOwner.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = CatOwner.class)
 //    @Column(name = "cat_owner", nullable = false)
     /**Поле владельца животного, который пишет отчёт*/
     private CatOwner catOwner;
-    @Column(nullable = false)
+    @Column
     /**Поле содержащее ссылку на фото животного, которое прилагается к отчёту*/
     private String photo;
     @Column(nullable = true)
@@ -38,7 +38,7 @@ public class CatReport {
     /**Поле с датой и временем отправки отчёта*/
     private LocalDateTime reportDateTime;
 
-    @Column(nullable = false)
+    @Column
     /**Поле, отмечающее завершённость(полноценность) отчёта*/
     private boolean reportIsComplete;
     /**Поле, указывающее на факт просмотра отчёта волонтёром*/
