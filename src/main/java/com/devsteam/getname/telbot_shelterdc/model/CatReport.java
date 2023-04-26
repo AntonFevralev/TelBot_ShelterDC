@@ -1,7 +1,9 @@
 package com.devsteam.getname.telbot_shelterdc.model;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "cat_reports")
@@ -35,8 +37,11 @@ public class CatReport {
     /**Поле с описанием изменений в поведении животного*/
     private String behaviorChanges;
     @Column()
-    /**Поле с датой и временем отправки отчёта*/
-    private LocalDateTime reportDateTime;
+    /**Поле с датой отправки отчёта*/
+    private LocalDate reportDate;
+    @Column()
+    /**Поле со временем отправки отчёта*/
+    private LocalTime reportTime;
 
     @Column
     /**Поле, отмечающее завершённость(полноценность) отчёта*/
@@ -75,9 +80,6 @@ public class CatReport {
         return behaviorChanges;
     }
 
-    public LocalDateTime getReportDateTime() {
-        return reportDateTime;
-    }
 
     public boolean isReportIsComplete() {
         return reportIsComplete;
@@ -115,9 +117,6 @@ public class CatReport {
         this.behaviorChanges = behaviorChanges;
     }
 
-    public void setReportDateTime(LocalDateTime reportDateTime) {
-        this.reportDateTime = reportDateTime;
-    }
 
     public void setReportIsComplete(boolean reportIsComplete) {
         this.reportIsComplete = reportIsComplete;
@@ -125,5 +124,21 @@ public class CatReport {
 
     public void setReportIsInspected(boolean reportIsInspected) {
         this.reportIsInspected = reportIsInspected;
+    }
+
+    public LocalDate getReportDate() {
+        return reportDate;
+    }
+
+    public void setReportDate(LocalDate reportDate) {
+        this.reportDate = reportDate;
+    }
+
+    public LocalTime getReportTime() {
+        return reportTime;
+    }
+
+    public void setReportTime(LocalTime reportTime) {
+        this.reportTime = reportTime;
     }
 }

@@ -315,7 +315,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 "meals",
                 "well-being",
                 "behaviour",
-                LocalDateTime.now(),
+                LocalDateTime.now().toLocalDate(),
+                LocalDateTime.now().toLocalTime(),
                 true,
                 false);
         catReportService.addReport(catReportDTO);
