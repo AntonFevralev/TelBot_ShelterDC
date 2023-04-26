@@ -8,7 +8,6 @@ import java.util.List;
 
 //репозиторий посредством которого идет работа сущностью Shelter
 public interface ShelterRepository extends JpaRepository<Shelter, Integer> {
-Shelter findByID(int id);
 
 
 }
