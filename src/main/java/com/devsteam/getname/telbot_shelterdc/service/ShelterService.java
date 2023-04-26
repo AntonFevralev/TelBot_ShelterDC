@@ -88,7 +88,7 @@ public class ShelterService {
      * @return объект приют
      */
     public Shelter editTransportingRules(int id, String transportingRules) {
-        Shelter shelterToEdit = shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Shelter shelterToEdit = getByID(id);
         if (stringValidation(transportingRules)) {
             shelterToEdit.setTransportingRules(transportingRules);
         }
