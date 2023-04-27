@@ -48,7 +48,7 @@ public class ShelterController {
             @RequestParam(required = false, name = "Контакт для оформления пропуска") String security,
             @RequestParam(required = false, name = "Название приюта") String title,
             @RequestParam(required = false, name = "Ссылка на карту проезда") String mapLink) {
-        return ResponseEntity.ok(service.editShelterAddress(ID, address, schedule, security, title, mapLink));
+        return ResponseEntity.ok(service.editShelterContacts(ID, address, schedule, security, title, mapLink));
     }
 
     @PutMapping("/safetyRules")

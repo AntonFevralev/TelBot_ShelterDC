@@ -1,6 +1,7 @@
 package com.devsteam.getname.telbot_shelterdc.service;
 
-import com.devsteam.getname.telbot_shelterdc.exception.NoSuchShelterException;
+import com.devsteam.getname.telbot_shelterdc.Utils;
+import com.devsteam.getname.telbot_shelterdc.exception.NoSuchEntityException;
 import com.devsteam.getname.telbot_shelterdc.model.Shelter;
 import com.devsteam.getname.telbot_shelterdc.repository.ShelterRepository;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class ShelterService {
      * @return объект приют
      */
     public Shelter getByID(int id) {
-        return shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        return shelterRepository.findById(id).orElseThrow(NoSuchEntityException::new);
     }
 
     /**
@@ -47,7 +48,7 @@ public class ShelterService {
      * @param id идентификатор приюта
      * @return объект приют
      */
-    public Shelter editShelterAddress(int id, String address, String schedule, String security, String title, String mapLink) {
+    public Shelter editShelterContacts(int id, String address, String schedule, String security, String title, String mapLink) {
         Shelter shelterToEdit = getByID(id);
         if (stringValidation(address)) {
             shelterToEdit.setAddress(address);
@@ -77,7 +78,8 @@ public class ShelterService {
      */
     public Shelter editSafetyRules(int id, String safetyPrescriptions) {
         Shelter shelterToEdit = getByID(id);
-        shelterToEdit.setSafetyPrecautions(safetyPrescriptions);
+        if(Utils.stringValidation(safetyPrescriptions)){
+        shelterToEdit.setSafetyPrecautions(safetyPrescriptions);}
         return shelterRepository.save(shelterToEdit);
     }
 
