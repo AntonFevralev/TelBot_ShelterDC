@@ -16,6 +16,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -30,15 +31,16 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     /**
      * объект приюта собак, поля которого заполняются из БД для работы бота
      */
-    private final  Shelter dogsShelter;
+    private Shelter dogsShelter;
     /**
      * объект приюта кошек, поля которого заполняются из БД для работы бота
      */
-    private final Shelter catsShelter;
+    private Shelter catsShelter;
     private final TelegramBot telegramBot;
     private final CatOwnerRepository catOwnerRepository;
     private final ShelterService service;
     private final CatRepository catRepository;
+
 
     private final CatReportService catReportService;
 
@@ -48,9 +50,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         this.telegramBot = telegramBot;
         this.catOwnerRepository = catOwnerRepository;
         this.service = service;
-        this.dogsShelter = service.getByID(1);
-        this.catsShelter = service.getByID(2);
-
         this.catRepository = catRepository;
         this.catReportService = catReportService;
         this.catReportRepository = catReportRepository;
@@ -61,7 +60,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      */
     @PostConstruct
     public void init() {
+
         telegramBot.setUpdatesListener(this);
+
     }
 
     /**
@@ -77,6 +78,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 logger.info("Handles update: {}", update);
                 //если была нажата кнопка
                 if (update.callbackQuery() != null) {
+                    this.dogsShelter = service.getByID(1);
+                    this.catsShelter = service.getByID(2);
                     callBackQueryHandler(update);
                 }//если сообщение не пустое
                 if (update.message() != null) {

@@ -81,6 +81,33 @@ public class Shelter {
      */
     private long chatId;
 
+    public Shelter() {
+    }
+
+    public Shelter(int ID, String title, String schedule, String address, String mapLink, String security, String info,
+                   String safetyPrecautions, String meetAndGreatRules, String docList, String transportingRules,
+                   String recommendations, String recommendationsAdult, String recommendationsDisabled,
+                   String cynologistAdvice, String recommendedCynologists, String rejectReasonsList, long chatId) {
+        this.ID = ID;
+        this.title = title;
+        this.schedule = schedule;
+        this.address = address;
+        this.mapLink = mapLink;
+        this.security = security;
+        this.info = info;
+        this.safetyPrecautions = safetyPrecautions;
+        this.meetAndGreatRules = meetAndGreatRules;
+        this.docList = docList;
+        this.transportingRules = transportingRules;
+        this.recommendations = recommendations;
+        this.recommendationsAdult = recommendationsAdult;
+        this.recommendationsDisabled = recommendationsDisabled;
+        this.cynologistAdvice = cynologistAdvice;
+        this.recommendedCynologists = recommendedCynologists;
+        this.rejectReasonsList = rejectReasonsList;
+        this.chatId = chatId;
+    }
+
     public long getChatId() {
         return chatId;
     }
