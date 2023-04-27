@@ -15,12 +15,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 class ShelterServiceTest {
 
     @Autowired
-    private  ShelterService shelterService;
+    private ShelterService shelterService;
     @Autowired
     private ShelterRepository shelterRepository;
 
@@ -30,19 +31,20 @@ class ShelterServiceTest {
 
 
     @BeforeEach
-     void setUp(){
+    void setUp() {
         expectedShelter = new Shelter(1, "title", "schedule", "address", "maplink",
                 "security", "info", "safetyPrecautions", "meetAndGreetRules",
                 "docList", "transRules", "recommendatios",
                 "recommendationsAdults", "recommendationsDisabled",
                 "cyAdvices", "recomCy", "rejectList", 123);
-         shelterService.save(expectedShelter);
-    expectedShelter2 = new Shelter(2, "title", "schedule", "address", "maplink",
-                                          "security", "info", "safetyPrecautions", "meetAndGreetRules",
-                                          "docList", "transRules", "recommendatios",
-                                          "recommendationsAdults", "recommendationsDisabled",
-                                          "cyAdvices", "recomCy", "rejectList", 321);
-         shelterService.save(expectedShelter);}
+        shelterService.save(expectedShelter);
+        expectedShelter2 = new Shelter(2, "title", "schedule", "address", "maplink",
+                "security", "info", "safetyPrecautions", "meetAndGreetRules",
+                "docList", "transRules", "recommendatios",
+                "recommendationsAdults", "recommendationsDisabled",
+                "cyAdvices", "recomCy", "rejectList", 321);
+        shelterService.save(expectedShelter);
+    }
 
 
     @Test
@@ -69,20 +71,22 @@ class ShelterServiceTest {
     }
 
     @Test
-    void getByIDNotExistEntityThrowEntityNotFound(){
-        Assertions.assertThrows(NoSuchEntityException.class, ()->{shelterService.getByID(3);});
+    void getByIDNotExistEntityThrowEntityNotFound() {
+        Assertions.assertThrows(NoSuchEntityException.class, () -> {
+            shelterService.getByID(3);
+        });
     }
 
     @Test
     void editShelterContactsWithValidData() {
 
-        int id=1;
-        String address="new address";
+        int id = 1;
+        String address = "new address";
         String schedule = "new schedule";
         String security = "new security";
         String title = "new title";
         String mapLink = "new MapLink";
-        Shelter actualShelter = shelterService.editShelterContacts(1,address,schedule,security,title, mapLink);
+        Shelter actualShelter = shelterService.editShelterContacts(1, address, schedule, security, title, mapLink);
 
         Assertions.assertEquals(address, actualShelter.getAddress());
         Assertions.assertEquals(schedule, actualShelter.getSchedule());
@@ -92,15 +96,16 @@ class ShelterServiceTest {
 
 
     }
+
     @Test
     void editShelterContactsWithInvalidAddress() {
 
-        String address=null;
+        String address = null;
         String schedule = "new schedule";
         String security = "new security";
         String title = "new title";
         String mapLink = "new MapLink";
-        Shelter actualShelter = shelterService.editShelterContacts(1,address,schedule,security,title, mapLink);
+        Shelter actualShelter = shelterService.editShelterContacts(1, address, schedule, security, title, mapLink);
 
         Assertions.assertNotNull(actualShelter.getAddress());
         Assertions.assertEquals(schedule, actualShelter.getSchedule());
@@ -120,54 +125,203 @@ class ShelterServiceTest {
         Shelter actualShelter = shelterService.editSafetyRules(1, null);
         assertNotNull(actualShelter.getSafetyPrecautions());
     }
+
     @Test
     void editSafetyRulesWithEmptyString() {
         Shelter actualShelter = shelterService.editSafetyRules(1, "");
-        assertNotNull(actualShelter.getSafetyPrecautions());
+        assertNotEquals("", actualShelter.getSafetyPrecautions());
+    }
+
+    @Test
+    void editTransportingRulesWithValidString() {
+        Shelter actualShelter = shelterService.editTransportingRules(1, "TransRules");
+        assertEquals("TransRules", actualShelter.getTransportingRules());
     }
 
 
     @Test
-    void editTransportingRules() {
+    void editTransportingRulesWithEmptyString() {
+        Shelter actualShelter = shelterService.editTransportingRules(1, "");
+        assertNotEquals("", actualShelter.getTransportingRules());
     }
 
     @Test
-    void editRecommendations() {
+    void editTransportingRulesWithNull() {
+        Shelter actualShelter = shelterService.editTransportingRules(1, null);
+        assertNotNull(actualShelter.getTransportingRules());
     }
 
     @Test
-    void editMeetAndGreetRules() {
+    void editRecommendationsWithValidString() {
+        Shelter actualShelter = shelterService.editRecommendations(1, "Recommens");
+        assertEquals("Recommens", actualShelter.getRecommendations());
     }
 
     @Test
-    void editCynologistsAdvice() {
+    void editRecommendationsWithEmptyString() {
+        Shelter actualShelter = shelterService.editRecommendations(1, "");
+        assertNotEquals("", actualShelter.getRecommendations());
     }
 
     @Test
-    void editDocList() {
+    void editRecommendationsWithNull() {
+        Shelter actualShelter = shelterService.editRecommendations(1, null);
+        assertNotNull(actualShelter.getRecommendations());
     }
 
     @Test
-    void editRejectReasonList() {
+    void editMeetAndGreetRulesWithValidString() {
+        Shelter actualShelter = shelterService.editMeetAndGreetRules(1, "GreetAndMeet");
+        assertEquals("GreetAndMeet", actualShelter.getMeetAndGreatRules());
     }
 
     @Test
-    void editCynologistList() {
+    void editMeetAndGreetRulesWithEmptyString() {
+        Shelter actualShelter = shelterService.editMeetAndGreetRules(1, "");
+        assertNotEquals("", actualShelter.getMeetAndGreatRules());
     }
 
     @Test
-    void editDescription() {
+    void editMeetAndGreetRulesWithEmptyNull() {
+        Shelter actualShelter = shelterService.editMeetAndGreetRules(1, null);
+        assertNotNull(actualShelter.getMeetAndGreatRules());
     }
 
     @Test
-    void getShelterInfo() {
+    void editCynologistsAdviceWithValidString() {
+        Shelter actualShelter = shelterService.editCynologistsAdvice("advice");
+        assertEquals("advice", actualShelter.getCynologistAdvice());
     }
 
     @Test
-    void editRecommendationsAdult() {
+    void editCynologistsAdviceWithEmptyString() {
+        Shelter actualShelter = shelterService.editCynologistsAdvice("");
+        assertNotEquals("", actualShelter.getCynologistAdvice());
     }
 
     @Test
-    void editRecommendationsDisabled() {
+    void editCynologistsAdviceWithNull() {
+        Shelter actualShelter = shelterService.editCynologistsAdvice(null);
+        assertNotNull(actualShelter.getCynologistAdvice());
     }
+
+    @Test
+    void editDocListWithValidString() {
+        Shelter actualShelter = shelterService.editDocList(1, "doclist");
+        assertEquals("doclist", actualShelter.getDocList());
+    }
+
+    @Test
+    void editDocListWithEmptyString() {
+        Shelter actualShelter = shelterService.editDocList(1, "");
+        assertNotEquals("", actualShelter.getDocList());
+    }
+
+    @Test
+    void editDocListWithNull() {
+        Shelter actualShelter = shelterService.editDocList(1, null);
+        assertNotNull(actualShelter.getDocList());
+    }
+
+
+    @Test
+    void editRejectReasonListWithValidString() {
+        Shelter actualShelter = shelterService.editRejectReasonList(1, "rejectlist");
+        assertEquals("rejectlist", actualShelter.getRejectReasonsList());
+    }
+
+    @Test
+    void editRejectReasonListWithEmptyString() {
+        Shelter actualShelter = shelterService.editRejectReasonList(1, "");
+        assertNotEquals("", actualShelter.getRejectReasonsList());
+    }
+
+    @Test
+    void editRejectReasonListWithNull() {
+        Shelter actualShelter = shelterService.editRejectReasonList(1, null);
+        assertNotNull(actualShelter.getRejectReasonsList());
+    }
+
+    @Test
+    void editCynologistListWithValidString() {
+        Shelter actualShelter = shelterService.editCynologistList("cynololist");
+        assertEquals("cynololist", actualShelter.getRecommendedCynologists());
+    }
+
+    @Test
+    void editCynologistListWithEmptyString() {
+        Shelter actualShelter = shelterService.editCynologistList("");
+        assertNotEquals("", actualShelter.getRecommendedCynologists());
+    }
+
+    @Test
+    void editCynologistListWithNull() {
+        Shelter actualShelter = shelterService.editCynologistList(null);
+        assertNotNull(actualShelter.getRecommendedCynologists());
+    }
+
+    @Test
+    void editDescriptionWithValidString() {
+        Shelter actualShelter = shelterService.editDescription(1, "description");
+        assertEquals("description", actualShelter.getInfo());
+    }
+
+    @Test
+    void editDescriptionWithEmptyString() {
+        Shelter actualShelter = shelterService.editDescription(1, "");
+        assertNotEquals("", actualShelter.getInfo());
+    }
+
+    @Test
+    void editDescriptionWithNull() {
+        Shelter actualShelter = shelterService.editDescription(1, null);
+        assertNotNull(actualShelter.getInfo());
+    }
+
+
+    @Test
+    void getShelterInfoWithValidId() {
+        assertNotNull(shelterService.getShelterInfo(1));
+    }
+
+    @Test
+    void getShelterInfoWithInvalidIdThrowsNoSuchEntity() {
+        assertThrows(NoSuchEntityException.class,()->{shelterService.getShelterInfo(4);});
+    }
+
+    @Test
+    void editRecommendationsAdultWithValidString() {
+        Shelter actualShelter = shelterService.editRecommendationsAdult(1, "recommendationsAdult");
+        assertEquals("recommendationsAdult", actualShelter.getRecommendationsAdult());
+    }
+
+    @Test
+    void editRecommendationsAdultWithEmptyString() {
+        Shelter actualShelter = shelterService.editRecommendationsAdult(1, "");
+        assertNotEquals("", actualShelter.getRecommendationsAdult());
+    }
+    @Test
+    void editRecommendationsAdultWithNull() {
+        Shelter actualShelter = shelterService.editRecommendationsAdult(1, null);
+        assertNotNull(actualShelter.getRecommendationsAdult());
+    }
+
+    @Test
+    void editRecommendationsDisabledWithValidString() {
+        Shelter actualShelter = shelterService.editRecommendationsDisabled(1, "recommendationsDisabled");
+        assertEquals("recommendationsDisabled", actualShelter.getRecommendationsDisabled());
+    }
+    @Test
+    void editRecommendationsDisabledWithEmptyString() {
+        Shelter actualShelter = shelterService.editRecommendationsDisabled(1, "");
+        assertNotEquals("", actualShelter.getRecommendationsDisabled());
+    }
+
+    @Test
+    void editRecommendationsDisabledWithNull() {
+        Shelter actualShelter = shelterService.editRecommendationsDisabled(1, null);
+        assertNotNull(actualShelter.getRecommendationsDisabled());
+    }
+
+
 }
