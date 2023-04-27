@@ -194,14 +194,6 @@ public class ShelterService {
 
 
     }
-    /**
-     * получает всю информацию о приюте
-     *
-     * @return объект приют
-     */
-    public Shelter getShelterInfo(int id) {
-        return getByID(id);
-    }
 
     /**
      * изменяет рекомендации для усыновителей взрослых животных

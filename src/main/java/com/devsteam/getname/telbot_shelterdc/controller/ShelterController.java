@@ -316,6 +316,6 @@ public class ShelterController {
     )
     public ResponseEntity<Shelter> getDescription(@RequestParam(name = "ID приюта. Собаки:1. Кошки:2") int id) {
 
-        return ResponseEntity.ok(service.getShelterInfo(id));
+        return ResponseEntity.ok(service.getByID(id));
     }
 }
