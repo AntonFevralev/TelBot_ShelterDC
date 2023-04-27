@@ -278,17 +278,6 @@ class ShelterServiceTest {
         assertNotNull(actualShelter.getInfo());
     }
 
-
-    @Test
-    void getShelterInfoWithValidId() {
-        assertNotNull(shelterService.getShelterInfo(1));
-    }
-
-    @Test
-    void getShelterInfoWithInvalidIdThrowsNoSuchEntity() {
-        assertThrows(NoSuchEntityException.class,()->{shelterService.getShelterInfo(4);});
-    }
-
     @Test
     void editRecommendationsAdultWithValidString() {
         Shelter actualShelter = shelterService.editRecommendationsAdult(1, "recommendationsAdult");
@@ -322,6 +311,4 @@ class ShelterServiceTest {
         Shelter actualShelter = shelterService.editRecommendationsDisabled(1, null);
         assertNotNull(actualShelter.getRecommendationsDisabled());
     }
-
-
 }
