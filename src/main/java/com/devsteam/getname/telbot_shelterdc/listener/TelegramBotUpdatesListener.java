@@ -1,11 +1,6 @@
 package com.devsteam.getname.telbot_shelterdc.listener;
 
-import com.devsteam.getname.telbot_shelterdc.dto.CatReportDTO;
 import com.devsteam.getname.telbot_shelterdc.model.*;
-import com.devsteam.getname.telbot_shelterdc.repository.CatOwnerRepository;
-import com.devsteam.getname.telbot_shelterdc.repository.CatReportRepository;
-import com.devsteam.getname.telbot_shelterdc.repository.CatRepository;
-import com.devsteam.getname.telbot_shelterdc.service.CatReportService;
 
 import com.google.gson.Gson;
 import com.pengrad.telegrambot.TelegramBot;
@@ -50,14 +45,13 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private final CatReportRepository catReportRepository;
 
-    public TelegramBotUpdatesListener(TelegramBot telegramBot, CatOwnerRepository catOwnerRepository, CatRepository catRepository, CatReportService catReportService, CatReportRepository catReportRepository) throws IOException {
+    public TelegramBotUpdatesListener(TelegramBot telegramBot, CatOwnerRepository catOwnerRepository,
+                                      CatRepository catRepository, CatReportService catReportService,
+                                      CatReportRepository catReportRepository) throws IOException {
 
+        this.dogsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "dogShelter.json")), Shelter.class);
 
-        String jsonCat = readString(Path.of("src/main/resources/", "catShelter.json"));
-        String jsonDog = readString(Path.of("src/main/resources/", "dogShelter.json"));
-        this.dogsShelter = new Gson().fromJson(jsonDog, Shelter.class);
-
-        this.catsShelter = new Gson().fromJson(jsonCat, Shelter.class);
+        this.catsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "catShelter.json")), Shelter.class);
 
         this.telegramBot = telegramBot;
         this.catOwnerRepository = catOwnerRepository;
