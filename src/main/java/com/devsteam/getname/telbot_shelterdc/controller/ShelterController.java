@@ -68,7 +68,7 @@ public class ShelterController {
     public ResponseEntity<String> uploadDogShelter(@RequestParam MultipartFile file) {
 
         try {
-            service.uploadDogShelterFile(file);
+            service.uploadShelterSFile(file, dogShelterFileName);
         } catch (IOException e) {
             throw new NoSuchShelterException();
         }
@@ -93,7 +93,7 @@ public class ShelterController {
     public ResponseEntity<String> uploadCatShelter(@RequestParam MultipartFile file) {
 
         try {
-            service.uploadCatShelterFile(file);
+            service.uploadShelterSFile(file, catShelterFileName);
         } catch (IOException e) {
             throw new NoSuchShelterException();
         }
