@@ -1,7 +1,7 @@
 package com.devsteam.getname.telbot_shelterdc.repository;
 
-import com.devsteam.getname.telbot_shelterdc.model.Cat;
+import com.devsteam.getname.telbot_shelterdc.model.Pet;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CatRepository extends JpaRepository<Cat, Long> {
+public interface PetRepository extends JpaRepository<Pet, Long> {
 }

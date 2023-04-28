@@ -2,9 +2,9 @@ package com.devsteam.getname.telbot_shelterdc.listener;
 
 import com.devsteam.getname.telbot_shelterdc.dto.CatReportDTO;
 import com.devsteam.getname.telbot_shelterdc.model.*;
-import com.devsteam.getname.telbot_shelterdc.repository.CatOwnerRepository;
+import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.CatReportRepository;
-import com.devsteam.getname.telbot_shelterdc.repository.CatRepository;
+import com.devsteam.getname.telbot_shelterdc.repository.PetRepository;
 import com.devsteam.getname.telbot_shelterdc.service.CatReportService;
 import com.devsteam.getname.telbot_shelterdc.service.ShelterService;
 import com.pengrad.telegrambot.TelegramBot;
@@ -36,20 +36,20 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      */
     public static Shelter catsShelter;
     private final TelegramBot telegramBot;
-    private final CatOwnerRepository catOwnerRepository;
+    private final OwnerRepository ownerRepository;
     private final ShelterService service;
-    private final CatRepository catRepository;
+    private final PetRepository petRepository;
 
     private final CatReportService catReportService;
 
     private final CatReportRepository catReportRepository;
 
-    public TelegramBotUpdatesListener(TelegramBot telegramBot, CatOwnerRepository catOwnerRepository, ShelterService service, CatRepository catRepository, CatReportService catReportService, CatReportRepository catReportRepository) {
+    public TelegramBotUpdatesListener(TelegramBot telegramBot, OwnerRepository ownerRepository, ShelterService service, PetRepository petRepository, CatReportService catReportService, CatReportRepository catReportRepository) {
         this.telegramBot = telegramBot;
-        this.catOwnerRepository = catOwnerRepository;
+        this.ownerRepository = ownerRepository;
         this.service = service;
 
-        this.catRepository = catRepository;
+        this.petRepository = petRepository;
         this.catReportService = catReportService;
         this.catReportRepository = catReportRepository;
     }
@@ -303,7 +303,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     public void receiveAndParseReport(Message message, long chatId) {
         int beginIndex = message.caption().indexOf("1");
         long catId = Long.parseLong(message.caption().substring(beginIndex));
-        long ownerId = catOwnerRepository.findCatOwnerByChatId(chatId).getIdCO();
+        long ownerId = ownerRepository.findCatOwnerByChatId(chatId).getIdCO();
 //        if (ownerId.equals(null)){
 //            throw new RuntimeException("ownerId is null");
 //        }

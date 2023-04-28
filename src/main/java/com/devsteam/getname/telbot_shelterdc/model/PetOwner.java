@@ -7,7 +7,7 @@ import java.util.List;
  * При этом у волонтеров поде животного будет пустым. */
 @Entity
 @Table(name = "cat_owner")
-public class CatOwner {
+public class PetOwner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_co")
@@ -29,7 +29,7 @@ public class CatOwner {
  */
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cat_id")
-    private Cat cat;
+    private Pet pet;
 
 /** Архив ежедневных отчетов "усыновителя" питомца в порядке поступления. */
     @OneToMany(mappedBy = "catOwner", cascade = CascadeType.ALL, orphanRemoval = true) // было - "cat_owner"
@@ -38,9 +38,9 @@ public class CatOwner {
 // --------------------- Constructors ---------------------------------------------------
 
     /** Пустой конструктор, что бы Hibernat мог осуществлять манипуляции с классом. */
-    public CatOwner() {}
+    public PetOwner() {}
 
-    public CatOwner(Long chatId, String fullName, String phone, String address, StatusOwner statusOwner) {
+    public PetOwner(Long chatId, String fullName, String phone, String address, StatusOwner statusOwner) {
         this.chatId = chatId;
         this.fullName = fullName;
         this.phone = phone;
@@ -48,15 +48,15 @@ public class CatOwner {
         this.statusOwner = statusOwner;
     }
 
-    public CatOwner(Long idCO, Long chatId, String fullName, String phone, String address,
-                    StatusOwner statusOwner, Cat cat) {
+    public PetOwner(Long idCO, Long chatId, String fullName, String phone, String address,
+                    StatusOwner statusOwner, Pet pet) {
         this.idCO = idCO;
         this.chatId = chatId;
         this.fullName = fullName;
         this.phone = phone;
         this.address = address;
         this.statusOwner = statusOwner;
-        this.cat = cat;
+        this.pet = pet;
     }
 //------------ Getters & setters -------------------------------------------------------
 
@@ -108,12 +108,12 @@ public class CatOwner {
         this.statusOwner = statusOwner;
     }
 
-    public Cat getCat() {
-        return cat;
+    public Pet getCat() {
+        return pet;
     }
 
-    public void setCat(Cat cat) {
-        this.cat = cat;
+    public void setCat(Pet pet) {
+        this.pet = pet;
     }
 
     public List<CatReport> getReportList() {

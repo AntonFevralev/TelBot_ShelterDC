@@ -5,8 +5,8 @@ import com.devsteam.getname.telbot_shelterdc.exception.NoOwnerWithSuchIdExceptio
 import com.devsteam.getname.telbot_shelterdc.exception.OwnerListIsEmptyException;
 import com.devsteam.getname.telbot_shelterdc.exception.PetIsNotFreeException;
 import com.devsteam.getname.telbot_shelterdc.model.*;
-import com.devsteam.getname.telbot_shelterdc.repository.CatOwnerRepository;
-import com.devsteam.getname.telbot_shelterdc.repository.CatRepository;
+import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
+import com.devsteam.getname.telbot_shelterdc.repository.PetRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,14 +23,14 @@ import static com.devsteam.getname.telbot_shelterdc.model.StatusOwner.SEARCH;
 @Service
 public class CatOwnerService {
 
-    private final CatOwnerRepository catOwnerRepository;
-    private final CatRepository catRepository;
+    private final OwnerRepository ownerRepository;
+    private final PetRepository petRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(CatOwnerService.class);
 
-    public CatOwnerService(CatOwnerRepository catOwnerRepository, CatRepository catRepository) {
-        this.catOwnerRepository = catOwnerRepository;
-        this.catRepository = catRepository;
+    public CatOwnerService(OwnerRepository ownerRepository, PetRepository petRepository) {
+        this.ownerRepository = ownerRepository;
+        this.petRepository = petRepository;
     }
 
     /** Метод добавления человека в БД, на вход принимает данные и сохраняет их в базу.
@@ -44,8 +44,8 @@ public class CatOwnerService {
                 && stringValidation(phone)
                 && stringValidation(address))
            {
-               CatOwner catOwner = new CatOwner(chatId, fullName, phone, address,SEARCH);
-               return catOwnerToDTO(catOwnerRepository.save(catOwner));
+               PetOwner petOwner = new PetOwner(chatId, fullName, phone, address,SEARCH);
+               return catOwnerToDTO(ownerRepository.save(petOwner));
                
         } else throw new IllegalArgumentException("Данные человека заполнены не корректно.");
     }
@@ -54,7 +54,7 @@ public class CatOwnerService {
      *
      */
     public List<CatOwnerDTO> getAllCatOwners(){
-        List<CatOwner> owners = catOwnerRepository.findAll();
+        List<PetOwner> owners = ownerRepository.findAll();
         if (!owners.isEmpty()) {
             return owners.stream().map(CatOwnerDTO::catOwnerToDTO).collect(Collectors.toList());
         } else throw new OwnerListIsEmptyException();
@@ -64,9 +64,9 @@ public class CatOwnerService {
      * @param idCO id "усыновителя" кошки.
      */
     public void changeStatusOwnerByIdCO(Long idCO, StatusOwner status) {
-        CatOwner owner = catOwnerRepository.findById(idCO).orElseThrow(NoOwnerWithSuchIdException::new);
+        PetOwner owner = ownerRepository.findById(idCO).orElseThrow(NoOwnerWithSuchIdException::new);
         owner.setStatusOwner(status);
-        catOwnerRepository.save(owner);
+        ownerRepository.save(owner);
     }
 
     /** Метод добавления кота (или замены) из БД к "усыновителю" по id с проверкой и сменой статуса кота.
@@ -75,14 +75,14 @@ public class CatOwnerService {
      * @param id id "усыновителя" кошки.
      */
     public void changeCatByIdCO(Long idCO, Long id) {
-        CatOwner owner = catOwnerRepository.findById(idCO).orElseThrow(NoOwnerWithSuchIdException::new);
-        Cat cat = catRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        if (cat.getStatus().equals(FREE)) {
-            cat.setStatus(BUSY);
-            owner.setCat(cat);
-            cat.setCatOwner(owner);
-            catOwnerRepository.save(owner);
-            catRepository.save(cat);
+        PetOwner owner = ownerRepository.findById(idCO).orElseThrow(NoOwnerWithSuchIdException::new);
+        Pet pet = petRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        if (pet.getStatus().equals(FREE)) {
+            pet.setStatus(BUSY);
+            owner.setCat(pet);
+            pet.setCatOwner(owner);
+            ownerRepository.save(owner);
+            petRepository.save(pet);
         } else throw new PetIsNotFreeException("Животное занято другим человеком.");
     }
 
@@ -91,13 +91,13 @@ public class CatOwnerService {
      * @param idCO id "усыновителя" кошки.
      */
     public void takeTheCatAwayByIdCO(Long idCO) {
-        CatOwner owner = catOwnerRepository.findById(idCO).orElseThrow(NoOwnerWithSuchIdException::new);
-        Cat cat = owner.getCat();
-        cat.setStatus(Status.FREE);
-        cat.setCatOwner(null);
-        catRepository.save(cat);
+        PetOwner owner = ownerRepository.findById(idCO).orElseThrow(NoOwnerWithSuchIdException::new);
+        Pet pet = owner.getCat();
+        pet.setStatus(Status.FREE);
+        pet.setCatOwner(null);
+        petRepository.save(pet);
         owner.setCat(null);
-        catOwnerRepository.save(owner);
+        ownerRepository.save(owner);
 
     }
 
@@ -107,14 +107,14 @@ public class CatOwnerService {
      */
     public void deleteCatOwnerByIdCO(Long idCO){
         try {
-            CatOwner owner = catOwnerRepository.findById(idCO).orElseThrow();
+            PetOwner owner = ownerRepository.findById(idCO).orElseThrow();
             if (owner.getCat() != null) {
-                Cat cat = owner.getCat();
-                cat.setCatOwner(null);
-                cat.setStatus(FREE);
-                catRepository.save(cat);
+                Pet pet = owner.getCat();
+                pet.setCatOwner(null);
+                pet.setStatus(FREE);
+                petRepository.save(pet);
             }
-            catOwnerRepository.deleteById(idCO);
+            ownerRepository.deleteById(idCO);
         } catch (Exception e) {
             throw new IllegalArgumentException("Человека с таким id нет");
         }

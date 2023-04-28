@@ -1,9 +1,9 @@
 package com.devsteam.getname.telbot_shelterdc.model;
+
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
-public class Dog {
+public class Pet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,23 +20,25 @@ public class Dog {
     @Column(name = "description")
     private String description;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "color")
+    @Enumerated(EnumType.STRING)
     private Color color;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idDo")
-    private DogOwner dogOwner;
-    
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "idCo")
+    private Owner owner;
 
-    public Dog() {
+    @Column(name = "kind")
+    @Enumerated(EnumType.STRING)
+    private Kind kind;
+
+    public Pet() {
     }
 
-    public Dog(Long id, String birthYear, String name, String breed, String description, Color color, Status status, DogOwner dogOwner) {
+    public Pet(long id, String birthYear, String name, String breed, String description, Color color, Status status, Owner owner, Kind kind) {
         this.id = id;
         this.birthYear = birthYear;
         this.name = name;
@@ -44,16 +46,18 @@ public class Dog {
         this.description = description;
         this.color = color;
         this.status = status;
-        this.dogOwner = dogOwner;
+        this.owner = owner;
+        this.kind = kind;
     }
 
-    public Dog(String birthYear, String name, String breed, String description, Color color, Status status) {
+    public Pet(String birthYear, String name, String breed, String description, Color color, Status status, Kind kind) {
         this.birthYear = birthYear;
         this.name = name;
         this.breed = breed;
         this.description = description;
         this.color = color;
         this.status = status;
+        this.kind = kind;
     }
 
     public Long getId() {
@@ -108,12 +112,13 @@ public class Dog {
         return status;
     }
 
-    public DogOwner getDogOwner() {
-        return dogOwner;
+
+    public PetOwner getOwner() {
+        return owner;
     }
 
-    public void setDogOwner(DogOwner dogOwner) {
-        this.dogOwner = dogOwner;
+    public void setOwner(Owner owner) {
+        this.owner = owner;
     }
 
     public void setColor(Color color) {
@@ -122,5 +127,13 @@ public class Dog {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public Kind getKind() {
+        return kind;
+    }
+
+    public void setKind(Kind kind) {
+        this.kind = kind;
     }
 }
