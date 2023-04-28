@@ -52,12 +52,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     public TelegramBotUpdatesListener(TelegramBot telegramBot, CatOwnerRepository catOwnerRepository, CatRepository catRepository, CatReportService catReportService, CatReportRepository catReportRepository) throws IOException {
 
+        this.dogsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "dogShelter.json")), Shelter.class);
 
-        String jsonCat = readString(Path.of("src/main/resources/", "catShelter.json"));
-        String jsonDog = readString(Path.of("src/main/resources/", "dogShelter.json"));
-        this.dogsShelter = new Gson().fromJson(jsonDog, Shelter.class);
-
-        this.catsShelter = new Gson().fromJson(jsonCat, Shelter.class);
+        this.catsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "catShelter.json")), Shelter.class);
 
         this.telegramBot = telegramBot;
         this.catOwnerRepository = catOwnerRepository;

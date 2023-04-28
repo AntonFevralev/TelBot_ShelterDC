@@ -28,56 +28,6 @@ public class ShelterService {
     private int KBYTE;
 
     /**
-     * Сохраняет строку json в файл с данными о приюте собак
-     * @param json строка с данными
-     * @return
-     */
-    public boolean saveDogShelterToFile(String json) {
-        try {
-            cleanDataFile(dogShelterFileName);
-            Files.writeString(Path.of(dataFilePath, dogShelterFileName), json);
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new NoSuchShelterException();
-        }
-    }
-
-    /**
-     * Сохраняет строку json в файл с данными о приюте кошек
-     * @param json строка с данными
-     * @return
-     */
-    public boolean saveCatShelterToFile(String json) {
-        try {
-            cleanDataFile(catShelterFileName);
-            Files.writeString(Path.of(dataFilePath, catShelterFileName), json);
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new NoSuchShelterException();
-        }
-    }
-
-
-    /**
-     * очищает файл
-     * @param name
-     * @return
-     */
-    public boolean cleanDataFile(String name) {
-        try {
-            Path path = Path.of(dataFilePath, name);
-            Files.deleteIfExists(path);
-            Files.createFile(path);
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
      * Получает файл по имени
      * @param fileName
      * @return
@@ -87,7 +37,7 @@ public class ShelterService {
     }
 
 
-    public void uploadShelterSFile(MultipartFile file, String fileName) throws IOException {
+    public void uploadShelterFile(MultipartFile file, String fileName) throws IOException {
         Path filePath = Path.of(dataFilePath, fileName);
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
