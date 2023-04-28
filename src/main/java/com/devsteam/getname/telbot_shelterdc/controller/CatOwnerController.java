@@ -2,7 +2,6 @@ package com.devsteam.getname.telbot_shelterdc.controller;
 
 import com.devsteam.getname.telbot_shelterdc.dto.CatOwnerDTO;
 import com.devsteam.getname.telbot_shelterdc.model.StatusOwner;
-import com.devsteam.getname.telbot_shelterdc.service.CatOwnerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
