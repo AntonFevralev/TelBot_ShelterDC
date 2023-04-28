@@ -75,6 +75,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         try {
             updates.forEach(update -> {
                 logger.info("Handles update: {}", update);
+                this.dogsShelter = service.getByID(1);
+                this.catsShelter = service.getByID(2);
                 //если была нажата кнопка
                 if (update.callbackQuery() != null) {
                     callBackQueryHandler(update);
