@@ -8,7 +8,6 @@ import com.devsteam.getname.telbot_shelterdc.model.CatOwner;
 import com.devsteam.getname.telbot_shelterdc.model.Color;
 import com.devsteam.getname.telbot_shelterdc.repository.CatOwnerRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.CatRepository;
-import com.devsteam.getname.telbot_shelterdc.repository.ShelterRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -27,13 +26,12 @@ public class CatService {
     private final CatRepository catRepository;
     private final CatOwnerRepository catOwnerRepository;
 
-    private final ShelterRepository shelterRepository;
 
 
-    public CatService(CatRepository catRepository, CatOwnerRepository catOwnerRepository, ShelterRepository shelterRepository) {
+
+    public CatService(CatRepository catRepository, CatOwnerRepository catOwnerRepository) {
         this.catRepository = catRepository;
         this.catOwnerRepository = catOwnerRepository;
-        this.shelterRepository = shelterRepository;
     }
 
     /**

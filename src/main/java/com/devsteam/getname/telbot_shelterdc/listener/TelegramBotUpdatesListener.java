@@ -6,7 +6,8 @@ import com.devsteam.getname.telbot_shelterdc.repository.CatOwnerRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.CatReportRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.CatRepository;
 import com.devsteam.getname.telbot_shelterdc.service.CatReportService;
-import com.devsteam.getname.telbot_shelterdc.service.ShelterService;
+
+import com.google.gson.Gson;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.*;
@@ -16,12 +17,15 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static java.nio.file.Files.readString;
 
 @Component
 public class TelegramBotUpdatesListener implements UpdatesListener {
@@ -31,14 +35,14 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     /**
      * объект приюта собак, поля которого заполняются из БД для работы бота
      */
-    private Shelter dogsShelter;
+    private final Shelter dogsShelter;
     /**
      * объект приюта кошек, поля которого заполняются из БД для работы бота
      */
-    private Shelter catsShelter;
+    private final Shelter catsShelter;
     private final TelegramBot telegramBot;
     private final CatOwnerRepository catOwnerRepository;
-    private final ShelterService service;
+
     private final CatRepository catRepository;
 
 
@@ -46,10 +50,17 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private final CatReportRepository catReportRepository;
 
-    public TelegramBotUpdatesListener(TelegramBot telegramBot, CatOwnerRepository catOwnerRepository, ShelterService service, CatRepository catRepository, CatReportService catReportService, CatReportRepository catReportRepository) {
+    public TelegramBotUpdatesListener(TelegramBot telegramBot, CatOwnerRepository catOwnerRepository, CatRepository catRepository, CatReportService catReportService, CatReportRepository catReportRepository) throws IOException {
+
+
+        String jsonCat = readString(Path.of("src/main/resources/", "catShelter.json"));
+        String jsonDog = readString(Path.of("src/main/resources/", "dogShelter.json"));
+        this.dogsShelter = new Gson().fromJson(jsonDog, Shelter.class);
+
+        this.catsShelter = new Gson().fromJson(jsonCat, Shelter.class);
+
         this.telegramBot = telegramBot;
         this.catOwnerRepository = catOwnerRepository;
-        this.service = service;
         this.catRepository = catRepository;
         this.catReportService = catReportService;
         this.catReportRepository = catReportRepository;
@@ -76,8 +87,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         try {
             updates.forEach(update -> {
                 logger.info("Handles update: {}", update);
-                this.dogsShelter = service.getByID(1);
-                this.catsShelter = service.getByID(2);
                 //если была нажата кнопка
                 if (update.callbackQuery() != null) {
                     callBackQueryHandler(update);
@@ -112,6 +121,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             });
         } catch (
                 Exception e) {
+            e.printStackTrace();
         }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
@@ -124,7 +134,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     public void startMessage(long chatId) {
         SendMessage sendMessage = new SendMessage(chatId, "   Привет! Данный бот предоставляет информацию о двух приютах. Кошачий приют \"" + this.catsShelter.getTitle() + "\"" +
                 " и собачий приют \"" + this.dogsShelter.getTitle() + "\". Выберите один");
-        sendMessage.parseMode(ParseMode.HTML);
+        sendMessage.parseMode(ParseMode.Markdown);
         InlineKeyboardButton cats = new InlineKeyboardButton("Кошки");
         cats.callbackData("Cats");
         InlineKeyboardButton dogs = new InlineKeyboardButton("Собаки");

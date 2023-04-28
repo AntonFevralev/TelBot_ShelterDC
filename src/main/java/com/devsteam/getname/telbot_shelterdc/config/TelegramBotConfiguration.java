@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
  * конфигурация телеграм бота
  */
     @Configuration
-    //конфигурация бота
     public class TelegramBotConfiguration {
         @Bean
         public TelegramBot telegramBot(@Value("${telegram.bot.token}") String token){

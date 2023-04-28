@@ -1,222 +1,113 @@
 package com.devsteam.getname.telbot_shelterdc.service;
 
-import com.devsteam.getname.telbot_shelterdc.Utils;
-import com.devsteam.getname.telbot_shelterdc.exception.NoSuchEntityException;
-import com.devsteam.getname.telbot_shelterdc.model.Shelter;
-import com.devsteam.getname.telbot_shelterdc.repository.ShelterRepository;
+
+import com.devsteam.getname.telbot_shelterdc.exception.NoSuchShelterException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import static com.devsteam.getname.telbot_shelterdc.Utils.stringValidation;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-
-//сервис для работы с базой данных приюта
+import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 /**
- * Сервис для работы с БД приютов
+ * Сервис для работы с файлами приютов
  */
 @Service
 public class ShelterService {
 
-    private final ShelterRepository shelterRepository;
+    @Value("${path.to.data.file}")
+    private String dataFilePath;
+    @Value("${name.of.dog.data.file}")
+    private String dogShelterFileName;
+    @Value("${name.of.cat.data.file}")
+    private String catShelterFileName;
+    @Value("${kByte}")
+    private int KBYTE;
 
-    public ShelterService(ShelterRepository shelterRepository) {
-        this.shelterRepository = shelterRepository;
+
+    public boolean saveDogShelterToFile(String json) {
+        try {
+            cleanDataFile(dogShelterFileName);
+            Files.writeString(Path.of(dataFilePath, dogShelterFileName), json);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new NoSuchShelterException();
+        }
     }
 
-    /**
-     * сохраняет объект приют в БД
-     *
-     * @param shelter сущность приют
-     */
-    public void save(Shelter shelter) {
-        shelterRepository.save(shelter);
+    public boolean saveCatShelterToFile(String json) {
+        try {
+            cleanDataFile(catShelterFileName);
+            Files.writeString(Path.of(dataFilePath, catShelterFileName), json);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new NoSuchShelterException();
+        }
     }
 
-    /**
-     * получает объект приют из БД по идентификатору
-     *
-     * @param id идентификатор приюта
-     * @return объект приют
-     */
-    public Shelter getByID(int id) {
-        return shelterRepository.findById(id).orElseThrow(NoSuchEntityException::new);
+
+    public String readDogShelterFromFile() {
+        try {
+            return Files.readString(Path.of(dataFilePath, dogShelterFileName));
+        } catch (IOException e) {
+            throw new NoSuchShelterException();
+        }
     }
 
-    /**
-     * Редакирует контакты приюта, а именно поля адрес, расписание, контакты охраны, название, ссылку на карты
-     *
-     * @param id идентификатор приюта
-     * @return объект приют
-     */
-    public Shelter editShelterContacts(int id, String address, String schedule, String security, String title, String mapLink) {
-        Shelter shelterToEdit = getByID(id);
-        if (stringValidation(address)) {
-            shelterToEdit.setAddress(address);
-        }
-        if (stringValidation(mapLink)) {
-            shelterToEdit.setMapLink(mapLink);
-        }
-        if (stringValidation(title)) {
-            shelterToEdit.setTitle(title);
-        }
 
-        if (stringValidation(schedule)) {
-            shelterToEdit.setSchedule(schedule);
+    public boolean cleanDataFile(String name) {
+        try {
+            Path path = Path.of(dataFilePath, name);
+            Files.deleteIfExists(path);
+            Files.createFile(path);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
-        if (stringValidation(security)) {
-            shelterToEdit.setSecurity(security);
-        }
-
-        return shelterRepository.save(shelterToEdit);
     }
 
-    /**
-     * измененяет правиля безопасности в приюте
-     *
-     * @param id идентификатор приюта
-     * @return объект приют
-     */
-    public Shelter editSafetyRules(int id, String safetyPrescriptions) {
-        Shelter shelterToEdit = getByID(id);
-        if(Utils.stringValidation(safetyPrescriptions)){
-        shelterToEdit.setSafetyPrecautions(safetyPrescriptions);}
-        return shelterRepository.save(shelterToEdit);
+
+    public File getDataFile(String fileName) {
+        return new File(dataFilePath + "/" + fileName);
     }
 
-    /**
-     * изменяет правила транспортировки животных
-     *
-     * @param id идентификатор приюта
-     * @return объект приют
-     */
-    public Shelter editTransportingRules(int id, String transportingRules) {
-        Shelter shelterToEdit = getByID(id);
-        if (stringValidation(transportingRules)) {
-            shelterToEdit.setTransportingRules(transportingRules);
+
+    public void uploadDogShelterFile(MultipartFile file) throws IOException {
+        Path filePath = Path.of(dataFilePath, dogShelterFileName);
+        Files.createDirectories(filePath.getParent());
+        Files.deleteIfExists(filePath);
+        try (
+                InputStream is = file.getInputStream();
+                OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
+                BufferedInputStream bis = new BufferedInputStream(is, KBYTE);
+                BufferedOutputStream bos = new BufferedOutputStream(os, KBYTE);
+        ) {
+            bis.transferTo(bos);
+        } catch (IOException e) {
+            throw new NoSuchShelterException();
         }
-        return shelterRepository.save(shelterToEdit);
     }
-
-    /**
-     * изменяет рекомендации по обустройству дома
-     *
-     * @param id идентификатор приюта
-     * @return объект приют
-     */
-    public Shelter editRecommendations(int id, String recommendations) {
-        Shelter shelterToEdit = getByID(id);
-        if (stringValidation(recommendations)) {
-            shelterToEdit.setRecommendations(recommendations);
+    public void uploadCatShelterFile(MultipartFile file) throws IOException {
+        Path filePath = Path.of(dataFilePath, catShelterFileName);
+        Files.createDirectories(filePath.getParent());
+        Files.deleteIfExists(filePath);
+        try (
+                InputStream is = file.getInputStream();
+                OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
+                BufferedInputStream bis = new BufferedInputStream(is, KBYTE);
+                BufferedOutputStream bos = new BufferedOutputStream(os, KBYTE);
+        ) {
+            bis.transferTo(bos);
+        } catch (IOException e) {
+            throw new NoSuchShelterException();
         }
-        return shelterRepository.save(shelterToEdit);
     }
 
-    /**
-     * изменяет правила знакомства с животным
-     *
-     * @param id идентификатор приюта
-     * @return объект приют
-     */
-    public Shelter editMeetAndGreetRules(int id, String meetAndGreetRules) {
-        Shelter shelterToEdit = getByID(id);
-        if (stringValidation(meetAndGreetRules)) {
-            shelterToEdit.setMeetAndGreatRules(meetAndGreetRules);
-        }
-        return shelterRepository.save(shelterToEdit);
-    }
 
-    /**
-     * изменяет советы кинологов
-     * * @return объект приют
-     */
-    public Shelter editCynologistsAdvice(String cynologistAdvice) {
-        Shelter shelterToEdit = getByID(1);
-        if (stringValidation(cynologistAdvice)) {
-            shelterToEdit.setCynologistAdvice(cynologistAdvice);
-        }
-        return shelterRepository.save(shelterToEdit);
-    }
-
-    /**
-     * изменяет список документов для усыновления
-     *
-     * @param id идентификатор приюта
-     * @return объект приют
-     */
-    public Shelter editDocList(int id, String docList) {
-
-        Shelter shelterToEdit = getByID(id);
-        if (stringValidation(docList)) {
-            shelterToEdit.setDocList(docList);
-        }
-        return shelterRepository.save(shelterToEdit);
-    }
-
-    /**
-     * изменяет список причин для отказа в усыновлении
-     *
-     * @param id идентификатор приюта
-     * @return объект приют
-     */
-    public Shelter editRejectReasonList(int id, String rejectReasonList) {
-        Shelter shelterToEdit = getByID(id);
-        if (stringValidation(rejectReasonList)) {
-            shelterToEdit.setRejectReasonsList(rejectReasonList);
-        }
-        return shelterRepository.save(shelterToEdit);
-
-    }
-
-    /**
-     * изменяет список кинологов
-     *
-     * @return объект приют
-     */
-    public Shelter editCynologistList(String cynologistList) {
-        Shelter shelterToEdit = getByID(1);
-        if (stringValidation(cynologistList)) {
-            shelterToEdit.setRecommendedCynologists(cynologistList);
-        }
-        return shelterRepository.save(shelterToEdit);
-    }
-
-    /**
-     * изменяет описание приюта
-     *
-     * @return объект приют
-     */
-    public Shelter editDescription(int id, String about) {
-        Shelter shelterToEdit =  getByID(id);
-        if (stringValidation(about)) {
-            shelterToEdit.setInfo(about);
-        }
-        return shelterRepository.save(shelterToEdit);
-
-
-    }
-
-    /**
-     * изменяет рекомендации для усыновителей взрослых животных
-     *
-     * @return объект приют
-     */
-    public Shelter editRecommendationsAdult(int id, String recommendationAdults) {
-        Shelter shelterToEdit = getByID(id);
-        if (stringValidation(recommendationAdults)) {
-            shelterToEdit.setRecommendationsAdult(recommendationAdults);
-        }
-        return shelterRepository.save(shelterToEdit);
-    }
-    /**
-     * изменяет для усыновителей животных-инвалидов
-     *
-     * @return объект приют
-     */
-    public Shelter editRecommendationsDisabled(int id, String recommendationDisabled) {
-        Shelter shelterToEdit = getByID(id);
-        if (stringValidation(recommendationDisabled)) {
-            shelterToEdit.setRecommendationsDisabled(recommendationDisabled);
-        }
-        return shelterRepository.save(shelterToEdit);
-    }
 }

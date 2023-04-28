@@ -7,7 +7,6 @@ import com.devsteam.getname.telbot_shelterdc.exception.WrongDogException;
 import com.devsteam.getname.telbot_shelterdc.model.*;
 import com.devsteam.getname.telbot_shelterdc.repository.DogOwnerRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.DogRepository;
-import com.devsteam.getname.telbot_shelterdc.repository.ShelterRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -27,13 +26,13 @@ public class DogService {
 
     private final DogOwnerRepository dogOwnerRepository;
 
-    private final ShelterRepository shelterRepository;
 
 
-    public DogService(DogRepository dogRepository, DogOwnerRepository dogOwnerRepository, ShelterRepository shelterRepository) {
+
+    public DogService(DogRepository dogRepository, DogOwnerRepository dogOwnerRepository) {
         this.dogRepository = dogRepository;
         this.dogOwnerRepository = dogOwnerRepository;
-        this.shelterRepository = shelterRepository;
+
     }
 
     /**
