@@ -1,6 +1,5 @@
 package com.devsteam.getname.telbot_shelterdc.dto;
 
-import com.devsteam.getname.telbot_shelterdc.model.DogOwner;
 import com.devsteam.getname.telbot_shelterdc.model.StatusOwner;
 
 public record DogOwnerDTO(Long idDo, Long chatId, String fullName, String phone, String address,

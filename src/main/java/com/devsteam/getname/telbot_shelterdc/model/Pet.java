@@ -29,7 +29,7 @@ public class Pet {
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idCo")
-    private Owner owner;
+    private PetOwner petOwner;
 
     @Column(name = "kind")
     @Enumerated(EnumType.STRING)
@@ -38,7 +38,7 @@ public class Pet {
     public Pet() {
     }
 
-    public Pet(long id, String birthYear, String name, String breed, String description, Color color, Status status, Owner owner, Kind kind) {
+    public Pet(long id, String birthYear, String name, String breed, String description, Color color, Status status, PetOwner petOwner, Kind kind) {
         this.id = id;
         this.birthYear = birthYear;
         this.name = name;
@@ -46,7 +46,7 @@ public class Pet {
         this.description = description;
         this.color = color;
         this.status = status;
-        this.owner = owner;
+        this.petOwner = petOwner;
         this.kind = kind;
     }
 
@@ -113,12 +113,12 @@ public class Pet {
     }
 
 
-    public PetOwner getOwner() {
-        return owner;
+    public PetOwner getPetOwner() {
+        return petOwner;
     }
 
-    public void setOwner(Owner owner) {
-        this.owner = owner;
+    public void setPetOwner(PetOwner petOwner) {
+        this.petOwner = petOwner;
     }
 
     public void setColor(Color color) {

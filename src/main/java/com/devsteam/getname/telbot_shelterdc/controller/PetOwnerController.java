@@ -1,8 +1,8 @@
 package com.devsteam.getname.telbot_shelterdc.controller;
 
-import com.devsteam.getname.telbot_shelterdc.dto.CatOwnerDTO;
+import com.devsteam.getname.telbot_shelterdc.dto.PetOwnerDTO;
 import com.devsteam.getname.telbot_shelterdc.model.StatusOwner;
-import com.devsteam.getname.telbot_shelterdc.service.CatOwnerService;
+import com.devsteam.getname.telbot_shelterdc.service.PetOwnerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,10 +18,10 @@ import java.util.List;
 @Tag(name="КЛИЕНТЫ И ПЕРСОНАЛ ПРИЮТА КОШЕК", description = "Редактирование данных людей в БД приюта кашек")
 @RestController
 @RequestMapping(value = "/catowner")
-public class CatOwnerController {
-    private final CatOwnerService catOwnerService;
-    public CatOwnerController(CatOwnerService catOwnerService) {
-        this.catOwnerService = catOwnerService;
+public class PetOwnerController {
+    private final PetOwnerService petOwnerService;
+    public PetOwnerController(PetOwnerService petOwnerService) {
+        this.petOwnerService = petOwnerService;
     }
     @PostMapping
     @Operation(summary = "Добавление нового человека в БД")
@@ -34,8 +34,8 @@ public class CatOwnerController {
             @ApiResponse( responseCode = "500",
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
-    public ResponseEntity<CatOwnerDTO>  addCatOwner(@RequestBody CatOwnerDTO catOwnerDTO) {
-        return ResponseEntity.ok().body(catOwnerService.creatCatOwner(catOwnerDTO));
+    public ResponseEntity<PetOwnerDTO>  addCatOwner(@RequestBody PetOwnerDTO petOwnerDTO) {
+        return ResponseEntity.ok().body(petOwnerService.creatCatOwner(petOwnerDTO));
     }
     @GetMapping
     @Operation(summary = "Получение списка данных всех людей из БД")
@@ -48,8 +48,8 @@ public class CatOwnerController {
             @ApiResponse( responseCode = "500",
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
-    public ResponseEntity<List<CatOwnerDTO>> getAllCatOwners(){
-        return ResponseEntity.ok().body(catOwnerService.getAllCatOwners());
+    public ResponseEntity<List<PetOwnerDTO>> getAllCatOwners(){
+        return ResponseEntity.ok().body(petOwnerService.getAllCatOwners());
     }
     @DeleteMapping
     @Operation(summary = "Удаление человека из БД по его id")
@@ -63,7 +63,7 @@ public class CatOwnerController {
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
     public void deleteCatOwnerById(@RequestParam Long idCO){
-        catOwnerService.deleteCatOwnerByIdCO(idCO);
+        petOwnerService.deleteCatOwnerByIdCO(idCO);
     }
     @PutMapping("/status")
     @Operation(summary = "Изменение статуса человека в БД по его id")
@@ -77,7 +77,7 @@ public class CatOwnerController {
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
     public void changeStatusOwner(@RequestParam Long idCO, @RequestParam StatusOwner statusOwner){
-        catOwnerService.changeStatusOwnerByIdCO(idCO, statusOwner);
+        petOwnerService.changeStatusOwnerByIdCO(idCO, statusOwner);
     }
     @PutMapping("/add")
     @Operation(summary = "Добавление или замена кота из БД приюта в карте человека по id человека с проверкой и сменой статуса кота.")
@@ -91,7 +91,7 @@ public class CatOwnerController {
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
     public void changeCat(@RequestParam Long idCO, @RequestParam Long id){
-        catOwnerService.changeCatByIdCO(idCO, id);
+       petOwnerService.changeCatByIdCO(idCO, id);
     }
     @PutMapping("/delete")
     @Operation(summary = "Удаление кота из карты человека (по id человека) по какой-либо причине со сменой статуса кота.")
@@ -105,7 +105,7 @@ public class CatOwnerController {
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
     public void takeTheCatAway(@RequestParam Long idCO){
-        catOwnerService.takeTheCatAwayByIdCO(idCO);
+        petOwnerService.takeTheCatAwayByIdCO(idCO);
     }
 
 }
