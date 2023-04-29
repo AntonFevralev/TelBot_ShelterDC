@@ -65,7 +65,7 @@ public class ShelterController {
                     description = "Ошибка чтения файла"
             )
     })
-    public ResponseEntity<String> uploadDogShelter(@RequestParam MultipartFile file) {
+    public ResponseEntity<String> uploadDogShelter(@RequestParam("file") MultipartFile file) {
 
         try {
             service.uploadShelterFile(file, dogShelterFileName);
