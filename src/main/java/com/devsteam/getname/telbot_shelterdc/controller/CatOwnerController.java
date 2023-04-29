@@ -34,12 +34,8 @@ public class CatOwnerController {
             @ApiResponse( responseCode = "500",
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
-    public ResponseEntity<CatOwnerDTO>  addCatOwner(
-            @RequestParam (required = false, name = "Чат id человека в Telegram") Long chatId,
-            @RequestParam (required = false, name = "ФИО человека") String fullName,
-            @RequestParam (required = false, name = "№ сотового телефна") String phone,
-            @RequestParam (required = false, name = "Адрес проживания")String address) {
-        return ResponseEntity.ok().body(catOwnerService.creatCatOwner(chatId, fullName, phone, address));
+    public ResponseEntity<CatOwnerDTO>  addCatOwner(@RequestBody CatOwnerDTO catOwnerDTO) {
+        return ResponseEntity.ok().body(catOwnerService.creatCatOwner(catOwnerDTO));
     }
     @GetMapping
     @Operation(summary = "Получение списка данных всех людей из БД")
