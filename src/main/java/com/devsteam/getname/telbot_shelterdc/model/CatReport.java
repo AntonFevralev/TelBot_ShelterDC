@@ -1,7 +1,8 @@
 package com.devsteam.getname.telbot_shelterdc.model;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "cat_reports")
@@ -14,31 +15,34 @@ public class CatReport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     /**Поле id*/
     private long id;
-    @ManyToOne(targetEntity = Cat.class)
-//    @Column(nullable = false)
+    @ManyToOne(targetEntity = Pet.class)
+    @JoinColumn(name = "cat_id", nullable = false)
     /**Поле животного, о котором пишется отчёт*/
-    private Cat cat;
-    @ManyToOne(targetEntity = CatOwner.class, cascade = CascadeType.ALL)
-//    @Column(name = "cat_owner", nullable = false)
+    private Pet pet;
+    @ManyToOne(targetEntity = PetOwner.class)
+    @JoinColumn(name = "cat_owner_ID_co", nullable = false)
     /**Поле владельца животного, который пишет отчёт*/
-    private CatOwner catOwner;
-    @Column(nullable = false)
+    private PetOwner petOwner;
+    @Column
     /**Поле содержащее ссылку на фото животного, которое прилагается к отчёту*/
     private String photo;
-    @Column(nullable = true)
+    @Column
     /**Поле с описанием рациона и режима питания животного*/
     private String meals;
-    @Column(nullable = true)
+    @Column()
     /**Поле с описанием адаптации и состояния животного*/
     private String wellBeingAndAdaptation;
-    @Column(nullable = true)
+    @Column()
     /**Поле с описанием изменений в поведении животного*/
     private String behaviorChanges;
-    @Column(nullable = true)
-    /**Поле с датой и временем отправки отчёта*/
-    private LocalDateTime reportDateTime;
+    @Column()
+    /**Поле с датой отправки отчёта*/
+    private LocalDate reportDate;
+    @Column()
+    /**Поле со временем отправки отчёта*/
+    private LocalTime reportTime;
 
-    @Column(nullable = false)
+    @Column
     /**Поле, отмечающее завершённость(полноценность) отчёта*/
     private boolean reportIsComplete;
     /**Поле, указывающее на факт просмотра отчёта волонтёром*/
@@ -51,12 +55,12 @@ public class CatReport {
         return id;
     }
 
-    public Cat getCat() {
-        return cat;
+    public Pet getCat() {
+        return pet;
     }
 
-    public CatOwner getCatOwner() {
-        return catOwner;
+    public PetOwner getCatOwner() {
+        return petOwner;
     }
 
     public String getPhoto() {
@@ -75,9 +79,6 @@ public class CatReport {
         return behaviorChanges;
     }
 
-    public LocalDateTime getReportDateTime() {
-        return reportDateTime;
-    }
 
     public boolean isReportIsComplete() {
         return reportIsComplete;
@@ -91,12 +92,12 @@ public class CatReport {
         this.id = id;
     }
 
-    public void setCat(Cat cat) {
-        this.cat = cat;
+    public void setCat(Pet pet) {
+        this.pet = pet;
     }
 
-    public void setCatOwner(CatOwner catOwner) {
-        this.catOwner = catOwner;
+    public void setCatOwner(PetOwner petOwner) {
+        this.petOwner = petOwner;
     }
 
     public void setPhoto(String photo) {
@@ -115,9 +116,6 @@ public class CatReport {
         this.behaviorChanges = behaviorChanges;
     }
 
-    public void setReportDateTime(LocalDateTime reportDateTime) {
-        this.reportDateTime = reportDateTime;
-    }
 
     public void setReportIsComplete(boolean reportIsComplete) {
         this.reportIsComplete = reportIsComplete;
@@ -125,5 +123,21 @@ public class CatReport {
 
     public void setReportIsInspected(boolean reportIsInspected) {
         this.reportIsInspected = reportIsInspected;
+    }
+
+    public LocalDate getReportDate() {
+        return reportDate;
+    }
+
+    public void setReportDate(LocalDate reportDate) {
+        this.reportDate = reportDate;
+    }
+
+    public LocalTime getReportTime() {
+        return reportTime;
+    }
+
+    public void setReportTime(LocalTime reportTime) {
+        this.reportTime = reportTime;
     }
 }

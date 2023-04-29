@@ -5,8 +5,8 @@ import com.devsteam.getname.telbot_shelterdc.exception.NoOwnerWithSuchIdExceptio
 import com.devsteam.getname.telbot_shelterdc.exception.OwnerListIsEmptyException;
 import com.devsteam.getname.telbot_shelterdc.exception.PetIsNotFreeException;
 import com.devsteam.getname.telbot_shelterdc.model.*;
-import com.devsteam.getname.telbot_shelterdc.repository.CatOwnerRepository;
-import com.devsteam.getname.telbot_shelterdc.repository.CatRepository;
+import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
+import com.devsteam.getname.telbot_shelterdc.repository.PetRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -33,27 +33,27 @@ public class CatOwnerService {
         this.catRepository = catRepository;
     }
 
-    /** Метод добавления человека в БД, на вход принимает данные в виде DTO и сохраняет их в базу.
+    /** Метод добавления человека в БД, на вход принимает данные и сохраняет их в базу.
+     * @param chatId номер человека в чате.
+     * @param fullName ФИО человека.
+     * @param phone № телефона.
+     * @param address адрес проживания человека.
      */
-    public CatOwnerDTO creatCatOwner(CatOwnerDTO catOwnerDTO) {
-        logger.info("Был вызван метод для создания Owner");
-        if (catOwnerDTO.chatId() != 0 && stringValidation(catOwnerDTO.fullName())
-                && stringValidation(catOwnerDTO.phone())
-                && stringValidation(catOwnerDTO.address()))
+    public CatOwnerDTO creatCatOwner(Long chatId, String fullName, String phone, String address){
+        if (chatId != 0 && stringValidation(fullName)
+                && stringValidation(phone)
+                && stringValidation(address))
            {
-        CatOwner catOwner = new CatOwner(catOwnerDTO.chatId(), catOwnerDTO.fullName(), catOwnerDTO.phone(),
-                catOwnerDTO.address(), catOwnerDTO.statusOwner());
-        return catOwnerToDTO(catOwnerRepository.save(catOwner));
-
-           } else throw new IllegalArgumentException("Данные человека заполнены не корректно.");
+               CatOwner catOwner = new CatOwner(chatId, fullName, phone, address,SEARCH);
+               return catOwnerToDTO(catOwnerRepository.save(catOwner));
+               
+        } else throw new IllegalArgumentException("Данные человека заполнены не корректно.");
     }
-
 
     /** Метод возвращает лист всех сущностей "усыновителей" из базы.
      *
      */
     public List<CatOwnerDTO> getAllCatOwners(){
-        logger.info("Был вызван метод для получения списка всех CatOwner");
         List<CatOwner> owners = catOwnerRepository.findAll();
         if (!owners.isEmpty()) {
             return owners.stream().map(CatOwnerDTO::catOwnerToDTO).collect(Collectors.toList());
@@ -64,7 +64,6 @@ public class CatOwnerService {
      * @param idCO id "усыновителя" кошки.
      */
     public void changeStatusOwnerByIdCO(Long idCO, StatusOwner status) {
-        logger.info("Был вызван метод для замены статуса CatOwner");
         CatOwner owner = catOwnerRepository.findById(idCO).orElseThrow(NoOwnerWithSuchIdException::new);
         owner.setStatusOwner(status);
         catOwnerRepository.save(owner);
@@ -76,7 +75,6 @@ public class CatOwnerService {
      * @param id id "усыновителя" кошки.
      */
     public void changeCatByIdCO(Long idCO, Long id) {
-        logger.info("Был вызван метод для замены кота по id of CatOwner");
         CatOwner owner = catOwnerRepository.findById(idCO).orElseThrow(NoOwnerWithSuchIdException::new);
         Cat cat = catRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         if (cat.getStatus().equals(FREE)) {
@@ -93,7 +91,6 @@ public class CatOwnerService {
      * @param idCO id "усыновителя" кошки.
      */
     public void takeTheCatAwayByIdCO(Long idCO) {
-        logger.info("Был вызван метод для удаления кота у CatOwner");
         CatOwner owner = catOwnerRepository.findById(idCO).orElseThrow(NoOwnerWithSuchIdException::new);
         Cat cat = owner.getCat();
         cat.setStatus(Status.FREE);
@@ -109,7 +106,6 @@ public class CatOwnerService {
      * @param idCO id "усыновителя" кошки.
      */
     public void deleteCatOwnerByIdCO(Long idCO){
-        logger.info("Был вызван метод для удаления CatOwner из БД");
         try {
             CatOwner owner = catOwnerRepository.findById(idCO).orElseThrow();
             if (owner.getCat() != null) {

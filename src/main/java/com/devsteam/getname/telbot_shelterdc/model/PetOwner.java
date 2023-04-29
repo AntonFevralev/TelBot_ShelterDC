@@ -7,7 +7,7 @@ import java.util.List;
  * При этом у волонтеров поде животного будет пустым. */
 @Entity
 @Table(name = "cat_owner")
-public class CatOwner {
+public class PetOwner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_co")
@@ -39,14 +39,6 @@ public class CatOwner {
 
     /** Пустой конструктор, что бы Hibernat мог осуществлять манипуляции с классом. */
     public CatOwner() {}
-
-    public CatOwner(Long chatId, String fullName, String phone, String address) {
-        this.chatId = chatId;
-        this.fullName = fullName;
-        this.phone = phone;
-        this.address = address;
-
-    }
 
     public CatOwner(Long chatId, String fullName, String phone, String address, StatusOwner statusOwner) {
         this.chatId = chatId;

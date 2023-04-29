@@ -30,8 +30,8 @@ public class CatReportController {
     @PostMapping
     @Operation(summary = "Добавление отчёта",
             description = "Здесь можно добавить отчёт в БД")
-    public ResponseEntity addCatReport(@RequestBody CatReport catReport) {
-        catReportService.addReport(catReport);
+    public ResponseEntity addCatReport(@RequestBody CatReportDTO catReportDTO) {
+        catReportService.addReport(catReportDTO);
         return ResponseEntity.ok().build();
     }
 

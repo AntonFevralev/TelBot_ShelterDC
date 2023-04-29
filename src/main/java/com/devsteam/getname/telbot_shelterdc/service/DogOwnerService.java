@@ -45,7 +45,7 @@ public class DogOwnerService {
                 && stringValidation(phone)
                 && stringValidation(address))
         {
-            DogOwner dogOwner = new DogOwner(chatId, fullName, phone, address,SEARCH);
+            DogOwner dogOwner = new DogOwner(chatId, fullName, phone, address, SEARCH);
             return dogOwnerToDTO(dogOwnerRepository.save(dogOwner));
 
         } else throw new IllegalArgumentException("Данные человека заполнены не корректно.");

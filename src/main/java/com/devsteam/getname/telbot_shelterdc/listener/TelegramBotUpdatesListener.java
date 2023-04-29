@@ -1,8 +1,10 @@
 package com.devsteam.getname.telbot_shelterdc.listener;
 
+import com.devsteam.getname.telbot_shelterdc.dto.CatReportDTO;
 import com.devsteam.getname.telbot_shelterdc.model.*;
-import com.devsteam.getname.telbot_shelterdc.repository.CatOwnerRepository;
-import com.devsteam.getname.telbot_shelterdc.repository.CatRepository;
+import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
+import com.devsteam.getname.telbot_shelterdc.repository.CatReportRepository;
+import com.devsteam.getname.telbot_shelterdc.repository.PetRepository;
 import com.devsteam.getname.telbot_shelterdc.service.CatReportService;
 import com.devsteam.getname.telbot_shelterdc.service.ShelterService;
 import com.pengrad.telegrambot.TelegramBot;
@@ -34,18 +36,22 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      */
     public static Shelter catsShelter;
     private final TelegramBot telegramBot;
-  private final CatOwnerRepository catOwnerRepository;
+    private final OwnerRepository ownerRepository;
     private final ShelterService service;
-    private final CatRepository catRepository;
+    private final PetRepository petRepository;
+
     private final CatReportService catReportService;
 
-    public TelegramBotUpdatesListener(TelegramBot telegramBot, CatOwnerRepository catOwnerRepository, ShelterService service, CatRepository catRepository, CatReportService catReportService) {
+    private final CatReportRepository catReportRepository;
+
+    public TelegramBotUpdatesListener(TelegramBot telegramBot, OwnerRepository ownerRepository, ShelterService service, PetRepository petRepository, CatReportService catReportService, CatReportRepository catReportRepository) {
         this.telegramBot = telegramBot;
-        this.catOwnerRepository = catOwnerRepository;
+        this.ownerRepository = ownerRepository;
         this.service = service;
 
-        this.catRepository = catRepository;
+        this.petRepository = petRepository;
         this.catReportService = catReportService;
+        this.catReportRepository = catReportRepository;
     }
 
     /**
@@ -83,22 +89,20 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                         //если к сообщению прикреплен контакт и сообщение является ответом на сообщение, содержащее определенный текст
                     } else if ("/id".equals(text)) {
                         sendChatId(chatId);
-                    /*    CatReport catReport = new CatReport();
-                        Cat cat = catRepository.findById(1L).orElseThrow();
-                        CatOwner catOwner = new CatOwner("FIO", "ggff", "address", StatusOwner.PROBATION);
-                        catOwner.setCat(cat);
-                        catOwner.setChatId(chatId);
-                        catOwnerRepository.save(catOwner);
-                        catReport.setBehaviorChanges("id");
-                        catReport.setCatOwner(catOwner);
-                        catReport.setCat(cat);
-                        catReport.setReportDateTime(LocalDateTime.now());
-                        catReport.setPhoto("photo");
-                        catReport.setReportIsComplete(true);
-                        catReport.setReportIsInspected(false);
-                        catReportService.save(catReport);*/
                     }
-                    if (message.contact() != null && message.replyToMessage().text().contains("Нажмите на кнопку оставить контакты для приюта собак")) {
+                    /* в тестовом режиме(только кошки)
+                     * сообщение /report вызыввает метод, посылающий ответное сообщение с форматом отчёта*/
+                    else if ("/report".equals(message.text())) {
+                        initiateReportDialog(chatId);
+                    }
+                    /* в тестовом режиме(только кошки)
+                     * если сообщение содержит фото и текст, то это воспринимается как отчёт и прогружается в базу*/
+                    else if ("/sendreport 1".equals(message.caption())) {
+                        telegramBot.execute(new SendMessage(chatId, "добавляем отчёт"));
+                        receiveAndParseReport(message, chatId);
+
+                    }
+                    if (message.contact() != null) {
                         sendContact(message, chatId);
                     }
                 }
@@ -187,7 +191,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         mainMenu.callbackData("MainMenu");
         Keyboard keyboard = new InlineKeyboardMarkup().addRow(infoDogsShelter).addRow(scheduleDogsShelter)
                 .addRow(dogsShelterContact).addRow(safetyRecommendationsDogs).addRow(dogsShelterContact).addRow(back).addRow(mainMenu).addRow(
-                new InlineKeyboardButton("Позвать волонтера").url("https://t.me/fevralevanton"));
+                        new InlineKeyboardButton("Позвать волонтера").url("https://t.me/fevralevanton"));
         sendMessage.replyMarkup(keyboard);
         telegramBot.execute(sendMessage);
     }
@@ -267,8 +271,62 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     public void sendContact(Message message, long chatId) {
         Contact contact = message.contact();
         SendContact sendContact = new SendContact(dogsShelter.getChatId(), contact.phoneNumber(), contact.firstName());
+        SendMessage sendMessage = new SendMessage(dogsShelter.getChatId(), "Идентификатор чата клиента " + chatId);
         //отправляем контакт волонтеру приюта собак
         telegramBot.execute(sendContact);
+        telegramBot.execute(sendMessage);
+    }
+
+    /**
+     * Отправляет пользователю сообщение о формате отчёта
+     *
+     * @param chatId идентификатор чата
+     */
+    public void initiateReportDialog(long chatId) {
+        SendMessage sendMessage = new SendMessage(chatId, """
+                Пожалуйста, заполните отчёт по следующим пунктам:
+                1) id животного
+                2) Рацион животного.
+                3) Общее самочувствие и привыкание к новому месту.
+                4) Изменение в поведении: отказ от старых привычек, приобретение новых.
+                Также, не забудьте прикрепить к сообщению фото животного.
+                """);
+        telegramBot.execute(sendMessage);
+    }
+
+    /**
+     * МЕТОД НА ЗАГЛУШКАХ
+     * Парсит и добавляет отчёт из сообщения
+     * @param message сообщение из апдейтера
+     * @param chatId идентификатор чата
+     */
+    public void receiveAndParseReport(Message message, long chatId) {
+        int beginIndex = message.caption().indexOf("1");
+        long catId = Long.parseLong(message.caption().substring(beginIndex));
+        long ownerId = ownerRepository.findCatOwnerByChatId(chatId).getIdCO();
+//        if (ownerId.equals(null)){
+//            throw new RuntimeException("ownerId is null");
+//        }
+        String photo = message.photo().toString();
+        CatReportDTO catReportDTO = new CatReportDTO(0L,
+                catId,
+                ownerId,
+                photo,
+                "meals",
+                "well-being",
+                "behaviour",
+                LocalDateTime.now().toLocalDate(),
+                LocalDateTime.now().toLocalTime(),
+                true,
+                false);
+        catReportService.addReport(catReportDTO);
+        if (catReportRepository.existsById(catReportRepository.findCatReportByCat_Id(catId).getId())) {
+            SendMessage sendMessage = new SendMessage(chatId, "Отчёт успешно добавлен");
+            telegramBot.execute(sendMessage);
+        } else {
+            SendMessage sendMessage = new SendMessage(chatId, "Отчёт не добавлен!");
+            telegramBot.execute(sendMessage);
+        }
     }
 }
 

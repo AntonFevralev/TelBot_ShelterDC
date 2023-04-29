@@ -1,5 +1,6 @@
 package com.devsteam.getname.telbot_shelterdc.service;
 
+import com.devsteam.getname.telbot_shelterdc.exception.NoSuchShelterException;
 import com.devsteam.getname.telbot_shelterdc.model.Shelter;
 import com.devsteam.getname.telbot_shelterdc.repository.ShelterRepository;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class ShelterService {
      * @return объект приют
      */
     public Shelter getByID(int id) {
-        return shelterRepository.findByID(id);
+        return shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 
     /**
@@ -87,7 +88,7 @@ public class ShelterService {
      * @return объект приют
      */
     public Shelter editTransportingRules(int id, String transportingRules) {
-        Shelter shelterToEdit = shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Shelter shelterToEdit = getByID(id);
         if (stringValidation(transportingRules)) {
             shelterToEdit.setTransportingRules(transportingRules);
         }
@@ -101,7 +102,7 @@ public class ShelterService {
      * @return объект приют
      */
     public Shelter editRecommendations(int id, String recommendations) {
-        Shelter shelterToEdit = shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Shelter shelterToEdit = getByID(id);
         if (stringValidation(recommendations)) {
             shelterToEdit.setRecommendations(recommendations);
         }
@@ -115,7 +116,7 @@ public class ShelterService {
      * @return объект приют
      */
     public Shelter editMeetAndGreetRules(int id, String meetAndGreetRules) {
-        Shelter shelterToEdit = shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Shelter shelterToEdit = getByID(id);
         if (stringValidation(meetAndGreetRules)) {
             shelterToEdit.setMeetAndGreatRules(meetAndGreetRules);
         }
@@ -127,7 +128,7 @@ public class ShelterService {
      * * @return объект приют
      */
     public Shelter editCynologistsAdvice(String cynologistAdvice) {
-        Shelter shelterToEdit = shelterRepository.findById(1).orElseThrow(IllegalArgumentException::new);
+        Shelter shelterToEdit = getByID(1);
         if (stringValidation(cynologistAdvice)) {
             shelterToEdit.setCynologistAdvice(cynologistAdvice);
         }
@@ -142,7 +143,7 @@ public class ShelterService {
      */
     public Shelter editDocList(int id, String docList) {
 
-        Shelter shelterToEdit = shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Shelter shelterToEdit = getByID(id);
         if (stringValidation(docList)) {
             shelterToEdit.setDocList(docList);
         }
@@ -156,7 +157,7 @@ public class ShelterService {
      * @return объект приют
      */
     public Shelter editRejectReasonList(int id, String rejectReasonList) {
-        Shelter shelterToEdit = shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Shelter shelterToEdit = getByID(id);
         if (stringValidation(rejectReasonList)) {
             shelterToEdit.setRejectReasonsList(rejectReasonList);
         }
@@ -170,7 +171,7 @@ public class ShelterService {
      * @return объект приют
      */
     public Shelter editCynologistList(String cynologistList) {
-        Shelter shelterToEdit = shelterRepository.findById(1).orElseThrow(IllegalArgumentException::new);
+        Shelter shelterToEdit = getByID(1);
         if (stringValidation(cynologistList)) {
             shelterToEdit.setRecommendedCynologists(cynologistList);
         }
@@ -183,7 +184,7 @@ public class ShelterService {
      * @return объект приют
      */
     public Shelter editDescription(int id, String about) {
-        Shelter shelterToEdit = shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Shelter shelterToEdit =  getByID(id);
         if (stringValidation(about)) {
             shelterToEdit.setInfo(about);
         }
@@ -197,7 +198,7 @@ public class ShelterService {
      * @return объект приют
      */
     public Shelter getShelterInfo(int id) {
-        return shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        return getByID(id);
     }
 
     /**
@@ -206,7 +207,7 @@ public class ShelterService {
      * @return объект приют
      */
     public Shelter editRecommendationsAdult(int id, String recommendationAdults) {
-        Shelter shelterToEdit = shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Shelter shelterToEdit = getByID(id);
         if (stringValidation(recommendationAdults)) {
             shelterToEdit.setRecommendationsAdult(recommendationAdults);
         }
@@ -218,7 +219,7 @@ public class ShelterService {
      * @return объект приют
      */
     public Shelter editRecommendationsDisabled(int id, String recommendationDisabled) {
-        Shelter shelterToEdit = shelterRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Shelter shelterToEdit = getByID(id);
         if (stringValidation(recommendationDisabled)) {
             shelterToEdit.setRecommendationsDisabled(recommendationDisabled);
         }
