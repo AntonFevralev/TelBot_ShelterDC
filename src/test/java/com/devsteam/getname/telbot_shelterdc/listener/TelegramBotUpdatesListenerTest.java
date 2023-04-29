@@ -47,7 +47,25 @@ public class TelegramBotUpdatesListenerTest {
 
         Assertions.assertThat(actual.getParameters().get("chat_id")).isEqualTo(123L);
        Assertions.assertThat(actual.getParameters().get("text")).isEqualTo(
-                "   Привет! Данный бот предоставляет информацию о двух приютах. Кошачий приют \"Добрый пёс\" и собачий приют \"Добрый пёс\". Выберите один");
+                "   Привет! Данный бот предоставляет информацию о двух приютах. Кошачий приют \"Добрый пёс\" и собачий приют \"Лучший друг\". Выберите один");
+        /*Assertions.assertThat(actual.getParameters().get("parse_mode"))
+                .isEqualTo(ParseMode.Markdown.name());*/
+    }
+    @Test
+    public void handleValidReportSent() throws URISyntaxException, IOException {
+
+        String json = Files.readString(
+                Paths.get(TelegramBotUpdatesListenerTest.class.getResource("photo_update.json").toURI()));
+        Update update = getUpdate(json, "/report");
+        telegramBotUpdatesListener.process(Collections.singletonList(update));
+
+        ArgumentCaptor<SendMessage> argumentCaptor = ArgumentCaptor.forClass(SendMessage.class);
+        Mockito.verify(telegramBot).execute(argumentCaptor.capture());
+        SendMessage actual = argumentCaptor.getValue();
+
+        Assertions.assertThat(actual.getParameters().get("chat_id")).isEqualTo(123L);
+        Assertions.assertThat(actual.getParameters().get("text")).isEqualTo(
+                "   Привет! Данный бот предоставляет информацию о двух приютах. Кошачий приют \"Добрый пёс\" и собачий приют \"Лучший друг\". Выберите один");
         /*Assertions.assertThat(actual.getParameters().get("parse_mode"))
                 .isEqualTo(ParseMode.Markdown.name());*/
     }

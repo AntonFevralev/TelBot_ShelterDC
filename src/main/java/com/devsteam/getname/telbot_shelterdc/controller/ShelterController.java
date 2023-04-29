@@ -138,7 +138,7 @@ public class ShelterController {
         return ResponseEntity.noContent().build();
     }
 
-    @Tag(name = "Скачать данные о приюте собак в формате JSON")
+    @Tag(name = "Скачать данные о приюте кошек в формате JSON")
     @Operation(description = "Нажмите Download file")
     @GetMapping(value = "/downloadCatShelter")
     @ApiResponses(value = {

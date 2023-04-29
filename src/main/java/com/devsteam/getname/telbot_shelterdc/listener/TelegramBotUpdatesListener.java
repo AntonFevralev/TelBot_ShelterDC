@@ -86,6 +86,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 logger.info("Handles update: {}", update);
                 //если была нажата кнопка
                 if (update.callbackQuery() != null) {
+                    logger.info("Handles callback: {}", update.callbackQuery());
                     callBackQueryHandler(update);
                 }//если сообщение не пустое
                 if (update.message() != null) {
@@ -101,8 +102,10 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     }
                     /* в тестовом режиме(только кошки)
                      * сообщение /report вызыввает метод, посылающий ответное сообщение с форматом отчёта*/
-                    else if ("/report".equals(message.text())) {
-                        initiateReportDialog(chatId);
+                    else if ("/report".equals(message.text())&&message.caption()!=null&&message.document().mimeType().equals("image/jpeg")) {
+                        SendMessage sendMessage = new SendMessage(chatId, "gg");
+                        telegramBot.execute(sendMessage);
+                       //initiateReportDialog(chatId);
                     }
                     /* в тестовом режиме(только кошки)
                      * если сообщение содержит фото и текст, то это воспринимается как отчёт и прогружается в базу*/

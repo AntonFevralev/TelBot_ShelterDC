@@ -1,0 +1,11 @@
+{
+  "message": {
+    "chat": {
+      "id": 123
+    },
+    "text": "%command%",
+    "caption": "caption",
+    "document": {
+      "mime_type": "image/jpeg"
+  }}
+}
