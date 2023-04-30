@@ -2,6 +2,7 @@ package com.devsteam.getname.telbot_shelterdc.service;
 
 import com.devsteam.getname.telbot_shelterdc.dto.ReportDTO;
 import com.devsteam.getname.telbot_shelterdc.exception.*;
+import com.devsteam.getname.telbot_shelterdc.model.PetOwner;
 import com.devsteam.getname.telbot_shelterdc.model.Report;
 import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.ReportRepository;
@@ -17,7 +18,7 @@ import java.util.NoSuchElementException;
 @Service
 public class ReportService {
 
-        private final LinkedList<Report> petReports = new LinkedList<>();
+    private final LinkedList<Report> petReports = new LinkedList<>();
     private ReportRepository reportRepository;
     private OwnerRepository ownerRepository;
     private PetRepository petRepository;
@@ -34,9 +35,7 @@ public class ReportService {
                 report.getPet().getId(),
                 report.getPetOwner().getIdCO(),
                 report.getPhoto(),
-                report.getMeals(),
-                report.getWellBeingAndAdaptation(),
-                report.getBehaviorChanges(),
+                report.getMealsWellBeingAndAdaptationBehaviorChanges(),
                 report.getReportDate(),
                 report.getReportTime(),
                 report.isReportIsComplete(),
@@ -44,25 +43,27 @@ public class ReportService {
     }
 
     /**
-     * Добавить отчёт в базу
+     * Добавить отчёт в базу (через бота)
      *
-     * @param reportDTO отчёт о кошке
+     * @param chatId,
+     * @param mealsWellBeingAndAdaptationBehaviorChanges,
+     * @param photo
+     *
      */
-    public void addReport(ReportDTO reportDTO) {
-        if (reportDTO != null) {
-            Report report = new Report();
-            report.setPet(petRepository.findById(reportDTO.petId()).orElseThrow(NoSuchEntityException::new));
-            report.setPetOwner(ownerRepository.findById(reportDTO.petOwnerId()).orElseThrow(NoOwnerWithSuchIdException::new));
-            report.setBehaviorChanges(reportDTO.behaviorChanges());
-            report.setMeals(reportDTO.meals());
-            report.setPhoto(reportDTO.photo());
-            report.setWellBeingAndAdaptation(reportDTO.wellBeingAndAdaptation());
-            report.setReportIsComplete(true);
-            report.setReportIsInspected(false);
-            report.setReportDate(LocalDateTime.now().toLocalDate());
-            report.setReportTime(LocalDateTime.now().toLocalTime());
-            reportRepository.save(report);
-        }
+    public void addReport(long chatId, String mealsWellBeingAndAdaptationBehaviorChanges, String photo) {
+
+        Report report = new Report();
+        PetOwner owner = ownerRepository.findPetOwnerByChatId(chatId);
+        report.setPetOwner(owner);
+        report.setPet(owner.getPet());
+        report.setMealsWellBeingAndAdaptationBehaviorChanges(mealsWellBeingAndAdaptationBehaviorChanges);
+        report.setPhoto(photo);
+        report.setReportIsComplete(true);
+        report.setReportIsInspected(false);
+        report.setReportDate(LocalDateTime.now().toLocalDate());
+        report.setReportTime(LocalDateTime.now().toLocalTime());
+        reportRepository.save(report);
+
 
     }
 
