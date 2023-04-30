@@ -6,7 +6,7 @@ import java.util.List;
 /** Класс "усыновителей" кошек, а также волонтёров, работающих с кошками.
  * При этом у волонтеров поде животного будет пустым. */
 @Entity
-@Table(name = "cat_owner")
+@Table(name = "pet_owner")
 public class PetOwner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,12 +28,12 @@ public class PetOwner {
  * Правило: На испытательный срок - одно животное в одни руки.
  */
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cat_id")
+    @JoinColumn(name = "pet_id")
     private Pet pet;
 
 /** Архив ежедневных отчетов "усыновителя" питомца в порядке поступления. */
-    @OneToMany(mappedBy = "catOwner", cascade = CascadeType.ALL, orphanRemoval = true) // было - "cat_owner"
-    private List<CatReport> reportList = new LinkedList<>();  //
+    @OneToMany(mappedBy = "petOwner", cascade = CascadeType.ALL, orphanRemoval = true) // было - "cat_owner"
+    private List<Report> reportList = new LinkedList<>();  //
 
 // --------------------- Constructors ---------------------------------------------------
 
@@ -116,11 +116,11 @@ public class PetOwner {
         this.pet = pet;
     }
 
-    public List<CatReport> getReportList() {
+    public List<Report> getReportList() {
         return reportList;
     }
 
-    public void setReportList(List<CatReport> reportList) {
+    public void setReportList(List<Report> reportList) {
         this.reportList = reportList;
     }
 }

@@ -1,11 +1,10 @@
 package com.devsteam.getname.telbot_shelterdc.timer;
 
-import com.devsteam.getname.telbot_shelterdc.model.CatReport;
+import com.devsteam.getname.telbot_shelterdc.model.Report;
 import com.devsteam.getname.telbot_shelterdc.model.StatusOwner;
-import com.devsteam.getname.telbot_shelterdc.repository.CatReportRepository;
-import com.devsteam.getname.telbot_shelterdc.service.CatReportService;
+import com.devsteam.getname.telbot_shelterdc.repository.ReportRepository;
+import com.devsteam.getname.telbot_shelterdc.service.ReportService;
 import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -20,43 +19,43 @@ public class ReminderTimer {
 
     private final TelegramBot telegramBot;
 
-    private final CatReportService catReportService;
+    private final ReportService reportService;
 
-    private final CatReportRepository catReportRepository;
+    private final ReportRepository reportRepository;
 
-    private Map<Long, CatReport> allCatReports = new HashMap<>();
+    private Map<Long, Report> allPetReports = new HashMap<>();
 
 
-    private Map<Long, CatReport> catReportsForToday = new HashMap<>();
+    private Map<Long, Report> PetReportsForToday = new HashMap<>();
 
-    public ReminderTimer(TelegramBot telegramBot, CatReportService catReportService, CatReportRepository catReportRepository) {
+    public ReminderTimer(TelegramBot telegramBot, ReportService reportService, ReportRepository reportRepository) {
         this.telegramBot = telegramBot;
-        this.catReportService = catReportService;
-        this.catReportRepository = catReportRepository;
+        this.reportService = reportService;
+        this.reportRepository = reportRepository;
     }
 
 
     @Scheduled(fixedRate = 1, timeUnit = TimeUnit.DAYS)
     public void remind() {
 
-        telegramBot.execute(new SendMessage())
+//        telegramBot.execute(new SendMessage());
     }
 
-    private Map<Long, CatReport> fillAllCatReports() {
-        allCatReports = catReportRepository
+    private Map<Long, Report> fillAllPetReports() {
+        allPetReports = reportRepository
                 .findAll()
                 .stream()
-                .filter(c -> c.getCatOwner().getStatusOwner() == StatusOwner.PROBATION)
-                .collect(Collectors.toMap(cr -> cr.getCatOwner().getChatId(), CatReport -> CatReport));
-        return allCatReports;
+                .filter(c -> c.getPetOwner().getStatusOwner() == StatusOwner.PROBATION)
+                .collect(Collectors.toMap(cr -> cr.getPetOwner().getChatId(), Report -> Report));
+        return allPetReports;
     }
 
-    private Map<Long, CatReport> fillAllCatReportsForToday() {
-        catReportsForToday = catReportRepository.findCatReportsByReportDate(LocalDate.now())
+    private Map<Long, Report> fillAllPetReportsForToday() {
+        PetReportsForToday = reportRepository.findReportByReportDate(LocalDate.now())
                 .stream()
-                .filter(c -> c.getCatOwner().getStatusOwner() == StatusOwner.PROBATION)
-                .collect(Collectors.toMap(cr -> cr.getCatOwner().getChatId(), CatReport -> CatReport));
-        return catReportsForToday;
+                .filter(c -> c.getPetOwner().getStatusOwner() == StatusOwner.PROBATION)
+                .collect(Collectors.toMap(cr -> cr.getPetOwner().getChatId(), Report -> Report));
+        return PetReportsForToday;
     }
 
 }

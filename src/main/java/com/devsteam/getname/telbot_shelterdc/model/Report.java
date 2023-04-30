@@ -5,22 +5,22 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "cat_reports")
+@Table(name = "pet_reports")
 /**
  * Класс отчёта присылаемого в приют владельцем взятого из этого приюта на испытательном сроке
  * @author Черемисин Руслан
  * */
-public class CatReport {
+public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     /**Поле id*/
     private long id;
     @ManyToOne(targetEntity = Pet.class)
-    @JoinColumn(name = "cat_id", nullable = false)
+    @JoinColumn(name = "pet_id", nullable = false)
     /**Поле животного, о котором пишется отчёт*/
     private Pet pet;
     @ManyToOne(targetEntity = PetOwner.class)
-    @JoinColumn(name = "cat_owner_ID_co", nullable = false)
+    @JoinColumn(name = "pet_owner_id", nullable = false)
     /**Поле владельца животного, который пишет отчёт*/
     private PetOwner petOwner;
     @Column
@@ -48,18 +48,18 @@ public class CatReport {
     /**Поле, указывающее на факт просмотра отчёта волонтёром*/
     private boolean reportIsInspected;
 
-    public CatReport() {
+    public Report() {
     }
 
     public long getId() {
         return id;
     }
 
-    public Pet getCat() {
+    public Pet getPet() {
         return pet;
     }
 
-    public PetOwner getCatOwner() {
+    public PetOwner getPetOwner() {
         return petOwner;
     }
 
@@ -92,11 +92,11 @@ public class CatReport {
         this.id = id;
     }
 
-    public void setCat(Pet pet) {
+    public void setPet(Pet pet) {
         this.pet = pet;
     }
 
-    public void setCatOwner(PetOwner petOwner) {
+    public void setPetOwner(PetOwner petOwner) {
         this.petOwner = petOwner;
     }
 
