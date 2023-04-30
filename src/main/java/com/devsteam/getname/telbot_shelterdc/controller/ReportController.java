@@ -1,4 +1,3 @@
-/*
 package com.devsteam.getname.telbot_shelterdc.controller;
 
 import com.devsteam.getname.telbot_shelterdc.dto.ReportDTO;
@@ -225,4 +224,3 @@ public class ReportController {
     }
 
 }
-*/

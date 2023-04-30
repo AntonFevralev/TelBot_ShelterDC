@@ -16,7 +16,7 @@ public record PetOwnerDTO(Long idCO, Long chatId, String fullName, String phone,
 
 
     public static PetOwnerDTO petOwnerToDTO(PetOwner petOwner){
-        return new PetOwnerDTO(petOwner.getIdPO(), petOwner.getChatId(), petOwner.getFullName(), petOwner.getPhone(),
+        return new PetOwnerDTO(petOwner.getIdCO(), petOwner.getChatId(), petOwner.getFullName(), petOwner.getPhone(),
                 petOwner.getAddress(), petOwner.getStatusOwner(), petOwner.getPet() != null ? petOwner.getPet().getId() : 0L);
 
     }
