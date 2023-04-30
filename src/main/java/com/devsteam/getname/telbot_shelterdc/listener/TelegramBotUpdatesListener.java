@@ -2,9 +2,9 @@ package com.devsteam.getname.telbot_shelterdc.listener;
 
 import com.devsteam.getname.telbot_shelterdc.dto.CatReportDTO;
 import com.devsteam.getname.telbot_shelterdc.model.*;
-import com.devsteam.getname.telbot_shelterdc.repository.CatOwnerRepository;
+
 import com.devsteam.getname.telbot_shelterdc.repository.CatReportRepository;
-import com.devsteam.getname.telbot_shelterdc.repository.CatRepository;
+
 import com.devsteam.getname.telbot_shelterdc.service.CatReportService;
 
 import com.google.gson.Gson;
@@ -41,24 +41,20 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      */
     private final Shelter catsShelter;
     private final TelegramBot telegramBot;
-    private final CatOwnerRepository catOwnerRepository;
 
-    private final CatRepository catRepository;
 
 
     private final CatReportService catReportService;
 
     private final CatReportRepository catReportRepository;
 
-    public TelegramBotUpdatesListener(TelegramBot telegramBot, CatOwnerRepository catOwnerRepository, CatRepository catRepository, CatReportService catReportService, CatReportRepository catReportRepository) throws IOException {
+    public TelegramBotUpdatesListener(TelegramBot telegramBot, CatReportService catReportService, CatReportRepository catReportRepository) throws IOException {
 
         this.dogsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "dogShelter.json")), Shelter.class);
 
         this.catsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "catShelter.json")), Shelter.class);
 
         this.telegramBot = telegramBot;
-        this.catOwnerRepository = catOwnerRepository;
-        this.catRepository = catRepository;
         this.catReportService = catReportService;
         this.catReportRepository = catReportRepository;
     }
@@ -110,7 +106,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                      * если сообщение содержит фото и текст, то это воспринимается как отчёт и прогружается в базу*/
                     else if ("/sendreport 1".equals(message.caption())) {
                         telegramBot.execute(new SendMessage(chatId, "добавляем отчёт"));
-                        receiveAndParseReport(message, chatId);
+                        //receiveAndParseReport(message, chatId);
 
                     }
                     if (message.contact() != null) {
@@ -312,7 +308,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * @param message сообщение из апдейтера
      * @param chatId идентификатор чата
      */
-    public void receiveAndParseReport(Message message, long chatId) {
+   /* public void receiveAndParseReport(Message message, long chatId) {
         int beginIndex = message.caption().indexOf("1");
         long catId = Long.parseLong(message.caption().substring(beginIndex));
         long ownerId = catOwnerRepository.findCatOwnerByChatId(chatId).getIdCO();
@@ -338,7 +334,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         } else {
             SendMessage sendMessage = new SendMessage(chatId, "Отчёт не добавлен!");
             telegramBot.execute(sendMessage);
-        }
-    }
+        }}*/
+
 }
 
