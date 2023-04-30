@@ -7,7 +7,7 @@ import java.util.List;
  * При этом у волонтеров поде животного будет пустым. */
 @Entity
 @Table(name = "cat_owner")
-public class CatOwner {
+public class PetOwner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_co")
@@ -27,9 +27,9 @@ public class CatOwner {
 /** Поле животного, заполняется волонтером после заключения договора.
  * Правило: На испытательный срок - одно животное в одни руки.
  */
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cat_id")
-    private Cat cat;
+    private Pet pet;
 
 /** Архив ежедневных отчетов "усыновителя" питомца в порядке поступления. */
     @OneToMany(mappedBy = "catOwner", cascade = CascadeType.ALL, orphanRemoval = true) // было - "cat_owner"
@@ -38,9 +38,9 @@ public class CatOwner {
 // --------------------- Constructors ---------------------------------------------------
 
     /** Пустой конструктор, что бы Hibernat мог осуществлять манипуляции с классом. */
-    public CatOwner() {}
+    public PetOwner() {}
 
-    public CatOwner(Long chatId, String fullName, String phone, String address, StatusOwner statusOwner) {
+    public PetOwner(Long chatId, String fullName, String phone, String address, StatusOwner statusOwner) {
         this.chatId = chatId;
         this.fullName = fullName;
         this.phone = phone;
@@ -48,15 +48,15 @@ public class CatOwner {
         this.statusOwner = statusOwner;
     }
 
-    public CatOwner(Long idCO, Long chatId, String fullName, String phone, String address,
-                    StatusOwner statusOwner, Cat cat) {
+    public PetOwner(Long idCO, Long chatId, String fullName, String phone, String address,
+                    StatusOwner statusOwner, Pet pet) {
         this.idCO = idCO;
         this.chatId = chatId;
         this.fullName = fullName;
         this.phone = phone;
         this.address = address;
         this.statusOwner = statusOwner;
-        this.cat = cat;
+        this.pet = pet;
     }
 //------------ Getters & setters -------------------------------------------------------
 
@@ -108,12 +108,12 @@ public class CatOwner {
         this.statusOwner = statusOwner;
     }
 
-    public Cat getCat() {
-        return cat;
+    public Pet getPet() {
+        return pet;
     }
 
-    public void setCat(Cat cat) {
-        this.cat = cat;
+    public void setPet(Pet pet) {
+        this.pet = pet;
     }
 
     public List<CatReport> getReportList() {
@@ -122,9 +122,5 @@ public class CatOwner {
 
     public void setReportList(List<CatReport> reportList) {
         this.reportList = reportList;
-    }
-
-    public void addReport(CatReport catReport) {
-        reportList.add(catReport);
     }
 }

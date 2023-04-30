@@ -2,7 +2,6 @@ package com.devsteam.getname.telbot_shelterdc.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
@@ -16,14 +15,14 @@ public class CatReport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     /**Поле id*/
     private long id;
-    @ManyToOne(targetEntity = Cat.class)
+    @ManyToOne(targetEntity = Pet.class)
     @JoinColumn(name = "cat_id", nullable = false)
     /**Поле животного, о котором пишется отчёт*/
-    private Cat cat;
-    @ManyToOne(targetEntity = CatOwner.class)
+    private Pet pet;
+    @ManyToOne(targetEntity = PetOwner.class)
     @JoinColumn(name = "cat_owner_ID_co", nullable = false)
     /**Поле владельца животного, который пишет отчёт*/
-    private CatOwner catOwner;
+    private PetOwner petOwner;
     @Column
     /**Поле содержащее ссылку на фото животного, которое прилагается к отчёту*/
     private String photo;
@@ -56,12 +55,12 @@ public class CatReport {
         return id;
     }
 
-    public Cat getCat() {
-        return cat;
+    public Pet getCat() {
+        return pet;
     }
 
-    public CatOwner getCatOwner() {
-        return catOwner;
+    public PetOwner getCatOwner() {
+        return petOwner;
     }
 
     public String getPhoto() {
@@ -93,12 +92,12 @@ public class CatReport {
         this.id = id;
     }
 
-    public void setCat(Cat cat) {
-        this.cat = cat;
+    public void setCat(Pet pet) {
+        this.pet = pet;
     }
 
-    public void setCatOwner(CatOwner catOwner) {
-        this.catOwner = catOwner;
+    public void setCatOwner(PetOwner petOwner) {
+        this.petOwner = petOwner;
     }
 
     public void setPhoto(String photo) {

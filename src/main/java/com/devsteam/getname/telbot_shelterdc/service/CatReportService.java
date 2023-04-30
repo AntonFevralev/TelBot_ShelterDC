@@ -3,9 +3,9 @@ package com.devsteam.getname.telbot_shelterdc.service;
 import com.devsteam.getname.telbot_shelterdc.dto.CatReportDTO;
 import com.devsteam.getname.telbot_shelterdc.exception.*;
 import com.devsteam.getname.telbot_shelterdc.model.CatReport;
-import com.devsteam.getname.telbot_shelterdc.repository.CatOwnerRepository;
+import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.CatReportRepository;
-import com.devsteam.getname.telbot_shelterdc.repository.CatRepository;
+import com.devsteam.getname.telbot_shelterdc.repository.PetRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,13 +17,13 @@ import java.util.NoSuchElementException;
 public class CatReportService {
     //    private final LinkedList<CatReport> catReports = new LinkedList<>();
     private CatReportRepository catReportRepository;
-    private CatOwnerRepository catOwnerRepository;
-    private CatRepository catRepository;
+    private OwnerRepository ownerRepository;
+    private PetRepository petRepository;
 
-    public CatReportService(CatReportRepository catReportRepository, CatOwnerRepository catOwnerRepository, CatRepository catRepository) {
+    public CatReportService(CatReportRepository catReportRepository, OwnerRepository ownerRepository, PetRepository petRepository) {
         this.catReportRepository = catReportRepository;
-        this.catOwnerRepository = catOwnerRepository;
-        this.catRepository = catRepository;
+        this.ownerRepository = ownerRepository;
+        this.petRepository = petRepository;
     }
 
     private CatReportDTO catReportToDTO(CatReport catReport) {
@@ -49,8 +49,8 @@ public class CatReportService {
     public void addReport(CatReportDTO catReportDTO) {
         if (catReportDTO != null) {
             CatReport catReport = new CatReport();
-            catReport.setCat(catRepository.findById(catReportDTO.catId()).orElseThrow(NoCatWithSuchIdException::new));
-            catReport.setCatOwner(catOwnerRepository.findById(catReportDTO.catOwnerId()).orElseThrow(NoOwnerWithSuchIdException::new));
+            catReport.setCat(petRepository.findById(catReportDTO.catId()).orElseThrow(NoCatWithSuchIdException::new));
+            catReport.setCatOwner(ownerRepository.findById(catReportDTO.catOwnerId()).orElseThrow(NoOwnerWithSuchIdException::new));
             catReport.setBehaviorChanges(catReportDTO.behaviorChanges());
             catReport.setMeals(catReportDTO.meals());
             catReport.setPhoto(catReportDTO.photo());
