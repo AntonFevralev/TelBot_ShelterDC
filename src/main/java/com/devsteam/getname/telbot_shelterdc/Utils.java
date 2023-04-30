@@ -9,10 +9,4 @@ public class Utils {
             return true;
     }return false;
     }
-    public static boolean colorValidation(Color inputColor){
-        for (Color value: Color.values()){
-            return inputColor == value;
-        }
-        return false;
-    }
 }
