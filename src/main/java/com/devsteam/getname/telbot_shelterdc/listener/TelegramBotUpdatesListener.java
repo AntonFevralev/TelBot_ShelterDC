@@ -86,7 +86,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 logger.info("Handles update: {}", update);
                 //если была нажата кнопка
                 if (update.callbackQuery() != null) {
-                    logger.info("Handles callback: {}", update.callbackQuery());
                     callBackQueryHandler(update);
                 }//если сообщение не пустое
                 if (update.message() != null) {
@@ -132,8 +131,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * @param chatId идентификатор чата
      */
     public void startMessage(long chatId) {
-        SendMessage sendMessage = new SendMessage(chatId, "   Привет! Данный бот предоставляет информацию о двух приютах. Кошачий приют \"" + this.catsShelter.getTitle() + "\"" +
-                " и собачий приют \"" + this.dogsShelter.getTitle() + "\". Выберите один");
+        SendMessage sendMessage = new SendMessage(chatId, "   Привет! Данный бот предоставляет информацию о двух приютах. Кошачий приют \"" +
+                this.catsShelter.getTitle() + " и собачий приют \"" + this.dogsShelter.getTitle() + "\". Выберите один");
         sendMessage.parseMode(ParseMode.Markdown);
         InlineKeyboardButton cats = new InlineKeyboardButton("Кошки");
         cats.callbackData("Cats");
@@ -203,7 +202,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         InlineKeyboardButton mainMenu = new InlineKeyboardButton("Главное меню");
         mainMenu.callbackData("MainMenu");
         Keyboard keyboard = new InlineKeyboardMarkup().addRow(infoDogsShelter).addRow(scheduleDogsShelter)
-                .addRow(dogsShelterContact).addRow(safetyRecommendationsDogs).addRow(dogsShelterContact).addRow(back).addRow(mainMenu).addRow(
+                .addRow(safetyRecommendationsDogs).addRow(dogsShelterContact).addRow(back).addRow(mainMenu).addRow(
                         new InlineKeyboardButton("Позвать волонтера").url("https://t.me/fevralevanton"));
         sendMessage.replyMarkup(keyboard);
         telegramBot.execute(sendMessage);
