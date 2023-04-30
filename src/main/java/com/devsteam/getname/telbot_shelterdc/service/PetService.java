@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.devsteam.getname.telbot_shelterdc.dto.PetDTO.petToDTO;
@@ -73,8 +74,8 @@ public class PetService {
     public Collection<PetDTO> getAllPets(Kind kind) {
         List<Pet> petList = petRepository.findAll();
         return switch (kind) {
-            case CAT -> petList.stream().filter(pet -> pet.getKind() == Kind.CAT).map(PetDTO::petToDTO).collect(Collectors.toList());
-            case DOG -> petList.stream().filter(pet -> pet.getKind() == Kind.DOG).map(PetDTO::petToDTO).collect(Collectors.toList());
+            case CAT -> petList.stream().filter(pet -> pet.getKind() == Kind.CAT).map(PetDTO::petToDTO).collect(Collectors.toSet());
+            case DOG -> petList.stream().filter(pet -> pet.getKind() == Kind.DOG).map(PetDTO::petToDTO).collect(Collectors.toSet());
         };
     }
     /**
