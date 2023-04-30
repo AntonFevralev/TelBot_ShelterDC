@@ -1,3 +1,4 @@
+/*
 package com.devsteam.getname.telbot_shelterdc.service;
 
 import com.devsteam.getname.telbot_shelterdc.dto.CatReportDTO;
@@ -30,7 +31,7 @@ public class CatReportService {
         return new CatReportDTO(
                 catReport.getId(),
                 catReport.getCat().getId(),
-                catReport.getCatOwner().getIdCO(),
+                catReport.getCatOwner().getIdPO(),
                 catReport.getPhoto(),
                 catReport.getMeals(),
                 catReport.getWellBeingAndAdaptation(),
@@ -41,11 +42,13 @@ public class CatReportService {
                 catReport.isReportIsInspected());
     }
 
-    /**
+    */
+/**
      * Добавить отчёт в базу
      *
      * @param catReportDTO отчёт о кошке
-     */
+     *//*
+
     public void addReport(CatReportDTO catReportDTO) {
         if (catReportDTO != null) {
             CatReport catReport = new CatReport();
@@ -64,25 +67,29 @@ public class CatReportService {
 
     }
 
-    /**
+    */
+/**
      * Получить отчёт по id отчёта
      *
      * @param id id отчёта
      * @return отчёт о кошке
      * @throws NoReportWithSuchIdException при попытке передать id несуществующего отчёта
-     */
+     *//*
+
     public CatReportDTO getReportByReportId(long id) {
         return catReportToDTO(catReportRepository.findById(id).orElseThrow(NoReportWithSuchIdException::new));
 
     }
 
-    /**
+    */
+/**
      * Получить отчёт по id животного
      *
      * @param catId id Кошки
      * @return отчёт о кошке
      * @throws NoReportWithSuchAnimalIdException при попытке передать id несуществующего животного
-     */
+     *//*
+
     public CatReportDTO getReportByCatId(long catId) {
         try {
             return catReportToDTO(catReportRepository.findCatReportByCat_Id(catId));
@@ -92,13 +99,15 @@ public class CatReportService {
 
     }
 
-    /**
+    */
+/**
      * Получить список отчётов по дате отправки
      *
      * @param date дата отправки отчётов
      * @return список отчётов на указанную дату
      * @throws NoReportsOnThisDateException при попытке передать дату, в которую не существует отчётов
-     */
+     *//*
+
     public List<CatReportDTO> getReportsByDate(LocalDate date) {
         List<CatReportDTO> catReportDTOS = catReportRepository
                 .findCatReportsByReportDate(date)
@@ -111,12 +120,14 @@ public class CatReportService {
         }
     }
 
-    /**
+    */
+/**
      * Получить все отчёты
      *
      * @return список всех отчётов
      * @throws ReportListIsEmptyException если в базе нет ни одного отчёта
-     */
+     *//*
+
     public List<CatReportDTO> getAllReports() {
         List<CatReportDTO> reports = catReportRepository
                 .findAll()
@@ -130,48 +141,56 @@ public class CatReportService {
         }
     }
 
-    /**
+    */
+/**
      * Отметить отчёт как завершённый@param id id отчёта
      *
      * @param reportId id отчёта
      * @throws NoReportWithSuchIdException при попытке передать id несуществующего отчёта
-     */
+     *//*
+
     public void setReportAsComplete(long reportId) {
         CatReport catReport = catReportRepository.findById(reportId).orElseThrow(NoReportWithSuchIdException::new);
         catReport.setReportIsComplete(true);
         catReportRepository.save(catReport);
     }
 
-    /**
+    */
+/**
      * Отметить отчёт как НЕзавершённый
      *
      * @param reportId id отчёта
      * @throws NoReportWithSuchIdException при попытке передать id несуществующего отчёта
-     */
+     *//*
+
     public void setReportAsIncomplete(long reportId) {
         CatReport catReport = catReportRepository.findById(reportId).orElseThrow(NoReportWithSuchIdException::new);
         catReport.setReportIsComplete(false);
         catReportRepository.save(catReport);
     }
 
-    /**
+    */
+/**
      * Отметить отчёт как просмотренный
      *
      * @param reportId id отчёта
      * @throws NoReportWithSuchIdException при попытке передать id несуществующего отчёта
-     */
+     *//*
+
     public void setReportAsInspected(long reportId) {
         CatReport catReport = catReportRepository.findById(reportId).orElseThrow(NoReportWithSuchIdException::new);
         catReport.setReportIsInspected(true);
         catReportRepository.save(catReport);
     }
 
-    /**
+    */
+/**
      * Удалить отчёт по id животного
      *
      * @param catId id Кошки
      * @throws NoReportWithSuchAnimalIdException при попытке передать id несуществующего животного
-     */
+     *//*
+
     public void deleteReportByCatId(long catId) {
         try {
             catReportRepository.delete(catReportRepository.findCatReportByCat_Id(catId));
@@ -181,13 +200,16 @@ public class CatReportService {
 
     }
 
-    /**
+    */
+/**
      * Удалить отчёт по id отчёта
      *
      * @param reportId id отчёта
      * @throws NoReportWithSuchIdException при попытке передать id несуществующего отчёта
-     */
+     *//*
+
     public void deleteReportByReportId(long reportId) {
         catReportRepository.delete(catReportRepository.findById(reportId).orElseThrow(NoReportWithSuchIdException::new));
     }
 }
+*/

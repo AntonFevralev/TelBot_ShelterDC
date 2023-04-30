@@ -1,3 +1,4 @@
+/*
 package com.devsteam.getname.telbot_shelterdc.controller;
 
 import com.devsteam.getname.telbot_shelterdc.dto.CatReportDTO;
@@ -225,3 +226,4 @@ public class CatReportController {
     }
 
 }
+*/

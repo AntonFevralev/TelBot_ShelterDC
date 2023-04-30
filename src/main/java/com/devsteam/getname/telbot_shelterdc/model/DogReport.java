@@ -1,3 +1,4 @@
+/*
 package com.devsteam.getname.telbot_shelterdc.model;
 
 
@@ -79,3 +80,4 @@ public class DogReport {
         this.reportDateTime = reportDateTime;
     }
 }
+*/

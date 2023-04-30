@@ -1,3 +1,4 @@
+/*
 package com.devsteam.getname.telbot_shelterdc.model;
 
 import javax.persistence.*;
@@ -6,46 +7,70 @@ import java.time.LocalTime;
 
 @Entity
 @Table(name = "cat_reports")
+*/
 /**
  * Класс отчёта присылаемого в приют владельцем взятого из этого приюта на испытательном сроке
  * @author Черемисин Руслан
- * */
+ * *//*
+
 public class CatReport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    /**Поле id*/
+    */
+/**Поле id*//*
+
     private long id;
     @ManyToOne(targetEntity = Pet.class)
     @JoinColumn(name = "cat_id", nullable = false)
-    /**Поле животного, о котором пишется отчёт*/
+    */
+/**Поле животного, о котором пишется отчёт*//*
+
     private Pet pet;
     @ManyToOne(targetEntity = PetOwner.class)
     @JoinColumn(name = "cat_owner_ID_co", nullable = false)
-    /**Поле владельца животного, который пишет отчёт*/
+    */
+/**Поле владельца животного, который пишет отчёт*//*
+
     private PetOwner petOwner;
     @Column
-    /**Поле содержащее ссылку на фото животного, которое прилагается к отчёту*/
+    */
+/**Поле содержащее ссылку на фото животного, которое прилагается к отчёту*//*
+
     private String photo;
     @Column
-    /**Поле с описанием рациона и режима питания животного*/
+    */
+/**Поле с описанием рациона и режима питания животного*//*
+
     private String meals;
     @Column()
-    /**Поле с описанием адаптации и состояния животного*/
+    */
+/**Поле с описанием адаптации и состояния животного*//*
+
     private String wellBeingAndAdaptation;
     @Column()
-    /**Поле с описанием изменений в поведении животного*/
+    */
+/**Поле с описанием изменений в поведении животного*//*
+
     private String behaviorChanges;
     @Column()
-    /**Поле с датой отправки отчёта*/
+    */
+/**Поле с датой отправки отчёта*//*
+
     private LocalDate reportDate;
     @Column()
-    /**Поле со временем отправки отчёта*/
+    */
+/**Поле со временем отправки отчёта*//*
+
     private LocalTime reportTime;
 
     @Column
-    /**Поле, отмечающее завершённость(полноценность) отчёта*/
+    */
+/**Поле, отмечающее завершённость(полноценность) отчёта*//*
+
     private boolean reportIsComplete;
-    /**Поле, указывающее на факт просмотра отчёта волонтёром*/
+    */
+/**Поле, указывающее на факт просмотра отчёта волонтёром*//*
+
     private boolean reportIsInspected;
 
     public CatReport() {
@@ -141,3 +166,4 @@ public class CatReport {
         this.reportTime = reportTime;
     }
 }
+*/

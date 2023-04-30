@@ -8,7 +8,6 @@ import com.devsteam.getname.telbot_shelterdc.model.Pet;
 import com.devsteam.getname.telbot_shelterdc.model.PetOwner;
 import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.PetRepository;
-import com.devsteam.getname.telbot_shelterdc.repository.ShelterRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -27,13 +26,11 @@ public class PetService {
     private final PetRepository petRepository;
     private final OwnerRepository ownerRepository;
 
-    private final ShelterRepository shelterRepository;
 
 
-    public PetService(PetRepository petRepository, OwnerRepository ownerRepository, ShelterRepository shelterRepository) {
+    public PetService(PetRepository petRepository, OwnerRepository ownerRepository) {
         this.petRepository = petRepository;
         this.ownerRepository = ownerRepository;
-        this.shelterRepository = shelterRepository;
     }
 
     /**

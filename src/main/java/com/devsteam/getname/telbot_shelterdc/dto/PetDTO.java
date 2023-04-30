@@ -11,6 +11,6 @@ public record PetDTO(Long id, String birthYear, String name, String breed, Strin
 
     public static PetDTO petToDTO(Pet pet) {
         return new PetDTO(pet.getId(), pet.getBirthYear(), pet.getName(), pet.getBreed(), pet.getDescription(),
-                pet.getColor(), pet.getStatus(), pet.getCatOwner()!=null? pet.getCatOwner().getIdCO() :0, pet.getKind());
+                pet.getColor(), pet.getStatus(), pet.getPetOwner()!=null? pet.getPetOwner().getIdPO() :0, pet.getKind());
     }
 }

@@ -1,3 +1,4 @@
+/*
 package com.devsteam.getname.telbot_shelterdc.service;
 
 import com.devsteam.getname.telbot_shelterdc.exception.ReportListIsEmptyException;
@@ -39,3 +40,4 @@ public class DogReportService {
         throw new ReportListIsEmptyException();
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package com.devsteam.getname.telbot_shelterdc.timer;
 
 import com.devsteam.getname.telbot_shelterdc.model.CatReport;
@@ -39,7 +40,7 @@ public class ReminderTimer {
     @Scheduled(fixedRate = 1, timeUnit = TimeUnit.DAYS)
     public void remind() {
 
-        telegramBot.execute(new SendMessage())
+        telegramBot.execute(new SendMessage());
     }
 
     private Map<Long, CatReport> fillAllCatReports() {
@@ -60,3 +61,4 @@ public class ReminderTimer {
     }
 
 }
+*/

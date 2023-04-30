@@ -1,6 +1,7 @@
+/*
 package com.devsteam.getname.telbot_shelterdc.repository;
 
-import com.devsteam.getname.telbot_shelterdc.model.CatReport;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
@@ -12,3 +13,4 @@ public interface CatReportRepository extends JpaRepository<CatReport, Long> {
 
     List<CatReport> findCatReportsByReportDate(LocalDate date);
 }
+*/

@@ -3,9 +3,8 @@ package com.devsteam.getname.telbot_shelterdc.listener;
 import com.devsteam.getname.telbot_shelterdc.dto.CatReportDTO;
 import com.devsteam.getname.telbot_shelterdc.model.*;
 
-import com.devsteam.getname.telbot_shelterdc.repository.CatReportRepository;
 
-import com.devsteam.getname.telbot_shelterdc.service.CatReportService;
+
 
 import com.google.gson.Gson;
 import com.pengrad.telegrambot.TelegramBot;
@@ -44,19 +43,15 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
 
 
-    private final CatReportService catReportService;
 
-    private final CatReportRepository catReportRepository;
-
-    public TelegramBotUpdatesListener(TelegramBot telegramBot, CatReportService catReportService, CatReportRepository catReportRepository) throws IOException {
+    public TelegramBotUpdatesListener(TelegramBot telegramBot) throws IOException {
 
         this.dogsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "dogShelter.json")), Shelter.class);
 
         this.catsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "catShelter.json")), Shelter.class);
 
         this.telegramBot = telegramBot;
-        this.catReportService = catReportService;
-        this.catReportRepository = catReportRepository;
+
     }
 
     /**
