@@ -1,7 +1,7 @@
 package com.devsteam.getname.telbot_shelterdc.service;
 
 
-import com.devsteam.getname.telbot_shelterdc.exception.NoSuchShelterException;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,7 +49,7 @@ public class ShelterService {
         ) {
             bis.transferTo(bos);
         } catch (IOException e) {
-            throw new NoSuchShelterException();
+            throw new FileUploadException("Ошибка выгрузки файла");
         }
     }
 }

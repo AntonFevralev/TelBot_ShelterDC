@@ -1,13 +1,12 @@
 package com.devsteam.getname.telbot_shelterdc.controller;
 
-import com.devsteam.getname.telbot_shelterdc.exception.NoSuchShelterException;
 import com.devsteam.getname.telbot_shelterdc.service.ShelterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -41,7 +40,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/files/")
 public class ShelterController {
-  private final ShelterService service;
+    private final ShelterService service;
     @Value("${name.of.dog.data.file}")
     private String dogShelterFileName;
     @Value("${name.of.cat.data.file}")
@@ -70,7 +69,7 @@ public class ShelterController {
         try {
             service.uploadShelterFile(file, dogShelterFileName);
         } catch (IOException e) {
-            throw new NoSuchShelterException();
+            e.printStackTrace();
         }
 
         return ResponseEntity.ok().build();
@@ -95,7 +94,7 @@ public class ShelterController {
         try {
             service.uploadShelterFile(file, catShelterFileName);
         } catch (IOException e) {
-            throw new NoSuchShelterException();
+            e.printStackTrace();
         }
 
         return ResponseEntity.ok().build();
@@ -132,7 +131,7 @@ public class ShelterController {
                         .body(inputStreamResource);
 
             } catch (FileNotFoundException e) {
-                    throw new NoSuchShelterException();
+                e.printStackTrace();
             }
         }
         return ResponseEntity.noContent().build();
@@ -168,10 +167,10 @@ public class ShelterController {
                         .body(inputStreamResource);
 
             } catch (FileNotFoundException e) {
-                throw new NoSuchShelterException();
+                e.printStackTrace();
             }
         }
         return ResponseEntity.noContent().build();
     }
 
-    }
+}

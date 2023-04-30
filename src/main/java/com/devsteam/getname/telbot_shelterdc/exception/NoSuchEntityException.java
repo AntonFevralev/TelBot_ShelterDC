@@ -1,4 +1,9 @@
 package com.devsteam.getname.telbot_shelterdc.exception;
 
-public class NoSuchEntityException extends RuntimeException{
+import java.io.IOException;
+
+public class NoSuchEntityException extends RuntimeException {
+    public NoSuchEntityException(String message) {
+        super(message);
+    }
 }
