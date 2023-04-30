@@ -10,6 +10,7 @@ import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.PetRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,8 +48,8 @@ public class PetService {
         if(!Utils.stringValidation(petDTO.name()) || !Utils.stringValidation(petDTO.breed()) || !Utils.stringValidation(petDTO.description())) {
             throw new WrongPetException("Необходимо заполнить следующие поля: имя животного, порода, описание.");
         }
-        if (petDTO.birthYear() <= 2000) {
-            throw new WrongPetException("Год рождения животного не может быть меньше 2000!");
+        if (petDTO.birthYear() <= 2000 || petDTO.birthYear() > LocalDate.now().getYear()) {
+            throw new WrongPetException("Год рождения животного не может быть меньше 2000 и больше текущего!");
         }
         Pet pet = new Pet(petDTO.birthYear(), petDTO.name(), petDTO.breed(), petDTO.description(), petDTO.color(), FREE, petDTO.kind());
         return petToDTO(petRepository.save(pet));
@@ -91,7 +92,7 @@ public class PetService {
         if(Utils.stringValidation(petDTO.breed())){
             pet.setBreed(petDTO.breed());
         }
-        if(petDTO.birthYear() > 2000){
+        if(petDTO.birthYear() > 2000 || petDTO.birthYear() > LocalDate.now().getYear()){
             pet.setBirthYear(petDTO.birthYear());
         }
         if(Utils.stringValidation(petDTO.description())){
