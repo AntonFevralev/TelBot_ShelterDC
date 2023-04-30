@@ -27,14 +27,8 @@ public class Report {
     /**Поле содержащее ссылку на фото животного, которое прилагается к отчёту*/
     private String photo;
     @Column
-    /**Поле с описанием рациона и режима питания животного*/
-    private String meals;
-    @Column()
-    /**Поле с описанием адаптации и состояния животного*/
-    private String wellBeingAndAdaptation;
-    @Column()
-    /**Поле с описанием изменений в поведении животного*/
-    private String behaviorChanges;
+    /**Поле с описанием рациона и режима питания, адаптации и состояния, а также изменений в поведении животного*/
+    private String mealsWellBeingAndAdaptationBehaviorChanges;
     @Column()
     /**Поле с датой отправки отчёта*/
     private LocalDate reportDate;
@@ -67,17 +61,10 @@ public class Report {
         return photo;
     }
 
-    public String getMeals() {
-        return meals;
+    public String getMealsWellBeingAndAdaptationBehaviorChanges() {
+        return mealsWellBeingAndAdaptationBehaviorChanges;
     }
 
-    public String getWellBeingAndAdaptation() {
-        return wellBeingAndAdaptation;
-    }
-
-    public String getBehaviorChanges() {
-        return behaviorChanges;
-    }
 
 
     public boolean isReportIsComplete() {
@@ -104,17 +91,10 @@ public class Report {
         this.photo = photo;
     }
 
-    public void setMeals(String meals) {
-        this.meals = meals;
+    public void setMealsWellBeingAndAdaptationBehaviorChanges(String meals) {
+        this.mealsWellBeingAndAdaptationBehaviorChanges = meals;
     }
 
-    public void setWellBeingAndAdaptation(String wellBeingAndAdaptation) {
-        this.wellBeingAndAdaptation = wellBeingAndAdaptation;
-    }
-
-    public void setBehaviorChanges(String behaviorChanges) {
-        this.behaviorChanges = behaviorChanges;
-    }
 
 
     public void setReportIsComplete(boolean reportIsComplete) {

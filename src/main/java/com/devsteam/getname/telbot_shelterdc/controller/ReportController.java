@@ -26,13 +26,13 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-    @PostMapping
-    @Operation(summary = "Добавление отчёта",
-            description = "Здесь можно добавить отчёт в БД")
-    public ResponseEntity addPetReport(@RequestBody ReportDTO reportDTO) {
-        reportService.addReport(reportDTO);
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping
+//    @Operation(summary = "Добавление отчёта",
+//            description = "Здесь можно добавить отчёт в БД")
+//    public ResponseEntity addPetReport(@RequestBody ReportDTO reportDTO) {
+//        reportService.addReport(reportDTO);
+//        return ResponseEntity.ok().build();
+//    }
 
     @GetMapping("/reportId")
     @Operation(summary = "Получение отчёта по его id",

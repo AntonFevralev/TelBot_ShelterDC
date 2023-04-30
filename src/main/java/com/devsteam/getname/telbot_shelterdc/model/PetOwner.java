@@ -37,7 +37,7 @@ public class PetOwner {
 
 // --------------------- Constructors ---------------------------------------------------
 
-    /** Пустой конструктор, что бы Hibernat мог осуществлять манипуляции с классом. */
+    /** Пустой конструктор, что бы Hibernate мог осуществлять манипуляции с классом. */
     public PetOwner() {}
 
     public PetOwner(Long chatId, String fullName, String phone, String address, StatusOwner statusOwner) {
