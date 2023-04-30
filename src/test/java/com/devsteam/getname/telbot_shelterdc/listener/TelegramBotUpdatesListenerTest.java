@@ -2,6 +2,7 @@ package com.devsteam.getname.telbot_shelterdc.listener;
 
 
 import com.devsteam.getname.telbot_shelterdc.model.Shelter;
+import com.devsteam.getname.telbot_shelterdc.service.ReportService;
 import com.google.gson.Gson;
 import com.pengrad.telegrambot.BotUtils;
 import com.pengrad.telegrambot.TelegramBot;
@@ -14,6 +15,8 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Collections;
 
 import org.assertj.core.api.Assertions;
@@ -37,6 +40,8 @@ public class TelegramBotUpdatesListenerTest {
 
     @Mock
     private TelegramBot telegramBot;
+    @Mock
+    private ReportService reportService;
 
     @InjectMocks
     private TelegramBotUpdatesListener telegramBotUpdatesListener;
@@ -109,6 +114,41 @@ public class TelegramBotUpdatesListenerTest {
 
     private Update getUpdate(String json, String replaced) {
         return BotUtils.fromJson(json.replace("%command%", replaced), Update.class);
+    }
+
+    @Test
+    public void handleValidReport() throws URISyntaxException, IOException {
+        String json = Files.readString(
+                Paths.get(TelegramBotUpdatesListenerTest.class.getResource("photo_update.json").toURI()));
+        Update update = getUpdate(json, "/report test");
+        telegramBotUpdatesListener.process(Collections.singletonList(update));
+
+        ArgumentCaptor<SendMessage> sendMessageArgumentCaptor = ArgumentCaptor.forClass(
+                SendMessage.class);
+        Mockito.verify(telegramBot).execute(sendMessageArgumentCaptor.capture());
+        SendMessage actualSendMessage = sendMessageArgumentCaptor.getValue();
+
+        ArgumentCaptor<String> descriptionArgumentCaptor = ArgumentCaptor.forClass(
+                String.class);
+        ArgumentCaptor<String> photoArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
+        Mockito.verify(reportService).addReport(
+                longArgumentCaptor.capture(),
+                descriptionArgumentCaptor.capture(),
+                photoArgumentCaptor.capture()
+        );
+        String actualDescription = descriptionArgumentCaptor.getValue();
+        String actualPhoto = photoArgumentCaptor.getValue();
+        Long actualLong = longArgumentCaptor.getValue();
+
+        Assertions.assertThat(actualDescription)
+                .isEqualTo(" test");
+        Assertions.assertThat(actualPhoto).isEqualTo("photo");
+        Assertions.assertThat(actualLong).isEqualTo(123L);
+
+        Assertions.assertThat(actualSendMessage.getParameters().get("chat_id")).isEqualTo(123L);
+        Assertions.assertThat(actualSendMessage.getParameters().get("text")).isEqualTo(
+                "добавляем отчёт");
     }
 
     public void handleButtonCallBackData(String callBackData, String menuMessage) throws URISyntaxException, IOException {

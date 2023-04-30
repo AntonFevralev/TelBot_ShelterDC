@@ -94,10 +94,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                         sendChatId(chatId);
                     }
 
-                    else if (message.caption().contains("/report") && message.caption() != null && message.photo() != null/*message.document().mimeType().equals("image/jpeg")*/) {
-                        SendMessage sendMessage = new SendMessage(chatId, "gg");
-                        telegramBot.execute(sendMessage);
-                        reportService.addReport(chatId, message.caption(), message.photo().toString());
+                    else if (message.caption().contains("/report") && message.caption() != null && (message.photo() != null||message.document().mimeType().equals("image/jpeg"))) {
+                        reportService.addReport(chatId, message.caption().substring(7), "photo");
                         telegramBot.execute(new SendMessage(chatId, "добавляем отчёт"));
                         //initiateReportDialog(chatId);
                     }
