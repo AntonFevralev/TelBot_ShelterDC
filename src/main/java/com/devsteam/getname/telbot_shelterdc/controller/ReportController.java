@@ -1,9 +1,8 @@
 /*
 package com.devsteam.getname.telbot_shelterdc.controller;
 
-import com.devsteam.getname.telbot_shelterdc.dto.CatReportDTO;
-import com.devsteam.getname.telbot_shelterdc.model.CatReport;
-import com.devsteam.getname.telbot_shelterdc.service.CatReportService;
+import com.devsteam.getname.telbot_shelterdc.dto.ReportDTO;
+import com.devsteam.getname.telbot_shelterdc.service.ReportService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -19,22 +18,22 @@ import java.util.List;
 @Tag(name = "Отчёты от владельцев",
         description = "Здесь волонтёры обрабатывают отчёты от животных, " +
                 "принятые от владельцев на испытательном сроке")
-@RequestMapping("cats/report")
-public class CatReportController {
+@RequestMapping("pet/report")
+public class ReportController {
 
-    private final CatReportService catReportService;
+    private final ReportService reportService;
 
-    public CatReportController(CatReportService catReportService) {
-        this.catReportService = catReportService;
+    public ReportController(ReportService reportService) {
+        this.reportService = reportService;
     }
 
-    @PostMapping
-    @Operation(summary = "Добавление отчёта",
-            description = "Здесь можно добавить отчёт в БД")
-    public ResponseEntity addCatReport(@RequestBody CatReportDTO catReportDTO) {
-        catReportService.addReport(catReportDTO);
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping
+//    @Operation(summary = "Добавление отчёта",
+//            description = "Здесь можно добавить отчёт в БД")
+//    public ResponseEntity addPetReport(@RequestBody ReportDTO reportDTO) {
+//        reportService.addReport(reportDTO);
+//        return ResponseEntity.ok().build();
+//    }
 
     @GetMapping("/reportId")
     @Operation(summary = "Получение отчёта по его id",
@@ -54,11 +53,11 @@ public class CatReportController {
             )
     }
     )
-    public ResponseEntity<CatReportDTO> getCatReportById(@RequestParam(name = "reportId") long reportId) {
-        return ResponseEntity.ok().body(catReportService.getReportByReportId(reportId));
+    public ResponseEntity<ReportDTO> getPetReportById(@RequestParam(name = "reportId") long reportId) {
+        return ResponseEntity.ok().body(reportService.getReportByReportId(reportId));
     }
 
-    @GetMapping("/catId")
+    @GetMapping("/petId")
     @Operation(summary = "Получение отчёта по id животного",
             description = "Здесь можно получить существующий в БД отчёт по id указанного в отчёте животного")
     @ApiResponses(value = {
@@ -76,8 +75,8 @@ public class CatReportController {
             )
     }
     )
-    public ResponseEntity<CatReportDTO> getCatReportByCatId(@RequestParam(name = "catId") long catId) {
-        return ResponseEntity.ok().body(catReportService.getReportByCatId(catId));
+    public ResponseEntity<ReportDTO> getPetReportByCatId(@RequestParam(name = "petId") long petId) {
+        return ResponseEntity.ok().body(reportService.getReportByCatId(petId));
     }
 
     @GetMapping("/date")
@@ -98,9 +97,9 @@ public class CatReportController {
             )
     }
     )
-    public ResponseEntity<List<CatReportDTO>> getReportsByDate(@RequestParam("date")
+    public ResponseEntity<List<ReportDTO>> getReportsByDate(@RequestParam("date")
                                                             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return ResponseEntity.ok().body(catReportService.getReportsByDate(date));
+        return ResponseEntity.ok().body(reportService.getReportsByDate(date));
     }
 
     @GetMapping
@@ -118,8 +117,8 @@ public class CatReportController {
             )
     }
     )
-    public ResponseEntity<List<CatReportDTO>> getAllCatReports() {
-        return ResponseEntity.ok().body(catReportService.getAllReports());
+    public ResponseEntity<List<ReportDTO>> getAllPetReports() {
+        return ResponseEntity.ok().body(reportService.getAllReports());
     }
 
     @PutMapping("/isComplete")
@@ -140,7 +139,7 @@ public class CatReportController {
                     "(соответсвующий всем требованиям к заполнению)")
 
     public ResponseEntity setReportAsComplete(@RequestParam(name = "reportId") long reportId) {
-        catReportService.setReportAsComplete(reportId);
+        reportService.setReportAsComplete(reportId);
         return ResponseEntity.ok().build();
     }
 
@@ -161,7 +160,7 @@ public class CatReportController {
     }
     )
     public ResponseEntity setReportAsIncomplete(@RequestParam(name = "reportId") long reportId) {
-        catReportService.setReportAsIncomplete(reportId);
+        reportService.setReportAsIncomplete(reportId);
         return ResponseEntity.ok().build();
     }
 
@@ -181,7 +180,7 @@ public class CatReportController {
     }
     )
     public ResponseEntity setReportAsInspected(@RequestParam(name = "reportId") long reportId) {
-        catReportService.setReportAsInspected(reportId);
+        reportService.setReportAsInspected(reportId);
         return ResponseEntity.ok().build();
     }
 
@@ -200,12 +199,12 @@ public class CatReportController {
             )
     }
     )
-    public ResponseEntity deleteCatReportByReportId(@RequestParam(name = "reportId") long reportId) {
-        catReportService.deleteReportByReportId(reportId);
+    public ResponseEntity deletePetReportByReportId(@RequestParam(name = "reportId") long reportId) {
+        reportService.deleteReportByReportId(reportId);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/catId")
+    @DeleteMapping("/petId")
     @Operation(summary = "Удаление отчёта по id животного",
             description = "Здесь можно удалить существующий в БД отчёт по id указанного в отчёте животного")
     @ApiResponses(value = {
@@ -220,8 +219,8 @@ public class CatReportController {
             )
     }
     )
-    public ResponseEntity deleteCatReportByCatId(@RequestParam(name = "catId") long catId) {
-        catReportService.deleteReportByCatId(catId);
+    public ResponseEntity deletePetReportByCatId(@RequestParam(name = "petId") long petId) {
+        reportService.deleteReportByCatId(petId);
         return ResponseEntity.noContent().build();
     }
 

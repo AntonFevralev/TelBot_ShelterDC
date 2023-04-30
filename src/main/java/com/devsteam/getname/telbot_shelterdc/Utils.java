@@ -8,5 +8,5 @@ public class Utils {
         if(str!=null&&!str.isEmpty()&&!str.isBlank()){
             return true;
     }return false;
-}
+    }
 }

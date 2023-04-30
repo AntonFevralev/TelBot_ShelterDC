@@ -10,9 +10,9 @@ import com.devsteam.getname.telbot_shelterdc.model.StatusOwner;
  * @param phone № телефона.
  * @param address адрес проживания человека.
  * @param statusOwner статус человека в приюте.
- * @param id животного.
+ * @param petId животного.
  */
-public record PetOwnerDTO(Long idCO, Long chatId, String fullName, String phone, String address, StatusOwner statusOwner, Long id) {
+public record PetOwnerDTO(Long idCO, Long chatId, String fullName, String phone, String address, StatusOwner statusOwner, Long petId) {
 
 
     public static PetOwnerDTO petOwnerToDTO(PetOwner petOwner){

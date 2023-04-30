@@ -1,10 +1,11 @@
 package com.devsteam.getname.telbot_shelterdc.listener;
 
-import com.devsteam.getname.telbot_shelterdc.dto.CatReportDTO;
 import com.devsteam.getname.telbot_shelterdc.model.*;
 
+import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
+import com.devsteam.getname.telbot_shelterdc.repository.ReportRepository;
 
-
+import com.devsteam.getname.telbot_shelterdc.service.ReportService;
 
 import com.google.gson.Gson;
 import com.pengrad.telegrambot.TelegramBot;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.nio.file.Files.readString;
@@ -42,16 +42,19 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     private final TelegramBot telegramBot;
 
 
+    private final ReportService reportService;
 
+    private final OwnerRepository ownerRepository;
 
-    public TelegramBotUpdatesListener(TelegramBot telegramBot) throws IOException {
+    public TelegramBotUpdatesListener(TelegramBot telegramBot, ReportService reportService, ReportRepository reportRepository, OwnerRepository ownerRepository) throws IOException {
+        this.ownerRepository = ownerRepository;
 
         this.dogsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "dogShelter.json")), Shelter.class);
 
         this.catsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "catShelter.json")), Shelter.class);
 
         this.telegramBot = telegramBot;
-
+        this.reportService = reportService;
     }
 
     /**
@@ -90,19 +93,13 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     } else if ("/id".equals(text)) {
                         sendChatId(chatId);
                     }
-                    /* в тестовом режиме(только кошки)
-                     * сообщение /report вызыввает метод, посылающий ответное сообщение с форматом отчёта*/
-                    else if ("/report".equals(message.text())&&message.caption()!=null&&message.document().mimeType().equals("image/jpeg")) {
+
+                    else if (message.caption().contains("/report") && message.caption() != null && message.photo() != null/*message.document().mimeType().equals("image/jpeg")*/) {
                         SendMessage sendMessage = new SendMessage(chatId, "gg");
                         telegramBot.execute(sendMessage);
-                       //initiateReportDialog(chatId);
-                    }
-                    /* в тестовом режиме(только кошки)
-                     * если сообщение содержит фото и текст, то это воспринимается как отчёт и прогружается в базу*/
-                    else if ("/sendreport 1".equals(message.caption())) {
+                        reportService.addReport(chatId, message.caption(), message.photo().toString());
                         telegramBot.execute(new SendMessage(chatId, "добавляем отчёт"));
-                        //receiveAndParseReport(message, chatId);
-
+                        //initiateReportDialog(chatId);
                     }
                     if (message.contact() != null) {
                         sendContact(message, chatId);
@@ -288,7 +285,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     public void initiateReportDialog(long chatId) {
         SendMessage sendMessage = new SendMessage(chatId, """
                 Пожалуйста, заполните отчёт по следующим пунктам:
-                1) id животного
+                1) id животного.
                 2) Рацион животного.
                 3) Общее самочувствие и привыкание к новому месту.
                 4) Изменение в поведении: отказ от старых привычек, приобретение новых.
@@ -297,39 +294,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         telegramBot.execute(sendMessage);
     }
 
-    /**
-     * МЕТОД НА ЗАГЛУШКАХ
-     * Парсит и добавляет отчёт из сообщения
-     * @param message сообщение из апдейтера
-     * @param chatId идентификатор чата
-     */
-   /* public void receiveAndParseReport(Message message, long chatId) {
-        int beginIndex = message.caption().indexOf("1");
-        long catId = Long.parseLong(message.caption().substring(beginIndex));
-        long ownerId = catOwnerRepository.findCatOwnerByChatId(chatId).getIdCO();
-//        if (ownerId.equals(null)){
-//            throw new RuntimeException("ownerId is null");
-//        }
-        String photo = message.photo().toString();
-        CatReportDTO catReportDTO = new CatReportDTO(0L,
-                catId,
-                ownerId,
-                photo,
-                "meals",
-                "well-being",
-                "behaviour",
-                LocalDateTime.now().toLocalDate(),
-                LocalDateTime.now().toLocalTime(),
-                true,
-                false);
-        catReportService.addReport(catReportDTO);
-        if (catReportRepository.existsById(catReportRepository.findCatReportByCat_Id(catId).getId())) {
-            SendMessage sendMessage = new SendMessage(chatId, "Отчёт успешно добавлен");
-            telegramBot.execute(sendMessage);
-        } else {
-            SendMessage sendMessage = new SendMessage(chatId, "Отчёт не добавлен!");
-            telegramBot.execute(sendMessage);
-        }}*/
 
 }
 

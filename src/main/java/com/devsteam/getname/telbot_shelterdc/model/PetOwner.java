@@ -10,8 +10,8 @@ import java.util.List;
 public class PetOwner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_po")
-    private Long idPO;
+    @Column(name = "id_co")
+    private Long idCO;
     @Column(name = "chat_id",nullable = false)
     private Long chatId;
     @Column(name = "full_name",nullable = false)
@@ -28,16 +28,16 @@ public class PetOwner {
  * Правило: На испытательный срок - одно животное в одни руки.
  */
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cat_id")
+    @JoinColumn(name = "pet_id")
     private Pet pet;
 
 /** Архив ежедневных отчетов "усыновителя" питомца в порядке поступления. */
-  /*  @OneToMany(mappedBy = "catOwner", cascade = CascadeType.ALL, orphanRemoval = true) // было - "cat_owner"
-    private List<CatReport> reportList = new LinkedList<>();  //*/
+    @OneToMany(mappedBy = "petOwner", cascade = CascadeType.ALL, orphanRemoval = true) // было - "cat_owner"
+    private List<Report> reportList = new LinkedList<>();  //
 
 // --------------------- Constructors ---------------------------------------------------
 
-    /** Пустой конструктор, что бы Hibernat мог осуществлять манипуляции с классом. */
+    /** Пустой конструктор, что бы Hibernate мог осуществлять манипуляции с классом. */
     public PetOwner() {}
 
     public PetOwner(Long chatId, String fullName, String phone, String address, StatusOwner statusOwner) {
@@ -48,9 +48,9 @@ public class PetOwner {
         this.statusOwner = statusOwner;
     }
 
-    public PetOwner(Long idPO, Long chatId, String fullName, String phone, String address,
+    public PetOwner(Long idCO, Long chatId, String fullName, String phone, String address,
                     StatusOwner statusOwner, Pet pet) {
-        this.idPO = idPO;
+        this.idCO = idCO;
         this.chatId = chatId;
         this.fullName = fullName;
         this.phone = phone;
@@ -60,12 +60,12 @@ public class PetOwner {
     }
 //------------ Getters & setters -------------------------------------------------------
 
-    public Long getIdPO() {
-        return idPO;
+    public Long getIdCO() {
+        return idCO;
     }
 
-    public void setIdPO(Long idCO) {
-        this.idPO = idCO;
+    public void setIdCO(Long idCO) {
+        this.idCO = idCO;
     }
 
     public Long getChatId() {
@@ -116,11 +116,11 @@ public class PetOwner {
         this.pet = pet;
     }
 
-/*    public List<CatReport> getReportList() {
+    public List<Report> getReportList() {
         return reportList;
     }
 
-    public void setReportList(List<CatReport> reportList) {
+    public void setReportList(List<Report> reportList) {
         this.reportList = reportList;
-    }*/
+    }
 }

@@ -9,7 +9,7 @@ public class Pet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "birth_year")
-    private String birthYear;
+    private int birthYear;
 
     @Column(name = "name")
     private String name;
@@ -38,7 +38,7 @@ public class Pet {
     public Pet() {
     }
 
-    public Pet(long id, String birthYear, String name, String breed, String description, Color color, Status status, PetOwner petOwner, Kind kind) {
+    public Pet(long id, int birthYear, String name, String breed, String description, Color color, Status status, PetOwner petOwner, Kind kind) {
         this.id = id;
         this.birthYear = birthYear;
         this.name = name;
@@ -50,7 +50,7 @@ public class Pet {
         this.kind = kind;
     }
 
-    public Pet(String birthYear, String name, String breed, String description, Color color, Status status, Kind kind) {
+    public Pet(int birthYear, String name, String breed, String description, Color color, Status status, Kind kind) {
         this.birthYear = birthYear;
         this.name = name;
         this.breed = breed;
@@ -64,7 +64,7 @@ public class Pet {
         return id;
     }
 
-    public String getBirthYear() {
+    public int getBirthYear() {
         return birthYear;
     }
 
@@ -84,7 +84,7 @@ public class Pet {
         this.id = id;
     }
 
-    public void setBirthYear(String birthYear) {
+    public void setBirthYear(int birthYear) {
         this.birthYear = birthYear;
     }
 

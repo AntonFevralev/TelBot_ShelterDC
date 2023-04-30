@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 import static com.devsteam.getname.telbot_shelterdc.dto.PetDTO.petToDTO;
 import static com.devsteam.getname.telbot_shelterdc.model.Status.*;
 
@@ -29,9 +28,11 @@ public class PetService {
 
 
 
+
     public PetService(PetRepository petRepository, OwnerRepository ownerRepository) {
         this.petRepository = petRepository;
         this.ownerRepository = ownerRepository;
+
     }
 
     /**
@@ -43,6 +44,12 @@ public class PetService {
      * @throws WrongPetException при попытке добавить кошку без имени
      */
     public PetDTO addPet(PetDTO petDTO) {
+        if(!Utils.stringValidation(petDTO.name()) || !Utils.stringValidation(petDTO.breed()) || !Utils.stringValidation(petDTO.description())) {
+            throw new WrongPetException("Необходимо заполнить следующие поля: имя животного, порода, описание.");
+        }
+        if (petDTO.birthYear() <= 2000) {
+            throw new WrongPetException("Год рождения животного не может быть меньше 2000!");
+        }
         Pet pet = new Pet(petDTO.birthYear(), petDTO.name(), petDTO.breed(), petDTO.description(), petDTO.color(), FREE, petDTO.kind());
         return petToDTO(petRepository.save(pet));
     }
@@ -84,15 +91,13 @@ public class PetService {
         if(Utils.stringValidation(petDTO.breed())){
             pet.setBreed(petDTO.breed());
         }
-        if(Utils.stringValidation(petDTO.birthYear())){
+        if(petDTO.birthYear() > 2000){
             pet.setBirthYear(petDTO.birthYear());
         }
         if(Utils.stringValidation(petDTO.description())){
             pet.setDescription(petDTO.description());
         }
-
-            pet.setColor(petDTO.color());
-
+        pet.setColor(petDTO.color());
         if(petDTO.ownerId()!=0){
             pet.setPetOwner(ownerRepository.findById(petDTO.ownerId()).orElseThrow());
             PetOwner owner = ownerRepository.findById(petDTO.ownerId()).orElseThrow();
