@@ -1,7 +1,6 @@
 package com.devsteam.getname.telbot_shelterdc.service;
 
 import com.devsteam.getname.telbot_shelterdc.Utils;
-import com.devsteam.getname.telbot_shelterdc.dto.CatDTO;
 import com.devsteam.getname.telbot_shelterdc.dto.PetDTO;
 import com.devsteam.getname.telbot_shelterdc.exception.WrongPetException;
 import com.devsteam.getname.telbot_shelterdc.model.Kind;
@@ -9,14 +8,12 @@ import com.devsteam.getname.telbot_shelterdc.model.Pet;
 import com.devsteam.getname.telbot_shelterdc.model.PetOwner;
 import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.PetRepository;
-import com.devsteam.getname.telbot_shelterdc.repository.ShelterRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.devsteam.getname.telbot_shelterdc.dto.CatDTO.catToCatDTO;
 import static com.devsteam.getname.telbot_shelterdc.dto.PetDTO.petToDTO;
 import static com.devsteam.getname.telbot_shelterdc.model.Status.*;
 
@@ -29,13 +26,13 @@ public class PetService {
     private final PetRepository petRepository;
     private final OwnerRepository ownerRepository;
 
-    private final ShelterRepository shelterRepository;
 
 
-    public PetService(PetRepository petRepository, OwnerRepository ownerRepository, ShelterRepository shelterRepository) {
+
+    public PetService(PetRepository petRepository, OwnerRepository ownerRepository) {
         this.petRepository = petRepository;
         this.ownerRepository = ownerRepository;
-        this.shelterRepository = shelterRepository;
+
     }
 
     /**
@@ -96,8 +93,8 @@ public class PetService {
         }
         pet.setColor(petDTO.color());
         if(petDTO.ownerId()!=0){
-            pet.setOwner(ownerRepository.findById(petDTO.ownerId()).orElseThrow());
-            Owner owner = ownerRepository.findById(petDTO.ownerId()).orElseThrow();
+            pet.setPetOwner(ownerRepository.findById(petDTO.ownerId()).orElseThrow());
+            PetOwner owner = ownerRepository.findById(petDTO.ownerId()).orElseThrow();
             owner.setPet(pet);
             ownerRepository.save(owner);
         }
@@ -115,11 +112,11 @@ public class PetService {
      */
     public void removePet(long id) {
         Pet pet = petRepository.findById(id).orElseThrow();
-        PetOwner petOwner = pet.getOwner();
+        PetOwner petOwner = pet.getPetOwner();
         if(petOwner == null) {
             petRepository.deleteById(id);
         } else {
-            petOwner.setCat(null);
+            petOwner.setPet(null);
             ownerRepository.save(petOwner);
             petRepository.deleteById(id);
         }

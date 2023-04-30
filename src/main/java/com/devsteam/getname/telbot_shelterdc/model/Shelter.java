@@ -4,13 +4,11 @@ package com.devsteam.getname.telbot_shelterdc.model;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
 /**
  * класс содердит основную информацию о приюте собак
  */
-@Entity
+
 public class Shelter {
-    @Id
     private int ID;
     /**
      * название приюта
@@ -59,10 +57,12 @@ public class Shelter {
     /**
      * рекомедации по обустройству дома для взрослой собаки
      */
+
     private String recommendationsAdult;
     /**
      * рекомендации по обустройству дома для животного с ограниченными возможностями (зрение, передвижение)
      */
+
     private String recommendationsDisabled;
     /**
      * советы кинолога по первичному общению с собакой
@@ -71,23 +71,24 @@ public class Shelter {
     /**
      * рекомендации по проверенным кинологам для дальнейшего обращения к ним
      */
+
     private String recommendedCynologists;
     /**
      * список причин, почему могут отказать и не дать забрать собаку из приюта
      */
+
     private String rejectReasonsList;
     /**
      * идентификатор чата с волонтером
      */
+
     private long chatId;
+
 
     public Shelter() {
     }
 
-    public Shelter(int ID, String title, String schedule, String address, String mapLink, String security, String info,
-                   String safetyPrecautions, String meetAndGreatRules, String docList, String transportingRules,
-                   String recommendations, String recommendationsAdult, String recommendationsDisabled,
-                   String cynologistAdvice, String recommendedCynologists, String rejectReasonsList, long chatId) {
+    public Shelter(int ID, String title, String schedule, String address, String mapLink, String security, String info, String safetyPrecautions, String meetAndGreatRules, String docList, String transportingRules, String recommendations, String recommendationsAdult, String recommendationsDisabled, String cynologistAdvice, String recommendedCynologists, String rejectReasonsList, long chatId) {
         this.ID = ID;
         this.title = title;
         this.schedule = schedule;
@@ -108,20 +109,12 @@ public class Shelter {
         this.chatId = chatId;
     }
 
-    public long getChatId() {
-        return chatId;
-    }
-
-    public void setChatId(long chatId) {
-        this.chatId = chatId;
-    }
-
-    public long getID() {
+    public int getID() {
         return ID;
     }
 
-    public void setID(int id) {
-        this.ID = id;
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
     public String getTitle() {
@@ -251,5 +244,12 @@ public class Shelter {
     public void setRejectReasonsList(String rejectReasonsList) {
         this.rejectReasonsList = rejectReasonsList;
     }
-}
 
+    public long getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(long chatId) {
+        this.chatId = chatId;
+    }
+}

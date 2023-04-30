@@ -6,7 +6,7 @@ import java.util.List;
 /** Класс "усыновителей" кошек, а также волонтёров, работающих с кошками.
  * При этом у волонтеров поде животного будет пустым. */
 @Entity
-@Table(name = "cat_owner")
+@Table(name = "pet_owner")
 public class PetOwner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,13 +27,13 @@ public class PetOwner {
 /** Поле животного, заполняется волонтером после заключения договора.
  * Правило: На испытательный срок - одно животное в одни руки.
  */
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "cat_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pet_id")
     private Pet pet;
 
 /** Архив ежедневных отчетов "усыновителя" питомца в порядке поступления. */
-    @OneToMany(mappedBy = "catOwner", cascade = CascadeType.ALL, orphanRemoval = true) // было - "cat_owner"
-    private List<CatReport> reportList = new LinkedList<>();  //
+    @OneToMany(mappedBy = "petOwner", cascade = CascadeType.ALL, orphanRemoval = true) // было - "cat_owner"
+    private List<Report> reportList = new LinkedList<>();  //
 
 // --------------------- Constructors ---------------------------------------------------
 
@@ -108,23 +108,19 @@ public class PetOwner {
         this.statusOwner = statusOwner;
     }
 
-    public Pet getCat() {
+    public Pet getPet() {
         return pet;
     }
 
-    public void setCat(Pet pet) {
+    public void setPet(Pet pet) {
         this.pet = pet;
     }
 
-    public List<CatReport> getReportList() {
+    public List<Report> getReportList() {
         return reportList;
     }
 
-    public void setReportList(List<CatReport> reportList) {
+    public void setReportList(List<Report> reportList) {
         this.reportList = reportList;
-    }
-
-    public void addReport(CatReport catReport) {
-        reportList.add(catReport);
     }
 }

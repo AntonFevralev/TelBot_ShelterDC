@@ -1,6 +1,6 @@
 package com.devsteam.getname.telbot_shelterdc.service;
 
-import com.devsteam.getname.telbot_shelterdc.dto.CatOwnerDTO;
+import com.devsteam.getname.telbot_shelterdc.dto.PetOwnerDTO;
 import com.devsteam.getname.telbot_shelterdc.exception.NoOwnerWithSuchIdException;
 import com.devsteam.getname.telbot_shelterdc.exception.OwnerListIsEmptyException;
 import com.devsteam.getname.telbot_shelterdc.exception.PetIsNotFreeException;
@@ -15,37 +15,38 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.devsteam.getname.telbot_shelterdc.Utils.stringValidation;
-import static com.devsteam.getname.telbot_shelterdc.dto.CatOwnerDTO.catOwnerToDTO;
+import static com.devsteam.getname.telbot_shelterdc.dto.PetOwnerDTO.petOwnerToDTO;
 import static com.devsteam.getname.telbot_shelterdc.model.Status.BUSY;
 import static com.devsteam.getname.telbot_shelterdc.model.Status.FREE;
 import static com.devsteam.getname.telbot_shelterdc.model.StatusOwner.SEARCH;
 
 @Service
-public class CatOwnerService {
+public class PetOwnerService {
 
     private final OwnerRepository ownerRepository;
     private final PetRepository petRepository;
 
-    private static final Logger logger = LoggerFactory.getLogger(CatOwnerService.class);
+    private static final Logger logger = LoggerFactory.getLogger(PetOwnerService.class);
 
-    public CatOwnerService(OwnerRepository ownerRepository, PetRepository petRepository) {
+    public PetOwnerService(OwnerRepository ownerRepository, PetRepository petRepository) {
         this.ownerRepository = ownerRepository;
         this.petRepository = petRepository;
     }
 
     /** Метод добавления человека в БД, на вход принимает данные и сохраняет их в базу.
-     * @param chatId номер человека в чате.
-     * @param fullName ФИО человека.
-     * @param phone № телефона.
-     * @param address адрес проживания человека.
+//     * @param chatId номер человека в чате.
+//     * @param fullName ФИО человека.
+//     * @param phone № телефона.
+//     * @param address адрес проживания человека.
      */
-    public CatOwnerDTO creatCatOwner(Long chatId, String fullName, String phone, String address){
-        if (chatId != 0 && stringValidation(fullName)
-                && stringValidation(phone)
-                && stringValidation(address))
+    public PetOwnerDTO creatCatOwner(PetOwnerDTO petOwnerDTO){
+        if (petOwnerDTO.chatId() != 0 && stringValidation(petOwnerDTO.fullName())
+                && stringValidation(petOwnerDTO.phone())
+                && stringValidation(petOwnerDTO.address()))
            {
-               PetOwner petOwner = new PetOwner(chatId, fullName, phone, address,SEARCH);
-               return catOwnerToDTO(ownerRepository.save(petOwner));
+               PetOwner petOwner = new PetOwner(petOwnerDTO.chatId(), petOwnerDTO.fullName(),
+                       petOwnerDTO.phone(), petOwnerDTO.address(),SEARCH);
+               return petOwnerToDTO(ownerRepository.save(petOwner));
                
         } else throw new IllegalArgumentException("Данные человека заполнены не корректно.");
     }
@@ -53,10 +54,10 @@ public class CatOwnerService {
     /** Метод возвращает лист всех сущностей "усыновителей" из базы.
      *
      */
-    public List<CatOwnerDTO> getAllCatOwners(){
+    public List<PetOwnerDTO> getAllCatOwners(){
         List<PetOwner> owners = ownerRepository.findAll();
         if (!owners.isEmpty()) {
-            return owners.stream().map(CatOwnerDTO::catOwnerToDTO).collect(Collectors.toList());
+            return owners.stream().map(PetOwnerDTO::petOwnerToDTO).collect(Collectors.toList());
         } else throw new OwnerListIsEmptyException();
     }
 
@@ -79,8 +80,8 @@ public class CatOwnerService {
         Pet pet = petRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         if (pet.getStatus().equals(FREE)) {
             pet.setStatus(BUSY);
-            owner.setCat(pet);
-            pet.setCatOwner(owner);
+            owner.setPet(pet);
+            pet.setPetOwner(owner);
             ownerRepository.save(owner);
             petRepository.save(pet);
         } else throw new PetIsNotFreeException("Животное занято другим человеком.");
@@ -92,11 +93,11 @@ public class CatOwnerService {
      */
     public void takeTheCatAwayByIdCO(Long idCO) {
         PetOwner owner = ownerRepository.findById(idCO).orElseThrow(NoOwnerWithSuchIdException::new);
-        Pet pet = owner.getCat();
+        Pet pet = owner.getPet();
         pet.setStatus(Status.FREE);
-        pet.setCatOwner(null);
+        pet.setPetOwner(null);
         petRepository.save(pet);
-        owner.setCat(null);
+        owner.setPet(null);
         ownerRepository.save(owner);
 
     }
@@ -108,9 +109,9 @@ public class CatOwnerService {
     public void deleteCatOwnerByIdCO(Long idCO){
         try {
             PetOwner owner = ownerRepository.findById(idCO).orElseThrow();
-            if (owner.getCat() != null) {
-                Pet pet = owner.getCat();
-                pet.setCatOwner(null);
+            if (owner.getPet() != null) {
+                Pet pet = owner.getPet();
+                pet.setPetOwner(null);
                 pet.setStatus(FREE);
                 petRepository.save(pet);
             }

@@ -1,12 +1,12 @@
 package com.devsteam.getname.telbot_shelterdc.listener;
 
-import com.devsteam.getname.telbot_shelterdc.dto.CatReportDTO;
 import com.devsteam.getname.telbot_shelterdc.model.*;
-import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
-import com.devsteam.getname.telbot_shelterdc.repository.CatReportRepository;
-import com.devsteam.getname.telbot_shelterdc.repository.PetRepository;
-import com.devsteam.getname.telbot_shelterdc.service.CatReportService;
-import com.devsteam.getname.telbot_shelterdc.service.ShelterService;
+
+import com.devsteam.getname.telbot_shelterdc.repository.ReportRepository;
+
+import com.devsteam.getname.telbot_shelterdc.service.ReportService;
+
+import com.google.gson.Gson;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.*;
@@ -19,8 +19,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.time.LocalDateTime;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
+
+import static java.nio.file.Files.readString;
 
 @Component
 public class TelegramBotUpdatesListener implements UpdatesListener {
@@ -30,30 +33,28 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     /**
      * объект приюта собак, поля которого заполняются из БД для работы бота
      */
-    private final  Shelter dogsShelter;
+    private final Shelter dogsShelter;
     /**
      * объект приюта кошек, поля которого заполняются из БД для работы бота
      */
     private final Shelter catsShelter;
     private final TelegramBot telegramBot;
-    private final OwnerRepository ownerRepository;
-    private final ShelterService service;
-    private final PetRepository petRepository;
 
-    private final CatReportService catReportService;
 
-    private final CatReportRepository catReportRepository;
 
-    public TelegramBotUpdatesListener(TelegramBot telegramBot, OwnerRepository ownerRepository, ShelterService service, PetRepository petRepository, CatReportService catReportService, CatReportRepository catReportRepository) {
+    private final ReportService reportService;
+
+    private final ReportRepository reportRepository;
+
+    public TelegramBotUpdatesListener(TelegramBot telegramBot, ReportService reportService, ReportRepository reportRepository) throws IOException {
+
+        this.dogsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "dogShelter.json")), Shelter.class);
+
+        this.catsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "catShelter.json")), Shelter.class);
+
         this.telegramBot = telegramBot;
-        this.ownerRepository = ownerRepository;
-        this.service = service;
-        this.dogsShelter = service.getByID(1);
-        this.catsShelter = service.getByID(2);
-
-        this.petRepository = petRepository;
-        this.catReportService = catReportService;
-        this.catReportRepository = catReportRepository;
+        this.reportService = reportService;
+        this.reportRepository = reportRepository;
     }
 
     /**
@@ -61,7 +62,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      */
     @PostConstruct
     public void init() {
+
         telegramBot.setUpdatesListener(this);
+
     }
 
     /**
@@ -75,8 +78,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         try {
             updates.forEach(update -> {
                 logger.info("Handles update: {}", update);
-                this.dogsShelter = service.getByID(1);
-                this.catsShelter = service.getByID(2);
                 //если была нажата кнопка
                 if (update.callbackQuery() != null) {
                     callBackQueryHandler(update);
@@ -94,14 +95,16 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     }
                     /* в тестовом режиме(только кошки)
                      * сообщение /report вызыввает метод, посылающий ответное сообщение с форматом отчёта*/
-                    else if ("/report".equals(message.text())) {
-                        initiateReportDialog(chatId);
+                    else if ("/report".equals(message.text())&&message.caption()!=null&&message.document().mimeType().equals("image/jpeg")) {
+                        SendMessage sendMessage = new SendMessage(chatId, "gg");
+                        telegramBot.execute(sendMessage);
+                       //initiateReportDialog(chatId);
                     }
                     /* в тестовом режиме(только кошки)
                      * если сообщение содержит фото и текст, то это воспринимается как отчёт и прогружается в базу*/
                     else if ("/sendreport 1".equals(message.caption())) {
                         telegramBot.execute(new SendMessage(chatId, "добавляем отчёт"));
-                        receiveAndParseReport(message, chatId);
+                        //receiveAndParseReport(message, chatId);
 
                     }
                     if (message.contact() != null) {
@@ -111,6 +114,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             });
         } catch (
                 Exception e) {
+            e.printStackTrace();
         }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
@@ -121,9 +125,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * @param chatId идентификатор чата
      */
     public void startMessage(long chatId) {
-        SendMessage sendMessage = new SendMessage(chatId, "   Привет! Данный бот предоставляет информацию о двух приютах. Кошачий приют \"" + this.catsShelter.getTitle() + "\"" +
-                " и собачий приют \"" + this.dogsShelter.getTitle() + "\". Выберите один");
-        sendMessage.parseMode(ParseMode.HTML);
+        SendMessage sendMessage = new SendMessage(chatId, "   Привет! Данный бот предоставляет информацию о двух приютах. Кошачий приют \"" +
+                this.catsShelter.getTitle() + " и собачий приют \"" + this.dogsShelter.getTitle() + "\". Выберите один");
+        sendMessage.parseMode(ParseMode.Markdown);
         InlineKeyboardButton cats = new InlineKeyboardButton("Кошки");
         cats.callbackData("Cats");
         InlineKeyboardButton dogs = new InlineKeyboardButton("Собаки");
@@ -192,7 +196,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         InlineKeyboardButton mainMenu = new InlineKeyboardButton("Главное меню");
         mainMenu.callbackData("MainMenu");
         Keyboard keyboard = new InlineKeyboardMarkup().addRow(infoDogsShelter).addRow(scheduleDogsShelter)
-                .addRow(dogsShelterContact).addRow(safetyRecommendationsDogs).addRow(dogsShelterContact).addRow(back).addRow(mainMenu).addRow(
+                .addRow(safetyRecommendationsDogs).addRow(dogsShelterContact).addRow(back).addRow(mainMenu).addRow(
                         new InlineKeyboardButton("Позвать волонтера").url("https://t.me/fevralevanton"));
         sendMessage.replyMarkup(keyboard);
         telegramBot.execute(sendMessage);
@@ -302,10 +306,10 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * @param message сообщение из апдейтера
      * @param chatId идентификатор чата
      */
-    public void receiveAndParseReport(Message message, long chatId) {
+   /* public void receiveAndParseReport(Message message, long chatId) {
         int beginIndex = message.caption().indexOf("1");
         long catId = Long.parseLong(message.caption().substring(beginIndex));
-        long ownerId = ownerRepository.findCatOwnerByChatId(chatId).getIdCO();
+        long ownerId = catOwnerRepository.findCatOwnerByChatId(chatId).getIdCO();
 //        if (ownerId.equals(null)){
 //            throw new RuntimeException("ownerId is null");
 //        }
@@ -328,7 +332,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         } else {
             SendMessage sendMessage = new SendMessage(chatId, "Отчёт не добавлен!");
             telegramBot.execute(sendMessage);
-        }
-    }
+        }}*/
+
 }
 
