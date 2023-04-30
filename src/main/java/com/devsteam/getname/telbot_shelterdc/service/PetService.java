@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.devsteam.getname.telbot_shelterdc.Utils.colorValidation;
 import static com.devsteam.getname.telbot_shelterdc.dto.PetDTO.petToDTO;
 import static com.devsteam.getname.telbot_shelterdc.model.Status.*;
 
@@ -27,13 +28,13 @@ public class PetService {
     private final PetRepository petRepository;
     private final OwnerRepository ownerRepository;
 
-    private final ShelterRepository shelterRepository;
 
 
-    public PetService(PetRepository petRepository, OwnerRepository ownerRepository, ShelterRepository shelterRepository) {
+
+    public PetService(PetRepository petRepository, OwnerRepository ownerRepository) {
         this.petRepository = petRepository;
         this.ownerRepository = ownerRepository;
-        this.shelterRepository = shelterRepository;
+
     }
 
     /**
@@ -92,7 +93,8 @@ public class PetService {
         if(Utils.stringValidation(petDTO.description())){
             pet.setDescription(petDTO.description());
         }
-        pet.setColor(petDTO.color());
+        if (colorValidation(petDTO.color())){
+        pet.setColor(petDTO.color());}
         if(petDTO.ownerId()!=0){
             pet.setPetOwner(ownerRepository.findById(petDTO.ownerId()).orElseThrow());
             PetOwner owner = ownerRepository.findById(petDTO.ownerId()).orElseThrow();
