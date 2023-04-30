@@ -1,7 +1,8 @@
 package com.devsteam.getname.telbot_shelterdc.controller;
 
 import com.devsteam.getname.telbot_shelterdc.service.ShelterService;
-import org.junit.Assert;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -18,6 +19,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.Assert;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.File;
@@ -81,16 +83,16 @@ class ShelterControllerTest {
     void downloadDogShelter() throws Exception {
         Mockito.when(service.getDataFile(any())).thenReturn(new File("src/main/resources/dogShelter.json"));
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8080/files/downloadDogShelter").contentType(MediaType.APPLICATION_OCTET_STREAM)).andExpect(MockMvcResultMatchers.status().is(200)).andReturn();
-        Assert.assertEquals(200, result.getResponse().getStatus());
-        Assert.assertEquals("application/json", result.getResponse().getContentType());
+        Assertions.assertEquals(200, result.getResponse().getStatus());
+        Assertions.assertEquals("application/json", result.getResponse().getContentType());
     }
 
     @Test
     void downloadCatShelter() throws Exception {
         Mockito.when(service.getDataFile(any())).thenReturn(new File("src/main/resources/catShelter.json"));
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8080/files/downloadCatShelter").contentType(MediaType.APPLICATION_OCTET_STREAM)).andExpect(MockMvcResultMatchers.status().is(200)).andReturn();
-        Assert.assertEquals(200, result.getResponse().getStatus());
-        Assert.assertEquals("application/json", result.getResponse().getContentType());
+        Assertions.assertEquals(200, result.getResponse().getStatus());
+        Assertions.assertEquals("application/json", result.getResponse().getContentType());
     }
 
 }
