@@ -3,7 +3,6 @@ package com.devsteam.getname.telbot_shelterdc.service;
 import com.devsteam.getname.telbot_shelterdc.dto.PetDTO;
 import com.devsteam.getname.telbot_shelterdc.exception.WrongPetException;
 import com.devsteam.getname.telbot_shelterdc.model.Color;
-import com.devsteam.getname.telbot_shelterdc.model.Kind;
 import com.devsteam.getname.telbot_shelterdc.model.Pet;
 import com.devsteam.getname.telbot_shelterdc.model.Status;
 import com.devsteam.getname.telbot_shelterdc.repository.PetRepository;
@@ -18,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-public class PetServiceTests {
+public class PetServiceTest {
 
     @Autowired
     PetService petService;
