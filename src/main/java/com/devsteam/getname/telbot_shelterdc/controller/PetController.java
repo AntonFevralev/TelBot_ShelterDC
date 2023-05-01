@@ -30,7 +30,6 @@ public class PetController {
         this.petService = petService;
     }
     @GetMapping("{id}")
-    @RequestMapping("/findPet")
     @Operation(
             summary = "Поиск животного",
             description = "Поиск осуществляется по id"
@@ -55,8 +54,7 @@ public class PetController {
     public ResponseEntity<PetDTO> getPet(@PathVariable long id) {
         return ResponseEntity.ok().body(petService.getPet(id));
     }
-    @PostMapping
-    @RequestMapping("/addPet")
+    @PostMapping("/addPet")
     @Operation(summary = "Добавление нового животного")
     @ApiResponses(value = {
             @ApiResponse(
@@ -79,8 +77,7 @@ public class PetController {
         return ResponseEntity.ok().body(petService.addPet(petDTO));
     }
 
-    @DeleteMapping("/{id}")
-    @RequestMapping("/deletePet")
+    @DeleteMapping("{id}")
     @Operation(
             summary = "Удаление животного",
             description = "Удаление осуществляется по id"
@@ -100,8 +97,7 @@ public class PetController {
         petService.removePet(id);
         ResponseEntity.ok().build();
     }
-    @PutMapping("/{id}")
-    @RequestMapping("/updatePet")
+    @PutMapping("{id}")
     @Operation(
             summary = "Редактирование сведений о животном",
             description = "Редактирование осуществляется по id"
@@ -126,8 +122,7 @@ public class PetController {
     public ResponseEntity<PetDTO> updatePet(@RequestBody PetDTO petDTO) {
         return ResponseEntity.ok().body(petService.updatePet(petDTO));
     }
-    @GetMapping
-    @RequestMapping("/getAllPets")
+    @GetMapping("/getAllPets")
     @Operation(summary = "Вывод всех животных")
     @ApiResponses(value = {
             @ApiResponse(
