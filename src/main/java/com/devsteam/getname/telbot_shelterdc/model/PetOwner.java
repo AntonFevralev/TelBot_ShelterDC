@@ -1,6 +1,7 @@
 package com.devsteam.getname.telbot_shelterdc.model;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 /** Класс "усыновителей" кошек, а также волонтёров, работающих с кошками.
@@ -23,6 +24,10 @@ public class PetOwner {
     @Column(name = "status",nullable = false)
     @Enumerated(EnumType.STRING)
     private StatusOwner statusOwner;
+    /** Дата начала испытательного периода для "усыновителя" животного.
+      */
+    @Column(name = "start")
+    private LocalDate start;
 
 /** Поле животного, заполняется волонтером после заключения договора.
  * Правило: На испытательный срок - одно животное в одни руки.
@@ -47,15 +52,25 @@ public class PetOwner {
         this.address = address;
         this.statusOwner = statusOwner;
     }
-
+    public PetOwner(Long chatId, String fullName, String phone, String address,
+                    StatusOwner statusOwner, LocalDate start, Pet pet) {
+        this.chatId = chatId;
+        this.fullName = fullName;
+        this.phone = phone;
+        this.address = address;
+        this.statusOwner = statusOwner;
+        this.start = start;
+        this.pet = pet;
+    }
     public PetOwner(Long idCO, Long chatId, String fullName, String phone, String address,
-                    StatusOwner statusOwner, Pet pet) {
+                    StatusOwner statusOwner, LocalDate start, Pet pet) {
         this.idCO = idCO;
         this.chatId = chatId;
         this.fullName = fullName;
         this.phone = phone;
         this.address = address;
         this.statusOwner = statusOwner;
+        this.start = start;
         this.pet = pet;
     }
 //------------ Getters & setters -------------------------------------------------------
@@ -122,5 +137,13 @@ public class PetOwner {
 
     public void setReportList(List<Report> reportList) {
         this.reportList = reportList;
+    }
+
+    public LocalDate getStart() {
+        return start;
+    }
+
+    public void setStart(LocalDate start) {
+        this.start = start;
     }
 }

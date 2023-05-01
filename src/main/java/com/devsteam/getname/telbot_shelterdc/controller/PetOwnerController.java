@@ -35,7 +35,7 @@ public class PetOwnerController {
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
     public ResponseEntity<PetOwnerDTO>  addCatOwner(@RequestBody PetOwnerDTO petOwnerDTO) {
-        return ResponseEntity.ok().body(petOwnerService.creatCatOwner(petOwnerDTO));
+        return ResponseEntity.ok().body(petOwnerService.creatPetOwner(petOwnerDTO));
     }
     @GetMapping
     @Operation(summary = "Получение списка данных всех людей из БД")
@@ -49,7 +49,7 @@ public class PetOwnerController {
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
     public ResponseEntity<List<PetOwnerDTO>> getAllCatOwners(){
-        return ResponseEntity.ok().body(petOwnerService.getAllCatOwners());
+        return ResponseEntity.ok().body(petOwnerService.getAllPetOwners());
     }
     @DeleteMapping
     @Operation(summary = "Удаление человека из БД по его id")
@@ -63,7 +63,7 @@ public class PetOwnerController {
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
     public void deleteCatOwnerById(@RequestParam Long idCO){
-        petOwnerService.deleteCatOwnerByIdCO(idCO);
+        petOwnerService.deletePetOwnerByIdCO(idCO);
     }
     @PutMapping("/status")
     @Operation(summary = "Изменение статуса человека в БД по его id")
@@ -91,7 +91,7 @@ public class PetOwnerController {
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
     public void changeCat(@RequestParam Long idCO, @RequestParam Long id){
-       petOwnerService.changeCatByIdCO(idCO, id);
+       petOwnerService.changePetByIdCO(idCO, id);
     }
     @PutMapping("/delete")
     @Operation(summary = "Удаление кота из карты человека (по id человека) по какой-либо причине со сменой статуса кота.")
@@ -105,7 +105,7 @@ public class PetOwnerController {
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
     public void takeTheCatAway(@RequestParam Long idCO){
-        petOwnerService.takeTheCatAwayByIdCO(idCO);
+        petOwnerService.takeThePetAwayByIdCO(idCO);
     }
 
 }

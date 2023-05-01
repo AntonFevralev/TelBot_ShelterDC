@@ -3,6 +3,8 @@ package com.devsteam.getname.telbot_shelterdc.dto;
 import com.devsteam.getname.telbot_shelterdc.model.PetOwner;
 import com.devsteam.getname.telbot_shelterdc.model.StatusOwner;
 
+import java.time.LocalDate;
+
 /** Класс DTO владельца животного для передачи информации о нём в удобной форме.
  * @param idCO номер человека в приюте.
  * @param chatId номер человека в чате.
@@ -12,12 +14,12 @@ import com.devsteam.getname.telbot_shelterdc.model.StatusOwner;
  * @param statusOwner статус человека в приюте.
  * @param petId животного.
  */
-public record PetOwnerDTO(Long idCO, Long chatId, String fullName, String phone, String address, StatusOwner statusOwner, Long petId) {
+public record PetOwnerDTO(Long idCO, Long chatId, String fullName, String phone, String address, StatusOwner statusOwner, LocalDate start, Long petId) {
 
 
     public static PetOwnerDTO petOwnerToDTO(PetOwner petOwner){
         return new PetOwnerDTO(petOwner.getIdCO(), petOwner.getChatId(), petOwner.getFullName(), petOwner.getPhone(),
-                petOwner.getAddress(), petOwner.getStatusOwner(), petOwner.getPet() != null ? petOwner.getPet().getId() : 0L);
+                petOwner.getAddress(), petOwner.getStatusOwner(), petOwner.getStart(), petOwner.getPet() != null ? petOwner.getPet().getId() : 0L);
 
     }
 }
