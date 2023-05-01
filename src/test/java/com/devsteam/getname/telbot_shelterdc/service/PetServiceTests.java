@@ -105,68 +105,79 @@ public class PetServiceTests {
 
     @Test
     public void checkIfPetDescriptionIsUpdatedCorrectly() {
-        petService.addPet(PetDTO.petToDTO(testPet));
-        petService.addPet(PetDTO.petToDTO(testPet2));
-        PetDTO updatedPet = new PetDTO(2L, 2010, "Argo", "scottish",
+        PetDTO testPet = new PetDTO(2L, 2010, "Argo", "scottish",
+                "not very friendly", Color.GREY, Status.FREE, 0, CAT);
+        long testPetId = petService.addPet(testPet).id();
+        PetDTO updatedPet = new PetDTO(testPetId, 2010, "Argo", "scottish",
                 "now is very friendly too", Color.GREY, Status.FREE, 0, CAT);
         petService.updatePet(updatedPet);
         String expected = "now is very friendly too";
-        String actual = petService.getPet(2L).description();
+        String actual = petService.getPet(testPetId).description();
         assertEquals(expected, actual);
     }
 
     @Test
     public void checkIfPetNameIsUpdatedCorrectly() {
-        petService.addPet(PetDTO.petToDTO(testPet));
-        petService.addPet(PetDTO.petToDTO(testPet2));
-        PetDTO updatedPet = new PetDTO(2L, 2010, "Pushok", "scottish", "not very friendly", Color.GREY, Status.FREE, 0, CAT);
+        PetDTO testPet = new PetDTO(2L, 2010, "Argo", "scottish",
+                "not very friendly", Color.GREY, Status.FREE, 0, CAT);
+        long testPetId = petService.addPet(testPet).id();
+        PetDTO updatedPet = new PetDTO(testPetId, 2010, "Pushok", "scottish",
+                "not very friendly", Color.GREY, Status.FREE, 0, CAT);
         petService.updatePet(updatedPet);
         String expected = "Pushok";
-        String actual = petService.getPet(2L).name();
+        String actual = petService.getPet(testPetId).name();
         assertEquals(expected, actual);
     }
 
     @Test
     public void checkIfPetBirthYearIsUpdatedCorrectly() {
-        petService.addPet(PetDTO.petToDTO(testPet));
-        petService.addPet(PetDTO.petToDTO(testPet2));
-        PetDTO updatedPet = new PetDTO(2L, 2011, "Argo", "scottish", "not very friendly", Color.GREY, Status.FREE, 0, CAT);
+        PetDTO testPet = new PetDTO(2L, 2010, "Argo", "scottish",
+                "not very friendly", Color.GREY, Status.FREE, 0, CAT);
+        long testPetId = petService.addPet(testPet).id();
+        PetDTO updatedPet = new PetDTO(testPetId, 2011, "Argo", "scottish",
+                "not very friendly", Color.GREY, Status.FREE, 0, CAT);
         petService.updatePet(updatedPet);
         int expected = 2011;
-        int actual = petService.getPet(2L).birthYear();
+        int actual = petService.getPet(testPetId).birthYear();
         assertEquals(expected, actual);
     }
 
     @Test
     public void checkIfPetColorIsUpdatedCorrectly() {
-        petService.addPet(PetDTO.petToDTO(testPet));
-        petService.addPet(PetDTO.petToDTO(testPet2));
-        PetDTO updatedPet = new PetDTO(2L, 2011, "Argo", "scottish", "not very friendly", Color.WHITE, Status.FREE, 0, CAT);
+        PetDTO testPet = new PetDTO(2L, 2010, "Argo", "scottish",
+                "not very friendly", Color.GREY, Status.FREE, 0, CAT);
+        long testPetId = petService.addPet(testPet).id();
+        PetDTO updatedPet = new PetDTO(testPetId, 2011, "Argo", "scottish",
+                "not very friendly", Color.WHITE, Status.FREE, 0, CAT);
         petService.updatePet(updatedPet);
         Color expected = Color.WHITE;
-        Color actual = petService.getPet(2L).color();
+        Color actual = petService.getPet(testPetId).color();
         assertEquals(expected, actual);
     }
 
     @Test
     public void checkIfPetBreedIsUpdatedCorrectly() {
-        petService.addPet(PetDTO.petToDTO(testPet));
-        petService.addPet(PetDTO.petToDTO(testPet2));
-        PetDTO updatedPet = new PetDTO(2L, 2010, "Argo", "tabby", "not very friendly", Color.GREY, Status.FREE, 0, CAT);
+        PetDTO testPet = new PetDTO(2L, 2010, "Argo", "scottish",
+                "not very friendly", Color.GREY, Status.FREE, 0, CAT);
+        long testPetId = petService.addPet(testPet).id();
+        PetDTO updatedPet = new PetDTO(testPetId, 2010, "Argo", "tabby",
+                "not very friendly", Color.GREY, Status.FREE, 0, CAT);
         petService.updatePet(updatedPet);
         String expected = "tabby";
-        String actual = petService.getPet(2L).breed();
+        String actual = petService.getPet(testPetId).breed();
         assertEquals(expected, actual);
     }
 
     @Test
     public void checkIfPetStatusIsUpdatedCorrectly() {
-        petService.addPet(PetDTO.petToDTO(testPet));
-        petService.addPet(PetDTO.petToDTO(testPet2));
-        PetDTO updatedPet = new PetDTO(2L, 2010, "Argo", "scottish", "not very friendly", Color.GREY, Status.ADOPTED, 0, CAT);
+        PetDTO testPet = new PetDTO(2L, 2010, "Argo", "scottish",
+                "not very friendly", Color.GREY, Status.FREE, 0, CAT);
+        long testPetId = petService.addPet(testPet).id();
+        PetDTO updatedPet = new PetDTO(testPetId, 2010, "Argo", "scottish",
+                "not very friendly", Color.GREY, Status.ADOPTED, 0, CAT);
         petService.updatePet(updatedPet);
         Status expected = Status.ADOPTED;
-        Status actual = petService.getPet(2L).status();
+        Status actual = petService.getPet(testPetId).status();
         assertEquals(expected, actual);
     }
 
