@@ -15,9 +15,9 @@ import java.util.List;
 
 /** Класс контроллера для редактирования информации о клиентах и персонале приюта кошек.
  */
-@Tag(name="КЛИЕНТЫ И ПЕРСОНАЛ ПРИЮТА КОШЕК", description = "Редактирование данных людей в БД приюта кашек")
+@Tag(name="КЛИЕНТЫ И ПЕРСОНАЛ ПРИЮТА ЖИВОТНЫХ", description = "Редактирование данных людей в БД приюта животных")
 @RestController
-@RequestMapping(value = "/catowner")
+@RequestMapping(value = "/petowner")
 public class PetOwnerController {
     private final PetOwnerService petOwnerService;
     public PetOwnerController(PetOwnerService petOwnerService) {
@@ -94,7 +94,7 @@ public class PetOwnerController {
        petOwnerService.changePetByIdCO(idCO, id);
     }
     @PutMapping("/delete")
-    @Operation(summary = "Удаление кота из карты человека (по id человека) по какой-либо причине со сменой статуса кота.")
+    @Operation(summary = "Удаление животного из карты человека (по id человека) по какой-либо причине со сменой статуса кота.")
     @ApiResponses( {
             @ApiResponse( responseCode = "200",
                     description = "Животное стерто в карте клиента.",
