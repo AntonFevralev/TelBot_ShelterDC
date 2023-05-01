@@ -76,27 +76,31 @@ public class PetServiceTests {
     }
 
     @Test
-    public void checkIfCatIsAddedToRepository() {
-        petService.addPet(PetDTO.petToDTO(testPet));
-        assertEquals(PetDTO.petToDTO(testPet), petService.getPet(1L));
+    public void checkIfPetIsAddedToRepository() {
+        long idTestPet = petService.addPet(PetDTO.petToDTO(testPet)).id();
+        PetDTO expectedPet = new PetDTO(1L, 2019, "Pusheen", "tabby",
+                "very friendly", Color.BLACK_AND_WHITE, Status.FREE, 0, CAT);
+        assertEquals(expectedPet, petService.getPet(idTestPet));
     }
 
     @Test
     public void checkIfPetIsFoundById() {
-        petService.addPet(PetDTO.petToDTO(testPet));
-        assertEquals(PetDTO.petToDTO(testPet), petService.getPet(1L));
+        long idTestPet = petService.addPet(PetDTO.petToDTO(testPet)).id();
+        PetDTO expectedPet = new PetDTO(1L, 2019, "Pusheen", "tabby",
+                "very friendly", Color.BLACK_AND_WHITE, Status.FREE, 0, CAT);
+        assertEquals(expectedPet, petService.getPet(idTestPet));
     }
 
     @Test
     public void checkIfAllPetsAreReceivedCorrectly() {
-        petService.addPet(PetDTO.petToDTO(testPet));
-        petService.addPet(PetDTO.petToDTO(testPet2));
+        long idTestPet1 = petService.addPet(PetDTO.petToDTO(testPet)).id();
+        long idTestPet2 = petService.addPet(PetDTO.petToDTO(testPet2)).id();
         PetDTO expectedPet1 = new PetDTO(1L, 2019, "Pusheen", "tabby",
                 "very friendly", Color.BLACK_AND_WHITE, Status.FREE, 0, CAT);
         PetDTO expectedPet2 = new PetDTO(2L, 2010, "Argo", "scottish",
                 "not very friendly", Color.GREY, Status.FREE, 0, CAT);
-        assertEquals(expectedPet1, petService.getPet(1L));
-        assertEquals(expectedPet2, petService.getPet(2L));
+        assertEquals(expectedPet1, petService.getPet(idTestPet1));
+        assertEquals(expectedPet2, petService.getPet(idTestPet2));
     }
 
     @Test
