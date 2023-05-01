@@ -7,19 +7,15 @@ import com.devsteam.getname.telbot_shelterdc.model.Kind;
 import com.devsteam.getname.telbot_shelterdc.model.Pet;
 import com.devsteam.getname.telbot_shelterdc.model.Status;
 import com.devsteam.getname.telbot_shelterdc.repository.PetRepository;
-import org.aspectj.lang.annotation.After;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
-import java.util.List;
-
 import static com.devsteam.getname.telbot_shelterdc.model.Kind.CAT;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.springframework.test.util.AssertionErrors.assertFalse;
 
 @SpringBootTest
 public class PetServiceTests {
@@ -107,7 +103,8 @@ public class PetServiceTests {
     public void checkIfPetDescriptionIsUpdatedCorrectly() {
         petService.addPet(PetDTO.petToDTO(testPet));
         petService.addPet(PetDTO.petToDTO(testPet2));
-        PetDTO updatedPet = new PetDTO(2L, 2010, "Argo", "scottish", "now is very friendly too", Color.GREY, Status.FREE, 0, CAT);
+        PetDTO updatedPet = new PetDTO(2L, 2010, "Argo", "scottish",
+                "now is very friendly too", Color.GREY, Status.FREE, 0, CAT);
         petService.updatePet(updatedPet);
         String expected = "now is very friendly too";
         String actual = petService.getPet(2L).description();
@@ -173,8 +170,8 @@ public class PetServiceTests {
     public void checkIfPetIsDeletedCorrectly() {
         PetDTO testPet3 = new PetDTO(781945L, 2014, "Marusya", "sphynx",
                 "calm and independent", Color.GREY, Status.FREE, 0, CAT);
-        petService.addPet(testPet3);
-        petService.removePet(781945L);
+        long id = petService.addPet(testPet3).id();
+        petService.removePet(id);
         Assertions.assertFalse(petService.getAllPets(CAT).contains(testPet3));
     }
 }
