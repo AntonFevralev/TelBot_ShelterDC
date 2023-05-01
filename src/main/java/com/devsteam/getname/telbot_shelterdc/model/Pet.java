@@ -1,6 +1,7 @@
 package com.devsteam.getname.telbot_shelterdc.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Pet {
@@ -136,4 +137,5 @@ public class Pet {
     public void setKind(Kind kind) {
         this.kind = kind;
     }
+
 }
