@@ -2,6 +2,7 @@ package com.devsteam.getname.telbot_shelterdc.controller;
 
 import com.devsteam.getname.telbot_shelterdc.service.ShelterService;
 
+import kotlin.jvm.Throws;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,10 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.Assert;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -65,8 +63,7 @@ class ShelterControllerTest {
         mockMvc
                 = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         mockMvc.perform(multipart("http://localhost:8080/files/uploadDogShelter").file(file))
-                .andExpect(status().isOk());
-    }
+                .andExpect(status().isOk());}
 
     @Test
     void uploadCatShelterCorrectFile() throws Exception {
