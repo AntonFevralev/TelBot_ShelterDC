@@ -49,7 +49,7 @@ public class ReportService {
      * @param mealsWellBeingAndAdaptationBehaviorChanges,
      * @param photo
      */
-    public void addReport(long chatId, String mealsWellBeingAndAdaptationBehaviorChanges, String photo) {
+    public ReportDTO addReport(long chatId, String mealsWellBeingAndAdaptationBehaviorChanges, String photo) {
         Report report = new Report();
         PetOwner owner = ownerRepository.findPetOwnerByChatId(chatId);
         if (owner==null) {
@@ -62,11 +62,11 @@ public class ReportService {
         } catch (NullPointerException e) {
             throw new PetIsNotAssignedException("this owner doesn't have assigned pet yet");
         }
-        if (Utils.stringValidation(mealsWellBeingAndAdaptationBehaviorChanges)){
+        if (!Utils.stringValidation(mealsWellBeingAndAdaptationBehaviorChanges)){
             throw new IllegalArgumentException();
         }
         report.setMealsWellBeingAndAdaptationBehaviorChanges(mealsWellBeingAndAdaptationBehaviorChanges);
-        if (Utils.stringValidation(photo)){
+        if (!Utils.stringValidation(photo)){
             throw new IllegalArgumentException();
         }
         report.setPhoto(photo);
@@ -79,8 +79,7 @@ public class ReportService {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
-
-
+        return petReportToDTO(report);
     }
 
     /**
@@ -151,6 +150,26 @@ public class ReportService {
                 .findAll()
                 .stream()
                 .filter(r -> r.getPet().getKind().equals(kind))
+                .map(report -> petReportToDTO(report))
+                .toList();
+        if (!reports.isEmpty()) {
+            return reports;
+        } else {
+            throw new ReportListIsEmptyException();
+        }
+    }
+
+    /**
+     * Получить все отчёты по chat ID
+     *
+     * @return список всех отчётов по типу животного
+     * @throws ReportListIsEmptyException если в базе нет ни одного отчёта
+     */
+    public List<ReportDTO> getReportsByChatId(long chatId) {
+        List<ReportDTO> reports = reportRepository
+                .findAll()
+                .stream()
+                .filter(r -> r.getPetOwner().getChatId().equals(chatId))
                 .map(report -> petReportToDTO(report))
                 .toList();
         if (!reports.isEmpty()) {

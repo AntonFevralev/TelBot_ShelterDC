@@ -3,6 +3,7 @@ package com.devsteam.getname.telbot_shelterdc.model;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Table(name = "pet_reports")
@@ -135,6 +136,6 @@ public class Report {
     }
 
     public void setReportTime(LocalTime reportTime) {
-        this.reportTime = reportTime;
+        this.reportTime = reportTime.truncatedTo(ChronoUnit.SECONDS);
     }
 }

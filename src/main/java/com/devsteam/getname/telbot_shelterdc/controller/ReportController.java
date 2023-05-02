@@ -79,6 +79,28 @@ public class ReportController {
         return ResponseEntity.ok().body(reportService.getReportsByPetId(petId));
     }
 
+    @GetMapping("/chatId")
+    @Operation(summary = "Получение списка отчётов по chat ID владельца" ,
+            description = "Здесь можно получить существующие в БД отчёты по chat ID указанного в отчёте владельца")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Отчёты найдены"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Введите правильный ID животного"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Отчёты не найдены"
+            )
+    }
+    )
+    public ResponseEntity<List<ReportDTO>> getPetReportsByChatId(@RequestParam(name = "chatId") long chatId) {
+        return ResponseEntity.ok().body(reportService.getReportsByChatId(chatId));
+    }
+
     @GetMapping("/date")
     @Operation(summary = "Получение списка отчётов по выбранной дате",
             description = "Здесь можно получить список существующих в БД отчётов по дате их добавления")
