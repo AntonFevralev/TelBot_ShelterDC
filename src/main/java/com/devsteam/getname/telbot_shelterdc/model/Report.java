@@ -45,6 +45,23 @@ public class Report {
     public Report() {
     }
 
+//    public Report(Pet pet,
+//                  PetOwner petOwner,
+//                  String photo,
+//                  String mealsWellBeingAndAdaptationBehaviorChanges,
+//                  LocalDate reportDate, LocalTime reportTime,
+//                  boolean reportIsComplete,
+//                  boolean reportIsInspected) {
+//        this.pet = pet;
+//        this.petOwner = petOwner;
+//        this.photo = photo;
+//        this.mealsWellBeingAndAdaptationBehaviorChanges = mealsWellBeingAndAdaptationBehaviorChanges;
+//        this.reportDate = reportDate;
+//        this.reportTime = reportTime;
+//        this.reportIsComplete = reportIsComplete;
+//        this.reportIsInspected = reportIsInspected;
+//    }
+
     public long getId() {
         return id;
     }
