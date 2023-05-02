@@ -51,7 +51,7 @@ public class ReminderTimer {
     }
 
     private Map<Long, Report> fillAllPetReportsForToday() {
-        PetReportsForToday = reportRepository.findReportByReportDate(LocalDate.now())
+        PetReportsForToday = reportRepository.findAllByReportDate(LocalDate.now())
                 .stream()
                 .filter(c -> c.getPetOwner().getStatusOwner() == StatusOwner.PROBATION)
                 .collect(Collectors.toMap(cr -> cr.getPetOwner().getChatId(), Report -> Report));

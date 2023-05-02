@@ -1,5 +1,6 @@
 package com.devsteam.getname.telbot_shelterdc.repository;
 
+import com.devsteam.getname.telbot_shelterdc.model.Kind;
 import com.devsteam.getname.telbot_shelterdc.model.Report;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -8,7 +9,10 @@ import java.util.List;
 
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
-    Report findReportByPet_Id(long petId);
+    List<Report> findReportsByPet_Id(long petId);
+    void deleteReportsByPetId(long petId);
 
-    List<Report> findReportByReportDate(LocalDate date);
+    List<Report> findReportsByReportDateAndPet_Kind(LocalDate date, Kind kind);
+
+    List<Report> findAllByReportDate(LocalDate now);
 }
