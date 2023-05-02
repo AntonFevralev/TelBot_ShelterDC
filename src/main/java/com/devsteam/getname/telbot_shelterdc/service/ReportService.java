@@ -1,5 +1,6 @@
 package com.devsteam.getname.telbot_shelterdc.service;
 
+import com.devsteam.getname.telbot_shelterdc.Utils;
 import com.devsteam.getname.telbot_shelterdc.dto.ReportDTO;
 import com.devsteam.getname.telbot_shelterdc.exception.*;
 import com.devsteam.getname.telbot_shelterdc.model.Kind;
@@ -61,7 +62,13 @@ public class ReportService {
         } catch (NullPointerException e) {
             throw new PetIsNotAssignedException("this owner doesn't have assigned pet yet");
         }
+        if (Utils.stringValidation(mealsWellBeingAndAdaptationBehaviorChanges)){
+            throw new IllegalArgumentException();
+        }
         report.setMealsWellBeingAndAdaptationBehaviorChanges(mealsWellBeingAndAdaptationBehaviorChanges);
+        if (Utils.stringValidation(photo)){
+            throw new IllegalArgumentException();
+        }
         report.setPhoto(photo);
         report.setReportIsComplete(true);
         report.setReportIsInspected(false);
