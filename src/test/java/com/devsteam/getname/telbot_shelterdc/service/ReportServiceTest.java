@@ -16,8 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.devsteam.getname.telbot_shelterdc.model.Kind.CAT;
+import static com.devsteam.getname.telbot_shelterdc.model.Kind.DOG;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -101,16 +104,54 @@ public class ReportServiceTest {
     }
 
     @Test
-    public void gettingReportByExistingPetIdReturnsCorrectReportDTOList(){
+    public void gettingReportsByExistingPetIdReturnsCorrectReportDTOList(){
         long chatId = 405441405;
         ReportDTO reportDTO = reportService.addReport(chatId,"mealsAndStuff", "photo");
-        assertTrue(reportService.getReportsByPetId(reportDTO.petId()).contains(reportDTO));
+        List<ReportDTO> reportDTOS = new ArrayList<>();
+        reportDTOS.add(reportDTO);
+        assertEquals(reportDTOS, reportService.getReportsByPetId(reportDTO.petId()));
     }
 
     @Test
     public void gettingReportsByNonExistingPetIdThrowsNoSuchEntityException(){
         assertThrows(NoSuchEntityException.class, () -> reportService.getReportsByPetId(0));
     }
+
+    @Test
+    public void gettingReportsByExistingDateAndKindReturnsCorrectReportDTOList(){
+        long chatId = 405441405;
+        ReportDTO reportDTO = reportService.addReport(chatId,"mealsAndStuff", "photo");
+        List<ReportDTO> reportDTOS = new ArrayList<>();
+        reportDTOS.add(reportDTO);
+        Kind kind = petService.getPet(reportDTO.petId()).kind();
+        LocalDate date = reportDTO.reportDate();
+        assertEquals(reportDTOS, reportService.getReportsByDate(date, kind));
+    }
+
+    @Test
+    public void gettingReportsByNonExistingInDBDateAndKindThrowsNoSuchEntityException(){
+        long chatId = 405441405;
+        ReportDTO reportDTO = reportService.addReport(chatId,"mealsAndStuff", "photo");
+        List<ReportDTO> reportDTOS = new ArrayList<>();
+        reportDTOS.add(reportDTO);
+        Kind kind = petService.getPet(reportDTO.petId()).kind();
+        LocalDate date = reportDTO.reportDate();
+        assertThrows(NoSuchEntityException.class, () -> reportService.getReportsByDate(date.plusDays(1), kind));
+    }
+
+    @Test
+    public void gettingReportsByNonExistingInDBKindAndKindThrowsNoSuchEntityException(){
+        PetDTO pet2 = new PetDTO(0, 2021, "Lara", "Labrador", "kind", Color.WHITE, Status.FREE, 0, DOG);
+        long chatId = 405441405;
+        ReportDTO reportDTO = reportService.addReport(chatId,"mealsAndStuff", "photo");
+        List<ReportDTO> reportDTOS = new ArrayList<>();
+        reportDTOS.add(reportDTO);
+        Kind kind = petService.getPet(reportDTO.petId()).kind();
+        LocalDate date = reportDTO.reportDate();
+        assertThrows(NoSuchEntityException.class, () -> reportService.getReportsByDate(date, pet2.kind()));
+    }
+
+
 
 
 
