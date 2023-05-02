@@ -22,7 +22,9 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.nio.file.Files.readString;
 
@@ -45,6 +47,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     private final ReportService reportService;
 
     private final OwnerRepository ownerRepository;
+
+    private final Map<Long, String> waitingForContact = new HashMap<>();
 
     public TelegramBotUpdatesListener(TelegramBot telegramBot, ReportService reportService, ReportRepository reportRepository, OwnerRepository ownerRepository) throws IOException {
         this.ownerRepository = ownerRepository;
@@ -94,13 +98,15 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                         sendChatId(chatId);
                     }
 
-                    else if (message.caption().contains("/report") && message.caption() != null && (message.photo() != null||message.document().mimeType().equals("image/jpeg"))) {
+                    else if (message.caption() != null&&message.caption().startsWith("/report")&& (message.photo() != null||message.document().mimeType().equals("image/jpeg"))) {
                         reportService.addReport(chatId, message.caption().substring(7), "photo");
                         telegramBot.execute(new SendMessage(chatId, "добавляем отчёт"));
                         //initiateReportDialog(chatId);
                     }
-                    if (message.contact() != null) {
-                        sendContact(message, chatId);
+                    if (message.contact() != null&&waitingForContact.get(chatId).equals("Dog")) {
+                        sendContact(message, chatId, dogsShelter);
+                    } else if (message.contact() != null&&waitingForContact.get(chatId).equals("Cat")){
+                        sendContact(message, chatId, catsShelter);
                     }
                 }
             });
@@ -139,10 +145,12 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         String data = callbackQuery.data();
         switch (data) {
             case "MainMenu", "BackFromDogsShelter" -> startMessageWithoutGreeting(chatId);
-            case "Dogs", "BackFromDogsInfo" -> dogsShelter(chatId);
-            case "Cats", "BackFromCatsInfo" -> catsShelter(chatId);
-            case "InfoDogs" -> infoDogs(chatId);
-            case "InfoCats" -> infoCats(chatId);
+            case "Dogs", "BackFromDogsInfo" -> shelter(chatId, "InfoDogs", "HowToTakeDog", "BackFromDogsShelter", dogsShelter);
+            case "Cats", "BackFromCatsInfo" -> shelter(chatId, "InfoCats","HowToTakeCat",  "BackFromCatsShelter", catsShelter);
+            case "InfoDogs" -> shelterInfo(chatId, "InfoDogsShelter", "ScheduleDogs",  "DogsShelterSecurity",
+                    "SafetyRecommendationsDogsShelter","DogsShelterContact", "BackFromDogsInfo", dogsShelter);
+            case "InfoCats" -> shelterInfo(chatId, "InfoCatsShelter", "ScheduleCats",  "CatsShelterSecurity",
+                    "SafetyRecommendationsCatsShelter","CatsShelterContact", "BackFromCatsInfo", catsShelter);
             /* case "HowToTakeDog"-> howToTakeDog(chatId);*/
             case "InfoDogsShelter" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId, dogsShelter.getInfo(), "InfoDogs");
             case "InfoCatsShelter" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId, catsShelter.getInfo(), "InfoCats");
@@ -156,7 +164,10 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     sendMessageWithMainMenuButtonFromInfoMenu(chatId, dogsShelter.getSafetyPrecautions(), "InfoDogs");
             case "SafetyRecommendationsCatsShelter" ->
             sendMessageWithMainMenuButtonFromInfoMenu(chatId, catsShelter.getSafetyPrecautions(), "InfoCats");
-            case "DogsShelterContact" -> dogsShelterContact(chatId);
+            case "DogsShelterContact" ->{ shelterContact(chatId);
+                                            waitingForContact.put(chatId, "Dog");}
+            case "CatsShelterContact" -> {shelterContact(chatId);
+            waitingForContact.put(chatId, "Cat");}
         }
 
     }
@@ -181,93 +192,52 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      *
      * @param chatId идентификатор чата
      */
-    public void dogsShelter(long chatId) {
-        SendMessage sendMessage = new SendMessage(chatId, "Вы выбрали приют " + this.dogsShelter.getTitle());
-        InlineKeyboardButton mainInfoDogs = new InlineKeyboardButton("Основная информация");
-        mainInfoDogs.callbackData("InfoDogs");
-        InlineKeyboardButton howToTakeDog = new InlineKeyboardButton("Как взять питомца?");
-        howToTakeDog.callbackData("HowToTakeDog");
+    public void shelter(long chatId, String mainInfoData, String howToTakeData, String backData, Shelter shelter) {
+        SendMessage sendMessage = new SendMessage(chatId, "Вы выбрали приют " + shelter.getTitle());
+        InlineKeyboardButton mainInfo = new InlineKeyboardButton("Основная информация");
+        mainInfo.callbackData(mainInfoData);
+        InlineKeyboardButton howToTake = new InlineKeyboardButton("Как взять питомца?");
+        howToTake.callbackData(howToTakeData);
         InlineKeyboardButton back = new InlineKeyboardButton("Назад");
-        back.callbackData("BackFromDogsShelter");
+        back.callbackData(backData);
         InlineKeyboardButton mainMenu = new InlineKeyboardButton("Главное меню");
         mainMenu.callbackData("MainMenu");
-        Keyboard keyboard = new InlineKeyboardMarkup().addRow(mainInfoDogs).addRow(howToTakeDog).addRow(back).addRow(mainMenu).addRow(
+        Keyboard keyboard = new InlineKeyboardMarkup().addRow(mainInfo).addRow(howToTake).addRow(back).addRow(mainMenu).addRow(
                 new InlineKeyboardButton("Позвать волонтера").url("https://t.me/fevralevanton"));
         sendMessage.replyMarkup(keyboard);
         telegramBot.execute(sendMessage);
     }
-
-    /**
-     * главное меню приюта кошек
-     *
-     * @param chatId идентификатор чата
-     */
-    public void catsShelter(long chatId) {
-        SendMessage sendMessage = new SendMessage(chatId, "Вы выбрали приют " + this.catsShelter.getTitle());
-        InlineKeyboardButton mainInfoCats = new InlineKeyboardButton("Основная информация");
-        mainInfoCats.callbackData("InfoCats");
-        InlineKeyboardButton howToTakeCat = new InlineKeyboardButton("Как взять питомца?");
-        howToTakeCat.callbackData("HowToTakeCat");
-        InlineKeyboardButton back = new InlineKeyboardButton("Назад");
-        back.callbackData("BackFromCatsShelter");
-        InlineKeyboardButton mainMenu = new InlineKeyboardButton("Главное меню");
-        mainMenu.callbackData("MainMenu");
-        Keyboard keyboard = new InlineKeyboardMarkup().addRow(mainInfoCats).addRow(howToTakeCat).addRow(back).addRow(mainMenu).addRow(
-                new InlineKeyboardButton("Позвать волонтера").url("https://t.me/fevralevanton"));
-        sendMessage.replyMarkup(keyboard);
-        telegramBot.execute(sendMessage);
-    }
-
-
     /**
      * меню Основная информация приюта собак
      *
      * @param chatId идентификатор чата
      */
-    public void infoDogs(long chatId) {
-        SendMessage sendMessage = new SendMessage(chatId, "Приют " + this.dogsShelter.getTitle());
-        InlineKeyboardButton infoDogsShelter = new InlineKeyboardButton("Информация о приюте");
-        infoDogsShelter.callbackData("InfoDogsShelter");
-        InlineKeyboardButton scheduleDogsShelter = new InlineKeyboardButton("Расписание, схема проезда, адрес");
-        scheduleDogsShelter.callbackData("ScheduleDogs");
-        InlineKeyboardButton dogsShelterSecurity = new InlineKeyboardButton("Оформить пропуск");
-        dogsShelterSecurity.callbackData("DogsShelterSecurity");
-        InlineKeyboardButton safetyRecommendationsDogs = new InlineKeyboardButton("Техника безопасности в приюте");
-        safetyRecommendationsDogs.callbackData("SafetyRecommendationsDogsShelter");
-        InlineKeyboardButton dogsShelterContact = new InlineKeyboardButton("Оставить контакты");
-        dogsShelterContact.callbackData("DogsShelterContact");
+    public void shelterInfo(long chatId, String infoShelterData, String scheduleData,
+                            String securityData, String safetyRecommendationsData, String contactData, String backData, Shelter shelter) {
+        SendMessage sendMessage = new SendMessage(chatId, "Приют " + shelter.getTitle());
+        InlineKeyboardButton infoShelter = new InlineKeyboardButton("Информация" +
+                " о приюте");
+        infoShelter.callbackData(infoShelterData);
+        InlineKeyboardButton scheduleShelter = new InlineKeyboardButton("Расписание, схема проезда, адрес");
+        scheduleShelter.callbackData(scheduleData);
+        InlineKeyboardButton shelterSecurity = new InlineKeyboardButton("Оформить пропуск");
+        shelterSecurity.callbackData(securityData);
+        InlineKeyboardButton safetyRecommendations = new InlineKeyboardButton("Техника безопасности в приюте");
+        safetyRecommendations.callbackData(safetyRecommendationsData);
+        InlineKeyboardButton shelterContact = new InlineKeyboardButton("Оставить контакты");
+        shelterContact.callbackData(contactData);
         InlineKeyboardButton back = new InlineKeyboardButton("Назад");
-        back.callbackData("BackFromDogsInfo");
+        back.callbackData(backData);
         InlineKeyboardButton mainMenu = new InlineKeyboardButton("Главное меню");
         mainMenu.callbackData("MainMenu");
-        Keyboard keyboard = new InlineKeyboardMarkup().addRow(infoDogsShelter).addRow(scheduleDogsShelter)
-                .addRow(safetyRecommendationsDogs).addRow(dogsShelterContact).addRow(back).addRow(mainMenu).addRow(
+        Keyboard keyboard = new InlineKeyboardMarkup().addRow(infoShelter).addRow(scheduleShelter)
+                .addRow(safetyRecommendations).addRow(shelterContact).addRow(back).addRow(mainMenu).addRow(
                         new InlineKeyboardButton("Позвать волонтера").url("https://t.me/fevralevanton"));
         sendMessage.replyMarkup(keyboard);
         telegramBot.execute(sendMessage);
     }
-    public void infoCats(long chatId) {
-        SendMessage sendMessage = new SendMessage(chatId, "Приют " + this.catsShelter.getTitle());
-        InlineKeyboardButton infoCatsShelter = new InlineKeyboardButton("Информация о приюте");
-        infoCatsShelter.callbackData("InfoCatsShelter");
-        InlineKeyboardButton scheduleCatsShelter = new InlineKeyboardButton("Расписание, схема проезда, адрес");
-        scheduleCatsShelter.callbackData("ScheduleCats");
-        InlineKeyboardButton catsShelterSecurity = new InlineKeyboardButton("Оформить пропуск");
-        catsShelterSecurity.callbackData("CatsShelterSecurity");
-        InlineKeyboardButton safetyRecommendationsCats = new InlineKeyboardButton("Техника безопасности в приюте");
-        safetyRecommendationsCats.callbackData("SafetyRecommendationsCatsShelter");
-        InlineKeyboardButton catsShelterContact = new InlineKeyboardButton("Оставить контакты");
-        catsShelterContact.callbackData("CatsShelterContact");
-        InlineKeyboardButton back = new InlineKeyboardButton("Назад");
-        back.callbackData("BackFromCatsInfo");
-        InlineKeyboardButton mainMenu = new InlineKeyboardButton("Главное меню");
-        mainMenu.callbackData("MainMenu");
-        Keyboard keyboard = new InlineKeyboardMarkup().addRow(infoCatsShelter).addRow(scheduleCatsShelter)
-                .addRow(safetyRecommendationsCats).addRow(catsShelterContact).addRow(back).addRow(mainMenu).addRow(
-                        new InlineKeyboardButton("Позвать волонтера").url("https://t.me/fevralevanton"));
-        sendMessage.replyMarkup(keyboard);
-        telegramBot.execute(sendMessage);
-    }
+
+
 
     /**
      * отправка сообщения с кнопнкой главное меню и кнопкой назад из меню Основная информация приюта собак
@@ -292,14 +262,13 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      *
      * @param chatId идентификатор чата
      */
-    public void dogsShelterContact(long chatId) {
-        SendMessage sendMessage = new SendMessage(chatId, "Нажмите на кнопку оставить контакты для приюта собак");
+    public void shelterContact(long chatId) {
+        SendMessage sendMessage = new SendMessage(chatId, "Нажмите на кнопку оставить контакты для приюта");
         KeyboardButton sendContacts = new KeyboardButton("Оставить контакты").requestContact(true);
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(sendContacts).oneTimeKeyboard(true);
         sendMessage.replyMarkup(replyKeyboardMarkup);
         SendResponse sendResponse = telegramBot.execute(sendMessage);
     }
-
     /**
      * отправляет в чат идентификатор чата
      *
@@ -318,10 +287,10 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * @param message входящее сообщение
      * @param chatId  идентификатор чата
      */
-    public void sendContact(Message message, long chatId) {
+    public void sendContact(Message message, long chatId, Shelter shelter) {
         Contact contact = message.contact();
-        SendContact sendContact = new SendContact(dogsShelter.getChatId(), contact.phoneNumber(), contact.firstName());
-        SendMessage sendMessage = new SendMessage(dogsShelter.getChatId(), "Идентификатор чата клиента " + chatId);
+        SendContact sendContact = new SendContact(shelter.getChatId(), contact.phoneNumber(), contact.firstName());
+        SendMessage sendMessage = new SendMessage(shelter.getChatId(), "Идентификатор чата клиента " + chatId);
         //отправляем контакт волонтеру приюта собак
         telegramBot.execute(sendContact);
         telegramBot.execute(sendMessage);
