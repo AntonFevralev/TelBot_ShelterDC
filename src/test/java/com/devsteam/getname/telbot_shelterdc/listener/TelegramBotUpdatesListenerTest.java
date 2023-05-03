@@ -76,7 +76,7 @@ public class TelegramBotUpdatesListenerTest {
 
         Assertions.assertThat(actual.getParameters().get("chat_id")).isEqualTo(123L);
         Assertions.assertThat(actual.getParameters().get("text")).isEqualTo(
-                "   Привет! Данный бот предоставляет информацию о двух приютах. Кошачий приют \"" + this.catsShelter.getTitle() + " и собачий приют \"" + this.dogsShelter.getTitle() + "\". Выберите один");
+                "   Привет! Данный бот предоставляет информацию о двух приютах. Кошачий приют \"" + this.catsShelter.getTitle()+"\"" + " и собачий приют \"" + this.dogsShelter.getTitle() + "\". Выберите один");
         Assertions.assertThat(actual.getParameters().get("parse_mode"))
                 .isEqualTo(ParseMode.Markdown.name());
     }
@@ -89,7 +89,9 @@ public class TelegramBotUpdatesListenerTest {
             "BackFromDogsInfo? Вы выбрали приют Лучший друг",
             "MainMenu? Выберите приют",
             "InfoDogs? Приют Лучший друг",
-            "DogsShelterContact? Нажмите на кнопку оставить контакты для приюта собак"
+            "InfoCats? Приют Пушистик",
+            "DogsShelterContact? Нажмите на кнопку оставить контакты для приюта",
+            "CatsShelterContact? Нажмите на кнопку оставить контакты для приюта"
     }, delimiter = '?'
     )
     public void handleButtonParameterized(String callBackData, String menuMessage) throws URISyntaxException, IOException {
@@ -105,12 +107,19 @@ public class TelegramBotUpdatesListenerTest {
     public void handleButtonScheduleDogs() throws URISyntaxException, IOException {
         handleButtonCallBackData("ScheduleDogs", dogsShelter.getAddress() + "\n\n" + dogsShelter.getSchedule() + "\n\n " + "<a href=\"" + dogsShelter.getMapLink() + "\">Ссылка на Google Maps</a>");
     }
+    @Test
+    public void handleButtonScheduleCats() throws URISyntaxException, IOException {
+        handleButtonCallBackData("ScheduleCats", catsShelter.getAddress() + "\n\n" + catsShelter.getSchedule() + "\n\n " + "<a href=\"" + catsShelter.getMapLink() + "\">Ссылка на Google Maps</a>");
+    }
 
     @Test
     public void handleButtonSafetyRecommendationsDogsShelter() throws URISyntaxException, IOException {
         handleButtonCallBackData("SafetyRecommendationsDogsShelter", dogsShelter.getSafetyPrecautions());
     }
-
+    @Test
+    public void handleButtonSafetyRecommendationsCatsShelter() throws URISyntaxException, IOException {
+        handleButtonCallBackData("SafetyRecommendationsCatsShelter", catsShelter.getSafetyPrecautions());
+    }
 
     private Update getUpdate(String json, String replaced) {
         return BotUtils.fromJson(json.replace("%command%", replaced), Update.class);

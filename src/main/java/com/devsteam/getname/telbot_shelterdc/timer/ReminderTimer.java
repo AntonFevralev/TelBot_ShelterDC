@@ -1,5 +1,6 @@
 package com.devsteam.getname.telbot_shelterdc.timer;
 
+import com.devsteam.getname.telbot_shelterdc.config.TimeMachine;
 import com.devsteam.getname.telbot_shelterdc.model.*;
 import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.ReportRepository;
@@ -7,19 +8,23 @@ import com.devsteam.getname.telbot_shelterdc.service.ReportService;
 import com.google.gson.Gson;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.SendMessage;
-import org.hibernate.query.criteria.internal.expression.function.AggregationFunction;
+import com.pengrad.telegrambot.response.SendResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -28,10 +33,10 @@ import static com.devsteam.getname.telbot_shelterdc.model.Kind.CAT;
 import static java.nio.file.Files.readString;
 
 @Component
+
 public class ReminderTimer {
-
+    private final Logger logger = LoggerFactory.getLogger(ReminderTimer.class);
     private final TelegramBot telegramBot;
-
     private final ReportService reportService;
 
     private final ReportRepository reportRepository;
@@ -51,7 +56,9 @@ public class ReminderTimer {
 
     @Scheduled(fixedRate = 1L, timeUnit = TimeUnit.MINUTES)
     public void remind() {
-        if (LocalTime.now().truncatedTo(ChronoUnit.MINUTES).equals(LocalTime.of(20, 34)
+
+        LocalTime now = TimeMachine.now();
+        if (now.truncatedTo(ChronoUnit.MINUTES).equals(LocalTime.of(21, 15)
                 .truncatedTo(ChronoUnit.MINUTES))) {
             List<Long> listToRemind = new ArrayList<>();
             Set<Long> allTodayReports = reportRepository.findReportByReportDate(LocalDate.now()).stream()
@@ -64,7 +71,9 @@ public class ReminderTimer {
                     listToRemind.add(ci);
                 }
             }
-            listToRemind.forEach(ci -> telegramBot.execute(new SendMessage(ci, "Отправьте, пожалуйста, отчет о животном!")));
+            listToRemind.forEach(ci -> {
+               telegramBot.execute(new SendMessage(ci, "Отправьте, пожалуйста, отчет о животном!"));
+            });
 
         }
 
@@ -72,8 +81,9 @@ public class ReminderTimer {
     }
 
     @Scheduled(fixedRate = 1, timeUnit = TimeUnit.MINUTES)
-    public void remindIfTwoDaysDidntSendReport() {
-        if (LocalTime.now().truncatedTo(ChronoUnit.MINUTES).equals(LocalTime.of(21, 37)
+    public void remindIfTwoDaysDogOwnerDidntSendReport() {
+        LocalTime now = TimeMachine.now();
+        if (now.truncatedTo(ChronoUnit.MINUTES).equals(LocalTime.of(21, 20)
                 .truncatedTo(ChronoUnit.MINUTES))) {
             Long dogVolunteer = dogsShelter.getChatId();
 
@@ -96,7 +106,8 @@ public class ReminderTimer {
 }
     @Scheduled(fixedRate = 1, timeUnit = TimeUnit.MINUTES)
     public void remindIfTwoDaysCatOwnerDidntSendReport() {
-        if (LocalTime.now().truncatedTo(ChronoUnit.MINUTES).equals(LocalTime.of(21, 37)
+        LocalTime now = TimeMachine.now();
+        if (now.truncatedTo(ChronoUnit.MINUTES).equals(LocalTime.of(21, 17)
                 .truncatedTo(ChronoUnit.MINUTES))) {
 
             Long catVolunteer = catsShelter.getChatId();
