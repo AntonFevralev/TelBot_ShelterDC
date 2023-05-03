@@ -33,9 +33,11 @@ import static com.devsteam.getname.telbot_shelterdc.model.Kind.CAT;
 import static java.nio.file.Files.readString;
 
 @Component
-
+/**
+ * Класс автоматических напоминаний
+ */
 public class ReminderTimer {
-    private final Logger logger = LoggerFactory.getLogger(ReminderTimer.class);
+
     private final TelegramBot telegramBot;
     private final ReportService reportService;
 
@@ -54,6 +56,9 @@ public class ReminderTimer {
         this.catsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "catShelter.json")), Shelter.class);
     }
 
+    /**
+     *Напоминает клиенту о неотправленном отчете на текущую дату
+     */
     @Scheduled(fixedRate = 1L, timeUnit = TimeUnit.MINUTES)
     public void remind() {
 
@@ -80,6 +85,9 @@ public class ReminderTimer {
 
     }
 
+    /**
+     * Уведомляет волонтера если клиент-усыновитель собаки 2 дня не отправлял отчет
+     */
     @Scheduled(fixedRate = 1, timeUnit = TimeUnit.MINUTES)
     public void remindIfTwoDaysDogOwnerDidntSendReport() {
         LocalTime now = TimeMachine.now();
@@ -104,6 +112,9 @@ public class ReminderTimer {
             idDogOwnerList.forEach(id -> telegramBot.execute(new SendMessage(dogVolunteer, "Владелец с id " + id + " не отправлял отчет 2 дня")));
         }
 }
+    /**
+     * Уведомляет волонтера если клиент-усыновитель кошки 2 дня не отправлял отчет
+     */
     @Scheduled(fixedRate = 1, timeUnit = TimeUnit.MINUTES)
     public void remindIfTwoDaysCatOwnerDidntSendReport() {
         LocalTime now = TimeMachine.now();
