@@ -9,8 +9,7 @@ import java.util.List;
 
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
-    List<Report> findReportsByPet_Id(long petId);
-    void deleteReportsByPetId(long petId);
+    List<Report> findByPet_Id(long petId);
 
     List<Report> findReportsByReportDateAndPet_Kind(LocalDate date, Kind kind);
 

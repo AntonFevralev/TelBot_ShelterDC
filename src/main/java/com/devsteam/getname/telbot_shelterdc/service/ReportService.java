@@ -106,7 +106,7 @@ public class ReportService {
      */
     public List<ReportDTO> getReportsByPetId(long petId) {
 
-        List<ReportDTO> reportDTOS = reportRepository.findReportsByPet_Id(petId)
+        List<ReportDTO> reportDTOS = reportRepository.findByPet_Id(petId)
                 .stream()
                 .map(this::petReportToDTO)
                 .toList();
@@ -228,21 +228,6 @@ public class ReportService {
     }
 
     /**
-     * Удалить отчёты по id животного
-     *
-     * @param petId id животного
-     * @throws NoSuchEntityException при попытке передать id несуществующего животного
-     */
-    public void deleteReportsByPetId(long petId) {
-        try {
-            reportRepository.deleteReportsByPetId(petId);
-        } catch (Exception e) {
-            throw new NoSuchEntityException("No report with such pet Id");
-        }
-
-    }
-
-    /**
      * Удалить отчёт по id отчёта
      *
      * @param reportId id отчёта
@@ -254,5 +239,20 @@ public class ReportService {
         } catch (Exception e) {
             throw new NoSuchEntityException("No report with such ID");
         }
+    }
+
+    /**
+     * Удалить отчёты по id животного
+     *
+     * @param petId id животного
+     * @throws NoSuchEntityException при попытке передать id несуществующего животного
+     */
+    public void deleteReportsByPetId(long petId) {
+        try {
+            reportRepository.deleteAllInBatch(reportRepository.findByPet_Id(petId));
+        } catch (IllegalArgumentException e) {
+            throw new NoSuchEntityException("No report with such pet Id");
+        }
+
     }
 }

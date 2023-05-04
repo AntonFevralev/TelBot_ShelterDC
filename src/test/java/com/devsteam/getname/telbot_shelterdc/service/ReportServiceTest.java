@@ -43,13 +43,18 @@ public class ReportServiceTest {
     @BeforeEach
     public void setUp(){
         PetDTO pet1 = new PetDTO(0, 2020, "Chad", "mixed", "feisty", Color.SPOTTED, Status.FREE, 0, CAT);
+        PetDTO pet2 = new PetDTO(0, 2021, "Dach", "labr", "feisty", Color.BLACK, Status.FREE, 0, CAT);
         petService.addPet(pet1);
+        petService.addPet(pet2);
         PetOwnerDTO owner1 = new PetOwnerDTO(0, 405441405, "fullName", "phone", "address", StatusOwner.PROBATION, LocalDate.now(), 1);
+        PetOwnerDTO owner2 = new PetOwnerDTO(0, 999, "fullName", "phone", "address", StatusOwner.PROBATION, LocalDate.now(), 2);
         petOwnerService.creatPetOwner(owner1);
+        petOwnerService.creatPetOwner(owner2);
     }
     @AfterEach
-    public void clearOwnerDB(){
+    public void clearDB(){
         ownerRepository.deleteAll();
+        reportRepository.deleteAll();
     }
 
     @Test
@@ -140,15 +145,118 @@ public class ReportServiceTest {
     }
 
     @Test
-    public void gettingReportsByNonExistingInDBKindAndKindThrowsNoSuchEntityException(){
+    public void gettingReportsByNonExistingInDBKindAndExistingDateThrowsNoSuchEntityException(){
         PetDTO pet2 = new PetDTO(0, 2021, "Lara", "Labrador", "kind", Color.WHITE, Status.FREE, 0, DOG);
         long chatId = 405441405;
         ReportDTO reportDTO = reportService.addReport(chatId,"mealsAndStuff", "photo");
         List<ReportDTO> reportDTOS = new ArrayList<>();
         reportDTOS.add(reportDTO);
-        Kind kind = petService.getPet(reportDTO.petId()).kind();
         LocalDate date = reportDTO.reportDate();
         assertThrows(NoSuchEntityException.class, () -> reportService.getReportsByDate(date, pet2.kind()));
+    }
+
+    @Test
+    public void gettingAllReportsByKindReturnsCorrectReportDTOList(){
+        long chatId = 405441405;
+        ReportDTO reportDTO = reportService.addReport(chatId,"mealsAndStuff", "photo");
+        List<ReportDTO> reportDTOS = new ArrayList<>();
+        reportDTOS.add(reportDTO);
+        Kind kind = petService.getPet(reportDTO.petId()).kind();
+        assertEquals(reportDTOS, reportService.getAllReports(kind));
+    }
+
+    @Test
+    public void gettingAllReportsByNonExistingInDBKindThrowsReportListIsEmptyException(){
+        PetDTO pet2 = new PetDTO(0, 2021, "Lara", "Labrador", "kind", Color.WHITE, Status.FREE, 0, DOG);
+        long chatId = 405441405;
+        ReportDTO reportDTO = reportService.addReport(chatId,"mealsAndStuff", "photo");
+        List<ReportDTO> reportDTOS = new ArrayList<>();
+        reportDTOS.add(reportDTO);
+        assertThrows(ReportListIsEmptyException.class, () -> reportService.getAllReports(pet2.kind()));
+    }
+
+    @Test
+    public void gettingReportsByExistingChatIdReturnsCorrectReportDTOList(){
+        long chatId = 405441405;
+        ReportDTO reportDTO = reportService.addReport(chatId,"mealsAndStuff", "photo");
+        List<ReportDTO> reportDTOS = new ArrayList<>();
+        reportDTOS.add(reportDTO);
+        assertEquals(reportDTOS, reportService.getReportsByChatId(chatId));
+    }
+
+    @Test
+    public void gettingReportsByNonExistingChatIdThrowsReportListIsEmptyException(){
+        assertThrows(ReportListIsEmptyException.class, () -> reportService.getReportsByChatId(0));
+    }
+
+    @Test
+    public void settingReportByReportIdAsCompleteSetsReportIsCompleteFieldAsTrueInExistingReport(){
+        long chatId = 405441405;
+        ReportDTO reportDTO = reportService.addReport(chatId,"mealsAndStuff", "photo");
+        reportService.setReportAsIncomplete(reportDTO.id());
+        reportService.setReportAsComplete(reportDTO.id());
+        assertEquals(reportService.getReportByReportId(reportDTO.id()), reportDTO);
+    }
+
+    @Test
+    public void settingReportByNonExistingReportIdAsCompleteThrowsNoSuchEntityException(){
+        assertThrows(NoSuchEntityException.class, () -> reportService.setReportAsComplete(0));
+    }
+
+    @Test
+    public void settingReportAsIncompleteByReportIdSetsReportIsCompleteFieldAsFalseInExistingReport(){
+        long chatId = 405441405;
+        ReportDTO reportDTO = reportService.addReport(chatId,"mealsAndStuff", "photo");
+        reportService.setReportAsIncomplete(reportDTO.id());
+        reportDTO.reportIsComplete();
+        assertFalse(reportService.getReportByReportId(reportDTO.id()).reportIsComplete());
+    }
+
+    @Test
+    public void settingReportAsIncompleteByNonExistingReportIdThrowsNoSuchEntityException(){
+        assertThrows(NoSuchEntityException.class, () -> reportService.setReportAsIncomplete(0));
+    }
+
+    @Test
+    public void settingReportByReportIdAsInspectedSetsReportIsInspectedFieldAsTrueInExistingReport(){
+        long chatId = 405441405;
+        ReportDTO reportDTO = reportService.addReport(chatId,"mealsAndStuff", "photo");
+        reportService.setReportAsInspected(reportDTO.id());
+        assertTrue(reportService.getReportByReportId(reportDTO.id()).reportIsInspected());
+    }
+
+    @Test
+    public void settingReportByNonExistingReportIdAsInspectedThrowsNoSuchEntityException(){
+        assertThrows(NoSuchEntityException.class, () -> reportService.setReportAsComplete(0));
+    }
+
+    @Test
+    public void deletingReportByExistingReportIdDeletesCorrectReport(){
+        reportService.addReport(999, "string", "string");
+        long chatId = 405441405;
+        ReportDTO reportDTO = reportService.addReport(chatId,"mealsAndStuff", "photo");
+        reportService.deleteReportByReportId(reportService.getReportsByChatId(chatId).stream().findFirst().get().id());
+        assertFalse(reportService.getAllReports(petService.getPet(reportDTO.petId()).kind()).contains(reportDTO));
+    }
+
+    @Test
+    public void deletingReportByNonExistingReportIdThrowsNoSuchEntityException(){
+        assertThrows(NoSuchEntityException.class, () -> reportService.deleteReportByReportId(0));
+    }
+
+//    @Test
+    public void deletingReportsByExistingPetIdDeletesAllReportsWithGivenPetId(){
+        long chatId = 405441405;
+//        List<ReportDTO> reportDTOS = new ArrayList<>();
+        ReportDTO reportDTO = reportService.addReport(chatId,"mealsAndStuff", "photo");
+//        long petId = reportService.getReportsByChatId(chatId).stream().findFirst().get().petId();
+        reportService.deleteReportsByPetId(1);
+        assertTrue(reportService.getReportsByChatId(chatId).isEmpty());
+    }
+
+    @Test
+    public void deletingReportsByNonExistingPetIdThrowsNoSuchEntityException(){
+        assertThrows(NoSuchEntityException.class, () -> reportService.deleteReportsByPetId(1));
     }
 
 

@@ -18,7 +18,7 @@ import java.util.List;
 @Tag(name = "Отчёты от владельцев",
         description = "Здесь волонтёры обрабатывают отчёты от животных, " +
                 "принятые от владельцев на испытательном сроке")
-@RequestMapping("pet/report")
+@RequestMapping("pets/report")
 public class ReportController {
 
     private final ReportService reportService;
@@ -27,13 +27,13 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-//    @PostMapping
-//    @Operation(summary = "Добавление отчёта",
-//            description = "Здесь можно добавить отчёт в БД")
-//    public ResponseEntity addPetReport(@RequestBody ReportDTO reportDTO) {
-//        reportService.addReport(reportDTO);
-//        return ResponseEntity.ok().build();
-//    }
+    @PostMapping
+    @Operation(summary = "Добавление отчёта",
+            description = "Здесь можно добавить отчёт в БД")
+    public ResponseEntity addPetReport(long chatId, String mealsWellBeingAndAdaptationBehaviorChanges, String photo) {
+        reportService.addReport(chatId, mealsWellBeingAndAdaptationBehaviorChanges, photo);
+        return ResponseEntity.ok().build();
+    }
 
     @GetMapping("/reportId")
     @Operation(summary = "Получение отчёта по его id",
