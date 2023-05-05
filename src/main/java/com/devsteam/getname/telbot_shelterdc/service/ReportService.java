@@ -52,7 +52,7 @@ public class ReportService {
     public ReportDTO addReport(long chatId, String mealsWellBeingAndAdaptationBehaviorChanges, String photo) {
         Report report = new Report();
         PetOwner owner = ownerRepository.findPetOwnerByChatId(chatId);
-        if (owner==null) {
+        if (owner == null) {
             throw new NoSuchEntityException("No owner with such chat ID");
         }
         report.setPetOwner(owner);
@@ -62,11 +62,11 @@ public class ReportService {
         } catch (NullPointerException e) {
             throw new PetIsNotAssignedException("this owner doesn't have assigned pet yet");
         }
-        if (!Utils.stringValidation(mealsWellBeingAndAdaptationBehaviorChanges)){
+        if (!Utils.stringValidation(mealsWellBeingAndAdaptationBehaviorChanges)) {
             throw new IllegalArgumentException();
         }
         report.setMealsWellBeingAndAdaptationBehaviorChanges(mealsWellBeingAndAdaptationBehaviorChanges);
-        if (!Utils.stringValidation(photo)){
+        if (!Utils.stringValidation(photo)) {
             throw new IllegalArgumentException();
         }
         report.setPhoto(photo);
@@ -248,11 +248,12 @@ public class ReportService {
      * @throws NoSuchEntityException при попытке передать id несуществующего животного
      */
     public void deleteReportsByPetId(long petId) {
-        try {
-            reportRepository.deleteAllInBatch(reportRepository.findByPet_Id(petId));
-        } catch (IllegalArgumentException e) {
+        List<Report> reportDTOS = reportRepository.findByPet_Id(petId);
+        if (reportDTOS.isEmpty()) {
             throw new NoSuchEntityException("No report with such pet Id");
         }
+        reportRepository.deleteAllInBatch(reportRepository.findByPet_Id(petId));
+
 
     }
 }

@@ -36,7 +36,7 @@ public class ReportControllerTest {
 
     @Test
     void givenNoReportInDatabase_whenGetReports_thenNoReportsAreFound() throws Exception {
-        mockMvc.perform(get("http://localhost:8080/pets/report"))
+        mockMvc.perform(get("http://localhost:8080/pets/report?kind=DOG"))
                 .andExpect(status().is5xxServerError());
     }
 
