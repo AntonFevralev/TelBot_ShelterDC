@@ -50,6 +50,16 @@ public class Pet {
         this.petOwner = petOwner;
         this.kind = kind;
     }
+    public Pet(long id, int birthYear, String name, String breed, String description, Color color, Status status, Kind kind) {
+        this.id = id;
+        this.birthYear = birthYear;
+        this.name = name;
+        this.breed = breed;
+        this.description = description;
+        this.color = color;
+        this.status = status;
+        this.kind = kind;
+    }
 
     public Pet(int birthYear, String name, String breed, String description, Color color, Status status, Kind kind) {
         this.birthYear = birthYear;

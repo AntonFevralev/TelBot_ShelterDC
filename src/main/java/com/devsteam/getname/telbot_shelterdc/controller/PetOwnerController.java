@@ -1,5 +1,6 @@
 package com.devsteam.getname.telbot_shelterdc.controller;
 
+import com.devsteam.getname.telbot_shelterdc.dto.PetDTO;
 import com.devsteam.getname.telbot_shelterdc.dto.PetOwnerDTO;
 import com.devsteam.getname.telbot_shelterdc.model.StatusOwner;
 import com.devsteam.getname.telbot_shelterdc.service.PetOwnerService;
@@ -62,7 +63,7 @@ public class PetOwnerController {
             @ApiResponse( responseCode = "500",
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
-    public void deleteCatOwnerById(@RequestParam Long idCO){
+    public void deletePetOwnerById(@RequestParam Long idCO){
         petOwnerService.deletePetOwnerByIdCO(idCO);
     }
     @PutMapping("/status")
@@ -90,7 +91,7 @@ public class PetOwnerController {
             @ApiResponse( responseCode = "500",
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
-    public void changeCat(@RequestParam Long idCO, @RequestParam Long id){
+    public void changePet(@RequestParam Long idCO, @RequestParam Long id){
        petOwnerService.changePetByIdCO(idCO, id);
     }
     @PutMapping("/delete")
@@ -108,4 +109,18 @@ public class PetOwnerController {
         petOwnerService.takeThePetAwayByIdCO(idCO);
     }
 
+    @GetMapping("{idCO}")
+    @Operation(summary = "Поиск человека по его id в приюте животных.")
+    @ApiResponses( {
+            @ApiResponse( responseCode = "200",
+                    description = "Человек найден.",
+                    content = {  @Content(mediaType = "application/json") } ),
+            @ApiResponse( responseCode = "400",
+                    description = "Параметры запроса отсутствуют или имеют некорректный формат."  ),
+            @ApiResponse( responseCode = "500",
+                    description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
+    } )
+    public ResponseEntity<PetOwnerDTO> getPetOwner(@PathVariable ("idCO") Long idCO) {
+        return ResponseEntity.ok().body(petOwnerService.getPetOwner(idCO));
+    }
 }
