@@ -3,6 +3,7 @@ package com.devsteam.getname.telbot_shelterdc.model;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Table(name = "pet_reports")
@@ -19,10 +20,11 @@ public class Report {
     @JoinColumn(name = "pet_id", nullable = false)
     /**Поле животного, о котором пишется отчёт*/
     private Pet pet;
-    @ManyToOne(targetEntity = PetOwner.class)
+    @ManyToOne(targetEntity = PetOwner.class, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "pet_owner_id", nullable = false)
     /**Поле владельца животного, который пишет отчёт*/
     private PetOwner petOwner;
+
     @Column
     /**Поле содержащее ссылку на фото животного, которое прилагается к отчёту*/
     private String photo;
@@ -44,6 +46,23 @@ public class Report {
 
     public Report() {
     }
+
+//    public Report(Pet pet,
+//                  PetOwner petOwner,
+//                  String photo,
+//                  String mealsWellBeingAndAdaptationBehaviorChanges,
+//                  LocalDate reportDate, LocalTime reportTime,
+//                  boolean reportIsComplete,
+//                  boolean reportIsInspected) {
+//        this.pet = pet;
+//        this.petOwner = petOwner;
+//        this.photo = photo;
+//        this.mealsWellBeingAndAdaptationBehaviorChanges = mealsWellBeingAndAdaptationBehaviorChanges;
+//        this.reportDate = reportDate;
+//        this.reportTime = reportTime;
+//        this.reportIsComplete = reportIsComplete;
+//        this.reportIsInspected = reportIsInspected;
+//    }
 
     public long getId() {
         return id;
@@ -118,6 +137,6 @@ public class Report {
     }
 
     public void setReportTime(LocalTime reportTime) {
-        this.reportTime = reportTime;
+        this.reportTime = reportTime.truncatedTo(ChronoUnit.SECONDS);
     }
 }
