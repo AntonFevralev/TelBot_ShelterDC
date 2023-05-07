@@ -20,10 +20,11 @@ public class Report {
     @JoinColumn(name = "pet_id", nullable = false)
     /**Поле животного, о котором пишется отчёт*/
     private Pet pet;
-    @ManyToOne(targetEntity = PetOwner.class)
+    @ManyToOne(targetEntity = PetOwner.class, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "pet_owner_id", nullable = false)
     /**Поле владельца животного, который пишет отчёт*/
     private PetOwner petOwner;
+
     @Column
     /**Поле содержащее ссылку на фото животного, которое прилагается к отчёту*/
     private String photo;
