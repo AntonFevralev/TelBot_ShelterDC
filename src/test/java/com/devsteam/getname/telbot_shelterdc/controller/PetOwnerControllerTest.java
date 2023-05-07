@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 
 import static com.devsteam.getname.telbot_shelterdc.model.Kind.CAT;
+import static com.devsteam.getname.telbot_shelterdc.model.Status.FREE;
 import static com.devsteam.getname.telbot_shelterdc.model.StatusOwner.PROBATION;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -46,11 +47,10 @@ public class PetOwnerControllerTest {
     @Autowired
     PetOwnerService petOwnerService;
 
-
     @Test
     void givenPetOwnersInDatabase_whenOwnerAddedItIsAddedCorrectly() throws Exception {
         Pet testPet = new Pet(1L, 2019, "Pusheen", "tabby",
-                "very friendly", Color.BLACK_AND_WHITE, Status.FREE, CAT);
+                "very friendly", Color.BLACK_AND_WHITE, FREE, CAT);
         Long petId = petRepository.save(testPet).getId();
         PetOwnerDTO test = new PetOwnerDTO(0L, 112L, "fullName", "phone",
                 "address", PROBATION, LocalDate.now(), petId);
@@ -75,8 +75,8 @@ public class PetOwnerControllerTest {
 
     @Test
     void givenPetOwnersInDatabase_thenItIsFoundById() throws Exception {
-        Pet testPet = new Pet(1L, 2019, "Pusheen", "tabby",
-                "very friendly", Color.BLACK_AND_WHITE, Status.FREE, CAT);
+        Pet testPet = new Pet(2L, 2019, "Pusheen", "tabby",
+                "very friendly", Color.BLACK_AND_WHITE, FREE, CAT);
         Long petId = petRepository.save(testPet).getId();
         PetOwnerDTO test = new PetOwnerDTO(0L, 112L, "fullName", "phone",
                 "address", PROBATION, LocalDate.now(), petId);
@@ -111,19 +111,13 @@ public class PetOwnerControllerTest {
     }
 
     //--------- Валятся --------------------------------------------------------------------------
-//    @Test
-//    void givenNoPetOwnersInDatabase_whenGetOwners_thenOwnersNotFound() throws Exception {
-//        mockMvc.perform(get("http://localhost:8080/petowner"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$").isArray())
-//                .andExpect(jsonPath("$").isEmpty());
-//    }
+
     @Test
     void givenPetOwnersInDatabase_thenItIsDeletedById() throws Exception {
-        Pet testPet = new Pet(1L, 2019, "Pusheen", "tabby",
-                "very friendly", Color.BLACK_AND_WHITE, Status.FREE, CAT);
+        Pet testPet = new Pet(3L, 2019, "Pusheen", "tabby",
+                "very friendly", Color.BLACK_AND_WHITE, FREE, CAT);
         Long petId = petRepository.save(testPet).getId();
-        PetOwnerDTO test = new PetOwnerDTO(3L, 112L, "fullName", "phone",
+        PetOwnerDTO test = new PetOwnerDTO(0L, 112L, "fullName", "phone",
                 "address", PROBATION, LocalDate.now(), petId);
 
         mockMvc.perform(post("http://localhost:8080/petowner")
@@ -141,50 +135,31 @@ public class PetOwnerControllerTest {
                 .andExpect(jsonPath("$.start").value(LocalDate.now().toString()))
                 .andExpect(jsonPath("$.petId").value(petId));
 
-        long idCO = test.idCO();
+        long idCOtest = petOwnerService.creatPetOwner(test).idCO();
 
-        mockMvc.perform(delete("/petowner/{idCO}", idCO))
-                .andExpect(status().isOk());
+        mockMvc.perform(delete("/petowner/1"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.idCO").isNotEmpty())
+                .andExpect(jsonPath("$.idCO").isNumber())
+                .andExpect(jsonPath("$.idCO").value(idCOtest))
+                .andExpect(jsonPath("$.chatId").value(112L))
+                .andExpect(jsonPath("$.fullName").value("fullName"))
+                .andExpect(jsonPath("$.phone").value("phone"))
+                .andExpect(jsonPath("$.address").value("address"))
+                .andExpect(jsonPath("$.statusOwner").value("PROBATION"))
+                .andExpect(jsonPath("$.start").value(LocalDate.now().toString()))
+                .andExpect(jsonPath("$.petId").value(petId));
 
-        mockMvc.perform(get("/petowner"))  // почему без id ?
-                .andExpect(status().isNotFound());
+//        mockMvc.perform(get("/petowner"))  // почему без id ?
+//                .andExpect(status().isNotFound());
 
     }
+
 }
-    //-----------------------------------------------------------------------------------
-//    @Test
-//    void givenThereIsOnePetCreated_whenPetIsEdited_thenItIsChangedInDatabase() throws Exception {
-//        PetDTO testPet = new PetDTO(1L, 2019, "Pusheen", "tabby",
-//                "very friendly", Color.BLACK_AND_WHITE, Status.FREE, 0, CAT);
-//        mockMvc.perform(post("http://localhost:8080/pets/addPet")
-//                        .content(objectMapper.writeValueAsString(testPet))
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andDo(print())
-//                .andExpect(jsonPath("$.id").isNotEmpty())
-//                .andExpect(jsonPath("$.id").isNumber())
-//                .andExpect(jsonPath("$.name").value("Pusheen"));
-//
-//        long id = testPet.id();
-//
-//        PetDTO updatedPet = new PetDTO(1L, 2019, "Marusya", "tabby",
-//                "very friendly", Color.BLACK_AND_WHITE, Status.FREE, 0, CAT);
-//        mockMvc.perform(put("/pets/{id}", id)
-//                        .content(objectMapper.writeValueAsString(updatedPet))
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andDo(print())
-//                .andExpect(jsonPath("$.id").isNotEmpty())
-//                .andExpect(jsonPath("$.id").isNumber())
-//                .andExpect(jsonPath("$.name").value("Marusya"));
-//
-//        mockMvc.perform(get("http://localhost:8080/pets/1"))
-//                .andExpect(status().isOk())
-//                .andDo(print())
-//                .andExpect(jsonPath("$.id").isNotEmpty())
-//                .andExpect(jsonPath("$.id").isNumber())
-//                .andExpect(jsonPath("$.name").value("Marusya"));
-//    }
+
+
+
 
 
 

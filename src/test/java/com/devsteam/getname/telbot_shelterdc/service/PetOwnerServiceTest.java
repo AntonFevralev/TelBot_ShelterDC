@@ -1,10 +1,8 @@
 package com.devsteam.getname.telbot_shelterdc.service;
 
-import com.devsteam.getname.telbot_shelterdc.dto.PetDTO;
 import com.devsteam.getname.telbot_shelterdc.dto.PetOwnerDTO;
 import com.devsteam.getname.telbot_shelterdc.exception.OwnerListIsEmptyException;
 import com.devsteam.getname.telbot_shelterdc.exception.PetIsNotFreeException;
-import com.devsteam.getname.telbot_shelterdc.exception.WrongPetException;
 import com.devsteam.getname.telbot_shelterdc.model.*;
 import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.PetRepository;
@@ -125,19 +123,18 @@ public class PetOwnerServiceTest {
         service.deletePetOwnerByIdCO(idCO);
         Assertions.assertThrows(OwnerListIsEmptyException.class, () -> service.getAllPetOwners());
     }
-    //--------- Валятся --------------------------------------------------------------------------
 
     @Test
     public void addingOwnerIfPetIsNotFreeThrowsException() {
         long petId = petRepository.save(petBASY).getId();
         PetOwnerDTO petOwnerDTO = new PetOwnerDTO(0L,1L, "fullname", "phone",
                 "address",PROBATION,LocalDate.now(),petId );
-        Exception exception = assertThrows(PetIsNotFreeException.class,
-                () -> service.creatPetOwner(petOwnerDTO));
-        String expectedMessage = "Животное занято другим человеком.";
-        String actualMessage = exception.getMessage();
-        assertThat(actualMessage.equals(expectedMessage));
-    }
+        Assertions.assertThrows(PetIsNotFreeException.class, () -> service.creatPetOwner(petOwnerDTO));
+        }
 
+    @Test
+    public void checkListOwnersIfListIsEmptyThrowsException() {
+        Assertions.assertThrows(OwnerListIsEmptyException.class, () -> service.getAllPetOwners());
+    }
 }
 
