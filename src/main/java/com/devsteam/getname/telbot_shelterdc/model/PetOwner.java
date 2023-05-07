@@ -37,7 +37,7 @@ public class PetOwner {
     private Pet pet;
 
 /** Архив ежедневных отчетов "усыновителя" питомца в порядке поступления. */
-    @OneToMany(mappedBy = "petOwner", cascade = CascadeType.ALL, orphanRemoval = true) // было - "cat_owner"
+    @OneToMany(mappedBy = "petOwner", cascade = CascadeType.REMOVE) // было - "cat_owner"
     private List<Report> reportList = new LinkedList<>();  //
 
 // --------------------- Constructors ---------------------------------------------------

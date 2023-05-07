@@ -113,6 +113,7 @@ public class PetOwnerService {
                 pet.setStatus(FREE);
                 pet.setPetOwner(null);
                 petRepository.save(pet);
+
             }
             ownerRepository.deleteById(idCO);
     }
