@@ -1,7 +1,9 @@
 package com.devsteam.getname.telbot_shelterdc.service;
 
+import com.devsteam.getname.telbot_shelterdc.Utils;
 import com.devsteam.getname.telbot_shelterdc.dto.ReportDTO;
 import com.devsteam.getname.telbot_shelterdc.exception.*;
+import com.devsteam.getname.telbot_shelterdc.model.Kind;
 import com.devsteam.getname.telbot_shelterdc.model.PetOwner;
 import com.devsteam.getname.telbot_shelterdc.model.Report;
 import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
@@ -11,14 +13,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
 public class ReportService {
 
-    private final LinkedList<Report> petReports = new LinkedList<>();
     private ReportRepository reportRepository;
     private OwnerRepository ownerRepository;
     private PetRepository petRepository;
@@ -48,82 +48,128 @@ public class ReportService {
      * @param chatId,
      * @param mealsWellBeingAndAdaptationBehaviorChanges,
      * @param photo
-     *
      */
-    public void addReport(long chatId, String mealsWellBeingAndAdaptationBehaviorChanges, String photo) {
-
+    public ReportDTO addReport(long chatId, String mealsWellBeingAndAdaptationBehaviorChanges, String photo) {
         Report report = new Report();
         PetOwner owner = ownerRepository.findPetOwnerByChatId(chatId);
+        if (owner == null) {
+            throw new NoSuchEntityException("No owner with such chat ID");
+        }
         report.setPetOwner(owner);
-        report.setPet(owner.getPet());
+
+        try {
+            report.setPet(owner.getPet());
+        } catch (NullPointerException e) {
+            throw new PetIsNotAssignedException("this owner doesn't have assigned pet yet");
+        }
+        if (!Utils.stringValidation(mealsWellBeingAndAdaptationBehaviorChanges)) {
+            throw new IllegalArgumentException();
+        }
         report.setMealsWellBeingAndAdaptationBehaviorChanges(mealsWellBeingAndAdaptationBehaviorChanges);
+        if (!Utils.stringValidation(photo)) {
+            throw new IllegalArgumentException();
+        }
         report.setPhoto(photo);
         report.setReportIsComplete(true);
         report.setReportIsInspected(false);
         report.setReportDate(LocalDateTime.now().toLocalDate());
         report.setReportTime(LocalDateTime.now().toLocalTime());
-        reportRepository.save(report);
-
-
+        try {
+            reportRepository.save(report);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+        return petReportToDTO(report);
     }
 
     /**
      * Получить отчёт по id отчёта
      *
      * @param id id отчёта
-     * @return отчёт о кошке
-     * @throws NoReportWithSuchIdException при попытке передать id несуществующего отчёта
+     * @return отчёт о питомце
+     * @throws NoSuchEntityException попытке передать id несуществующего отчёта
      */
     public ReportDTO getReportByReportId(long id) {
-        return petReportToDTO(reportRepository.findById(id).orElseThrow(NoReportWithSuchIdException::new));
-
+        try {
+            return petReportToDTO(reportRepository.findById(id).orElseThrow());
+        } catch (Exception e) {
+            throw new NoSuchEntityException("No report with such ID");
+        }
     }
 
     /**
      * Получить отчёт по id животного
      *
-     * @param petId id Кошки
-     * @return отчёт о кошке
+     * @param petId id питомца
+     * @return список отчётов о питомце
      * @throws NoSuchEntityException при попытке передать id несуществующего животного
      */
-    public ReportDTO getReportByCatId(long petId) {
-        try {
-            return petReportToDTO(reportRepository.findReportByPet_Id(petId));
-        } catch (NoSuchElementException e) {
-            throw new NoReportWithSuchPetIdException();
+    public List<ReportDTO> getReportsByPetId(long petId) {
+
+        List<ReportDTO> reportDTOS = reportRepository.findByPet_Id(petId)
+                .stream()
+                .map(this::petReportToDTO)
+                .toList();
+        if (!reportDTOS.isEmpty()) {
+            return reportDTOS;
+        } else {
+            throw new NoSuchEntityException("No reports with such pet ID");
         }
 
     }
 
     /**
-     * Получить список отчётов по дате отправки
+     * Получить список отчётов по дате отправки (по типу животного)
      *
      * @param date дата отправки отчётов
+     * @param kind тип животного
      * @return список отчётов на указанную дату
-     * @throws NoReportsOnThisDateException при попытке передать дату, в которую не существует отчётов
+     * @throws NoSuchEntityException при попытке передать дату, в которую не существует отчётов
      */
-    public List<ReportDTO> getReportsByDate(LocalDate date) {
+    public List<ReportDTO> getReportsByDate(LocalDate date, Kind kind) {
         List<ReportDTO> reportDTOS = reportRepository
-                .findReportByReportDate(date)
+                .findReportsByReportDateAndPet_Kind(date, kind)
                 .stream()
-                .map(report -> petReportToDTO(report)).toList();
+                .filter(r -> r.getPet().getKind().equals(kind))
+                .map(this::petReportToDTO).toList();
         if (!reportDTOS.isEmpty()) {
             return reportDTOS;
         } else {
-            throw new NoReportsOnThisDateException();
+            throw new NoSuchEntityException("No reports on this date");
         }
     }
 
     /**
      * Получить все отчёты
      *
-     * @return список всех отчётов
+     * @return список всех отчётов по типу животного
      * @throws ReportListIsEmptyException если в базе нет ни одного отчёта
      */
-    public List<ReportDTO> getAllReports() {
+    public List<ReportDTO> getAllReports(Kind kind) {
         List<ReportDTO> reports = reportRepository
                 .findAll()
                 .stream()
+                .filter(r -> r.getPet().getKind().equals(kind))
+                .map(report -> petReportToDTO(report))
+                .toList();
+        if (!reports.isEmpty()) {
+            return reports;
+        } else {
+            throw new ReportListIsEmptyException();
+        }
+    }
+
+    /**
+     * Получить все отчёты по chat ID
+     *
+     * @return список всех отчётов по типу животного
+     * @throws ReportListIsEmptyException если в базе нет ни одного отчёта
+     */
+    public List<ReportDTO> getReportsByChatId(long chatId) {
+        List<ReportDTO> reports = reportRepository
+                .findAll()
+                .stream()
+                .filter(r -> r.getPetOwner().getChatId().equals(chatId))
                 .map(report -> petReportToDTO(report))
                 .toList();
         if (!reports.isEmpty()) {
@@ -137,60 +183,77 @@ public class ReportService {
      * Отметить отчёт как завершённый@param id id отчёта
      *
      * @param reportId id отчёта
-     * @throws NoReportWithSuchIdException при попытке передать id несуществующего отчёта
+     * @throws NoSuchEntityException при попытке передать id несуществующего отчёта
      */
     public void setReportAsComplete(long reportId) {
-        Report report = reportRepository.findById(reportId).orElseThrow(NoReportWithSuchIdException::new);
-        report.setReportIsComplete(true);
-        reportRepository.save(report);
+        try {
+            Report report = reportRepository.findById(reportId).orElseThrow();
+            report.setReportIsComplete(true);
+            reportRepository.save(report);
+        } catch (Exception e) {
+            throw new NoSuchEntityException("No report with such ID");
+        }
     }
 
     /**
      * Отметить отчёт как НЕзавершённый
      *
      * @param reportId id отчёта
-     * @throws NoReportWithSuchIdException при попытке передать id несуществующего отчёта
+     * @throws NoSuchEntityException при попытке передать id несуществующего отчёта
      */
     public void setReportAsIncomplete(long reportId) {
-        Report report = reportRepository.findById(reportId).orElseThrow(NoReportWithSuchIdException::new);
-        report.setReportIsComplete(false);
-        reportRepository.save(report);
+        try {
+            Report report = reportRepository.findById(reportId).orElseThrow();
+            report.setReportIsComplete(false);
+            reportRepository.save(report);
+        } catch (Exception e) {
+            throw new NoSuchEntityException("No report with such ID");
+        }
     }
 
     /**
      * Отметить отчёт как просмотренный
      *
      * @param reportId id отчёта
-     * @throws NoReportWithSuchIdException при попытке передать id несуществующего отчёта
+     * @throws NoSuchEntityException при попытке передать id несуществующего отчёта
      */
     public void setReportAsInspected(long reportId) {
-        Report report = reportRepository.findById(reportId).orElseThrow(NoReportWithSuchIdException::new);
-        report.setReportIsInspected(true);
-        reportRepository.save(report);
-    }
-
-    /**
-     * Удалить отчёт по id животного
-     *
-     * @param petId id Кошки
-     * @throws NoReportWithSuchPetIdException при попытке передать id несуществующего животного
-     */
-    public void deleteReportByCatId(long petId) {
         try {
-            reportRepository.delete(reportRepository.findReportByPet_Id(petId));
-        } catch (IllegalArgumentException e) {
-            throw new NoReportWithSuchPetIdException();
+            Report report = reportRepository.findById(reportId).orElseThrow();
+            report.setReportIsInspected(true);
+            reportRepository.save(report);
+        } catch (Exception e) {
+            throw new NoSuchEntityException("No report with such ID");
         }
-
     }
 
     /**
      * Удалить отчёт по id отчёта
      *
      * @param reportId id отчёта
-     * @throws NoReportWithSuchIdException при попытке передать id несуществующего отчёта
+     * @throws NoSuchEntityException при попытке передать id несуществующего отчёта
      */
     public void deleteReportByReportId(long reportId) {
-        reportRepository.delete(reportRepository.findById(reportId).orElseThrow(NoReportWithSuchIdException::new));
+        try {
+            reportRepository.delete(reportRepository.findById(reportId).orElseThrow());
+        } catch (Exception e) {
+            throw new NoSuchEntityException("No report with such ID");
+        }
+    }
+
+    /**
+     * Удалить отчёты по id животного
+     *
+     * @param petId id животного
+     * @throws NoSuchEntityException при попытке передать id несуществующего животного
+     */
+    public void deleteReportsByPetId(long petId) {
+        List<Report> reportDTOS = reportRepository.findByPet_Id(petId);
+        if (reportDTOS.isEmpty()) {
+            throw new NoSuchEntityException("No report with such pet Id");
+        }
+        reportRepository.deleteAllInBatch(reportRepository.findByPet_Id(petId));
+
+
     }
 }

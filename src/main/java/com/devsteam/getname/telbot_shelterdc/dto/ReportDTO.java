@@ -12,4 +12,5 @@ public record ReportDTO(long id,
                         LocalTime reportTime,
                         boolean reportIsComplete,
                         boolean reportIsInspected) {
+
 }
