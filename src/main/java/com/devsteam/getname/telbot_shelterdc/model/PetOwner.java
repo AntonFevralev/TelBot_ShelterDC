@@ -32,7 +32,7 @@ public class PetOwner {
 /** Поле животного, заполняется волонтером после заключения договора.
  * Правило: На испытательный срок - одно животное в одни руки.
  */
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
@@ -62,6 +62,15 @@ public class PetOwner {
         this.start = start;
         this.pet = pet;
     }
+    public PetOwner(Long idCO, Long chatId, String fullName, String phone, String address,
+                    StatusOwner statusOwner) {
+        this.idCO = idCO;
+        this.chatId = chatId;
+        this.fullName = fullName;
+        this.phone = phone;
+        this.address = address;
+        this.statusOwner = statusOwner;
+        }
     public PetOwner(Long idCO, Long chatId, String fullName, String phone, String address,
                     StatusOwner statusOwner, LocalDate start, Pet pet) {
         this.idCO = idCO;

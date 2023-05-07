@@ -35,13 +35,13 @@ public class PetOwnerService {
     /** Метод добавления человека в БД, меняет статус животного и id его усыновителя.
      */
     public PetOwnerDTO creatPetOwner(PetOwnerDTO petOwnerDTO){
-        if (petOwnerDTO.chatId() == 0 && !(stringValidation(petOwnerDTO.fullName())
+        if (petOwnerDTO.chatId() == 0 || !(stringValidation(petOwnerDTO.fullName())
                 && stringValidation(petOwnerDTO.phone())
                 && stringValidation(petOwnerDTO.address()))) {
             throw new IllegalArgumentException("Данные заполнены не корректно.");
            }
             Pet pet = petRepository.findById(petOwnerDTO.petId()).orElseThrow();
-            if (pet.getStatus() == FREE) {
+            if (pet.getStatus().equals(FREE)) {
                 PetOwner petOwner = new PetOwner(petOwnerDTO.chatId(), petOwnerDTO.fullName(),
                         petOwnerDTO.phone(), petOwnerDTO.address(), PROBATION, LocalDate.now(), pet);
                 pet.setStatus(BUSY);
@@ -63,10 +63,11 @@ public class PetOwnerService {
     /** Метод изменения статуса "усыновителя" животного.
      * @param idCO id "усыновителя" кошки.
      */
-    public void changeStatusOwnerByIdCO(Long idCO, StatusOwner status) {
+    public PetOwner changeStatusOwnerByIdCO(Long idCO, StatusOwner status) {
         PetOwner owner = ownerRepository.findById(idCO).orElseThrow(NoOwnerWithSuchIdException::new);
         owner.setStatusOwner(status);
         ownerRepository.save(owner);
+        return owner;
     }
 
     /** Метод добавления животного (или замены) из БД к "усыновителю" по id с проверкой и сменой статуса животного.
@@ -115,5 +116,8 @@ public class PetOwnerService {
                 petRepository.save(pet);
             }
             ownerRepository.deleteById(idCO);
+    }
+    public PetOwnerDTO getPetOwner(Long idCO) {
+        return petOwnerToDTO(ownerRepository.findById(idCO).orElseThrow(NoOwnerWithSuchIdException::new));
     }
 }
