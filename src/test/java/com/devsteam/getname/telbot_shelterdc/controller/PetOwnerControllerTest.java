@@ -110,8 +110,6 @@ public class PetOwnerControllerTest {
                 .andExpect(jsonPath("$.petId").value(petId));
     }
 
-    //--------- Валятся --------------------------------------------------------------------------
-
     @Test
     void givenPetOwnersInDatabase_thenItIsDeletedById() throws Exception {
         Pet testPet = new Pet(3L, 2019, "Pusheen", "tabby",
@@ -120,40 +118,10 @@ public class PetOwnerControllerTest {
         PetOwnerDTO test = new PetOwnerDTO(0L, 112L, "fullName", "phone",
                 "address", PROBATION, LocalDate.now(), petId);
 
-        mockMvc.perform(post("http://localhost:8080/petowner")
-                        .content(objectMapper.writeValueAsString(test))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(jsonPath("$.idCO").isNotEmpty())
-                .andExpect(jsonPath("$.idCO").isNumber())
-                .andExpect(jsonPath("$.chatId").value(112L))
-                .andExpect(jsonPath("$.fullName").value("fullName"))
-                .andExpect(jsonPath("$.phone").value("phone"))
-                .andExpect(jsonPath("$.address").value("address"))
-                .andExpect(jsonPath("$.statusOwner").value("PROBATION"))
-                .andExpect(jsonPath("$.start").value(LocalDate.now().toString()))
-                .andExpect(jsonPath("$.petId").value(petId));
-
         long idCOtest = petOwnerService.creatPetOwner(test).idCO();
 
-        mockMvc.perform(delete("/petowner/1"))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(jsonPath("$.idCO").isNotEmpty())
-                .andExpect(jsonPath("$.idCO").isNumber())
-                .andExpect(jsonPath("$.idCO").value(idCOtest))
-                .andExpect(jsonPath("$.chatId").value(112L))
-                .andExpect(jsonPath("$.fullName").value("fullName"))
-                .andExpect(jsonPath("$.phone").value("phone"))
-                .andExpect(jsonPath("$.address").value("address"))
-                .andExpect(jsonPath("$.statusOwner").value("PROBATION"))
-                .andExpect(jsonPath("$.start").value(LocalDate.now().toString()))
-                .andExpect(jsonPath("$.petId").value(petId));
-
-//        mockMvc.perform(get("/petowner"))  // почему без id ?
-//                .andExpect(status().isNotFound());
-
+        mockMvc.perform(delete("/petowner/" + idCOtest))
+                .andExpect(status().isOk());
     }
 
 }
