@@ -39,7 +39,6 @@ class ShelterControllerTest {
 
     @Mock
     ShelterService service;
-    private InputStream is;
     private MockMvc mockMvc;
     @Spy
     @InjectMocks
@@ -48,7 +47,6 @@ class ShelterControllerTest {
     @BeforeEach
     public void init() {
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
-        is = controller.getClass().getClassLoader().getResourceAsStream("shelter.json");
     }
 
     @Autowired

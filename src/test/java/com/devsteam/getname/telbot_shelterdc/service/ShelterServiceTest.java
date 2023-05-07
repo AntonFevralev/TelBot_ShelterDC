@@ -28,7 +28,7 @@ class ShelterServiceTest {
     }
 
     @Test
-    void geInvalidDataFile() {
+    void getInvalidDataFile() {
         File actualFile = service.getDataFile("file.json");
         assertThat(actualFile).doesNotExist();
     }
