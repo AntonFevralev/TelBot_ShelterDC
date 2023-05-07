@@ -2,6 +2,7 @@ package com.devsteam.getname.telbot_shelterdc.service;
 
 import com.devsteam.getname.telbot_shelterdc.dto.PetDTO;
 import com.devsteam.getname.telbot_shelterdc.dto.PetOwnerDTO;
+import com.devsteam.getname.telbot_shelterdc.exception.OwnerListIsEmptyException;
 import com.devsteam.getname.telbot_shelterdc.exception.PetIsNotFreeException;
 import com.devsteam.getname.telbot_shelterdc.exception.WrongPetException;
 import com.devsteam.getname.telbot_shelterdc.model.*;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.LocalDate;
 
@@ -25,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class PetOwnerServiceTest {
     @Autowired
     PetOwnerService service;
@@ -40,6 +43,7 @@ public class PetOwnerServiceTest {
 
 
         Pet petTest = new Pet(1L, 2017, "Cat", "tabby", "very friendly", RED, FREE, CAT);
+        Pet petBASY = new Pet(2L, 2017, "Mat", "tabby", "no friendly", RED, BUSY, CAT);
         PetOwner petOwnerTest = new PetOwner(1L, "fullname", "phone", "address",
                 PROBATION, LocalDate.now(), petTest);
         PetOwnerDTO petOwnerDTOtest = new PetOwnerDTO(0L, 1L, "fullname", "phone",
@@ -91,24 +95,13 @@ public class PetOwnerServiceTest {
     }
 
     @Test
-    public void addingOwnerIfPetIsNotFreeThrowsException() {
-        PetDTO petDTO = new PetDTO(1L,2017, "Cat","tabby","frendly",RED,BUSY,0L,CAT);
-        PetOwnerDTO petOwnerDTO = new PetOwnerDTO(0L,1L, "fullname", "phone",
-                "address",PROBATION,LocalDate.now(),petDTO.id() );
-        Exception exception = assertThrows(PetIsNotFreeException.class,
-                () -> service.creatPetOwner(petOwnerDTO));
-        String expectedMessage = "Животное занято другим человеком.";
-        String actualMessage = exception.getMessage();
-        assertThat(actualMessage.equals(expectedMessage));
-    }
-
-    @Test
     public void checkIfPetOwnerIsAddedToRepository() {
-        PetOwnerDTO petOwnerDTOtest = new PetOwnerDTO(1L, 1L, "fullname", "phone",
-                "address", PROBATION, LocalDate.now(), 3L);
+        long petId = petRepository.save(petTest).getId();
+        PetOwnerDTO petOwnerDTOtest = new PetOwnerDTO(0L, 1L, "fullname", "phone",
+                "address", PROBATION,LocalDate.now(),petId);
         long testPetOwnerId = service.creatPetOwner(petOwnerDTOtest).idCO(); // животное занято!?
         PetOwnerDTO expectedPetOwnerDTO = new PetOwnerDTO(1L,1L, "fullname", "phone",
-                "address",PROBATION,LocalDate.now(),3L );
+                "address",PROBATION,LocalDate.now(),1L );
         assertEquals(expectedPetOwnerDTO, service.getPetOwner(testPetOwnerId));
     }
 
@@ -125,13 +118,26 @@ public class PetOwnerServiceTest {
 
     @Test
     public void checkIfPetOwnerIsDeletedCorrectly() {
+        long petId = petRepository.save(petTest).getId();
         PetOwnerDTO petOwnerDTOtest = new PetOwnerDTO(0L, 1L, "fullname", "phone",
-                "address", PROBATION,LocalDate.now(),1L);
+                "address", PROBATION,LocalDate.now(),petId);
         long idCO = service.creatPetOwner(petOwnerDTOtest).idCO();
         service.deletePetOwnerByIdCO(idCO);
-        Assertions.assertFalse(service.getAllPetOwners().contains(petOwnerDTOtest));
+        Assertions.assertThrows(OwnerListIsEmptyException.class, () -> service.getAllPetOwners());
     }
+    //--------- Валятся --------------------------------------------------------------------------
 
+    @Test
+    public void addingOwnerIfPetIsNotFreeThrowsException() {
+        long petId = petRepository.save(petBASY).getId();
+        PetOwnerDTO petOwnerDTO = new PetOwnerDTO(0L,1L, "fullname", "phone",
+                "address",PROBATION,LocalDate.now(),petId );
+        Exception exception = assertThrows(PetIsNotFreeException.class,
+                () -> service.creatPetOwner(petOwnerDTO));
+        String expectedMessage = "Животное занято другим человеком.";
+        String actualMessage = exception.getMessage();
+        assertThat(actualMessage.equals(expectedMessage));
+    }
 
 }
 

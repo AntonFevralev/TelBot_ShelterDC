@@ -41,7 +41,7 @@ public class PetOwnerService {
             throw new IllegalArgumentException("Данные заполнены не корректно.");
            }
             Pet pet = petRepository.findById(petOwnerDTO.petId()).orElseThrow();
-            if (pet.getStatus() == FREE) {
+            if (pet.getStatus().equals(FREE)) {
                 PetOwner petOwner = new PetOwner(petOwnerDTO.chatId(), petOwnerDTO.fullName(),
                         petOwnerDTO.phone(), petOwnerDTO.address(), PROBATION, LocalDate.now(), pet);
                 pet.setStatus(BUSY);

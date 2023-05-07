@@ -52,7 +52,7 @@ public class PetOwnerController {
     public ResponseEntity<List<PetOwnerDTO>> getAllCatOwners(){
         return ResponseEntity.ok().body(petOwnerService.getAllPetOwners());
     }
-    @DeleteMapping
+    @DeleteMapping("{idCO}")
     @Operation(summary = "Удаление человека из БД по его id")
     @ApiResponses( {
             @ApiResponse( responseCode = "200",
@@ -63,7 +63,7 @@ public class PetOwnerController {
             @ApiResponse( responseCode = "500",
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
-    public void deletePetOwnerById(@RequestParam Long idCO){
+    public void deletePetOwnerById(@PathVariable ("idCO") Long idCO){
         petOwnerService.deletePetOwnerByIdCO(idCO);
     }
     @PutMapping("/status")

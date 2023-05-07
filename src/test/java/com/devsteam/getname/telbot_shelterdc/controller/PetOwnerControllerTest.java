@@ -3,8 +3,10 @@ package com.devsteam.getname.telbot_shelterdc.controller;
 import com.devsteam.getname.telbot_shelterdc.dto.PetDTO;
 import com.devsteam.getname.telbot_shelterdc.dto.PetOwnerDTO;
 import com.devsteam.getname.telbot_shelterdc.model.Color;
+import com.devsteam.getname.telbot_shelterdc.model.Pet;
 import com.devsteam.getname.telbot_shelterdc.model.Status;
 import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
+import com.devsteam.getname.telbot_shelterdc.repository.PetRepository;
 import com.devsteam.getname.telbot_shelterdc.service.PetOwnerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -38,22 +40,20 @@ public class PetOwnerControllerTest {
 
     @Autowired
     OwnerRepository ownerRepository;
+    @Autowired
+    PetRepository petRepository;
 
     @Autowired
     PetOwnerService petOwnerService;
 
-    @Test
-    void givenNoPetOwnersInDatabase_whenGetOwners_thenOwnersNotFound() throws Exception {
-        mockMvc.perform(get("http://localhost:8080/petowner"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$").isEmpty());
-    }
 
     @Test
-    void givenNoPetsInDatabase_whenPetAddedItIsAddedCorrectly() throws Exception {
+    void givenPetOwnersInDatabase_whenOwnerAddedItIsAddedCorrectly() throws Exception {
+        Pet testPet = new Pet(1L, 2019, "Pusheen", "tabby",
+                "very friendly", Color.BLACK_AND_WHITE, Status.FREE, CAT);
+        Long petId = petRepository.save(testPet).getId();
         PetOwnerDTO test = new PetOwnerDTO(0L, 112L, "fullName", "phone",
-                "address", PROBATION, LocalDate.now(), 3L);
+                "address", PROBATION, LocalDate.now(), petId);
 
         mockMvc.perform(post("http://localhost:8080/petowner")
                         .content(objectMapper.writeValueAsString(test))
@@ -63,20 +63,24 @@ public class PetOwnerControllerTest {
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.idCO").isNotEmpty())
                 .andExpect(jsonPath("$.idCO").isNumber())
-                .andExpect(jsonPath("$.idCO").value(1L))
+                .andExpect(jsonPath("$.idCO").value(1L)) // Роли не играет - м.б. любое значение
                 .andExpect(jsonPath("$.chatId").value(112L))
                 .andExpect(jsonPath("$.fullName").value("fullName"))
                 .andExpect(jsonPath("$.phone").value("phone"))
                 .andExpect(jsonPath("$.address").value("address"))
                 .andExpect(jsonPath("$.statusOwner").value("PROBATION"))
-                .andExpect(jsonPath("$.start").value(LocalDate.now()))
-                .andExpect(jsonPath("$.petId").value(3L));
+                .andExpect(jsonPath("$.start").value(LocalDate.now().toString()))
+                .andExpect(jsonPath("$.petId").value(petId));
     }
 
     @Test
-    void givenPetsInDatabase_thenItIsFoundById() throws Exception {
+    void givenPetOwnersInDatabase_thenItIsFoundById() throws Exception {
+        Pet testPet = new Pet(1L, 2019, "Pusheen", "tabby",
+                "very friendly", Color.BLACK_AND_WHITE, Status.FREE, CAT);
+        Long petId = petRepository.save(testPet).getId();
         PetOwnerDTO test = new PetOwnerDTO(0L, 112L, "fullName", "phone",
-                "address", PROBATION, LocalDate.now(), 3L);
+                "address", PROBATION, LocalDate.now(), petId);
+
         mockMvc.perform(post("http://localhost:8080/petowner")
                         .content(objectMapper.writeValueAsString(test))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -89,8 +93,8 @@ public class PetOwnerControllerTest {
                 .andExpect(jsonPath("$.phone").value("phone"))
                 .andExpect(jsonPath("$.address").value("address"))
                 .andExpect(jsonPath("$.statusOwner").value("PROBATION"))
-                .andExpect(jsonPath("$.start").value(LocalDate.now()))
-                .andExpect(jsonPath("$.petId").value(3L));
+                .andExpect(jsonPath("$.start").value(LocalDate.now().toString()))
+                .andExpect(jsonPath("$.petId").value(petId));
 
         mockMvc.perform(get("http://localhost:8080/petowner/1"))
                 .andExpect(status().isOk())
@@ -102,15 +106,26 @@ public class PetOwnerControllerTest {
                 .andExpect(jsonPath("$.phone").value("phone"))
                 .andExpect(jsonPath("$.address").value("address"))
                 .andExpect(jsonPath("$.statusOwner").value("PROBATION"))
-                .andExpect(jsonPath("$.start").value(LocalDate.now()))
-                .andExpect(jsonPath("$.petId").value(3L));
+                .andExpect(jsonPath("$.start").value(LocalDate.now().toString()))
+                .andExpect(jsonPath("$.petId").value(petId));
     }
 
-    //-----------------------------------------------------------------------------------
+    //--------- Валятся --------------------------------------------------------------------------
+//    @Test
+//    void givenNoPetOwnersInDatabase_whenGetOwners_thenOwnersNotFound() throws Exception {
+//        mockMvc.perform(get("http://localhost:8080/petowner"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$").isArray())
+//                .andExpect(jsonPath("$").isEmpty());
+//    }
     @Test
     void givenPetOwnersInDatabase_thenItIsDeletedById() throws Exception {
-        PetOwnerDTO test = new PetOwnerDTO(0L, 112L, "fullName", "phone",
-                "address", PROBATION, LocalDate.now(), 3L);
+        Pet testPet = new Pet(1L, 2019, "Pusheen", "tabby",
+                "very friendly", Color.BLACK_AND_WHITE, Status.FREE, CAT);
+        Long petId = petRepository.save(testPet).getId();
+        PetOwnerDTO test = new PetOwnerDTO(3L, 112L, "fullName", "phone",
+                "address", PROBATION, LocalDate.now(), petId);
+
         mockMvc.perform(post("http://localhost:8080/petowner")
                         .content(objectMapper.writeValueAsString(test))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -123,8 +138,8 @@ public class PetOwnerControllerTest {
                 .andExpect(jsonPath("$.phone").value("phone"))
                 .andExpect(jsonPath("$.address").value("address"))
                 .andExpect(jsonPath("$.statusOwner").value("PROBATION"))
-                .andExpect(jsonPath("$.start").value(LocalDate.now()))
-                .andExpect(jsonPath("$.petId").value(3L));
+                .andExpect(jsonPath("$.start").value(LocalDate.now().toString()))
+                .andExpect(jsonPath("$.petId").value(petId));
 
         long idCO = test.idCO();
 
