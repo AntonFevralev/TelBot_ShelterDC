@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.devsteam.getname.telbot_shelterdc.model.Kind.CAT;
+import static com.devsteam.getname.telbot_shelterdc.model.Kind.DOG;
 import static java.nio.file.Files.readString;
 
 @Component
@@ -66,7 +67,7 @@ public class ReminderTimer {
         if (now.truncatedTo(ChronoUnit.MINUTES).equals(LocalTime.of(21, 15)
                 .truncatedTo(ChronoUnit.MINUTES))) {
             List<Long> listToRemind = new ArrayList<>();
-            Set<Long> allTodayReports = reportRepository.findReportByReportDate(LocalDate.now()).stream()
+            Set<Long> allTodayReports = reportRepository.findAllByReportDate(LocalDate.now()).stream()
                     .map(r -> r.getPetOwner().getChatId()).collect(Collectors.toSet());
             List<Long> ownersChatId = ownerRepository.findAll().stream()
                     .filter(s -> s.getStatusOwner() == StatusOwner.PROBATION).map(PetOwner::getChatId).toList();
@@ -95,11 +96,11 @@ public class ReminderTimer {
                 .truncatedTo(ChronoUnit.MINUTES))) {
             Long dogVolunteer = dogsShelter.getChatId();
 
-            Set<Long> allDogsTodayReports = reportRepository.findReportByReportDate(LocalDate.now()).stream()
-                    .filter(r -> r.getPetOwner().getPet().getKind() == Kind.DOG).map(r -> r.getPetOwner().getIdCO())
+            Set<Long> allDogsTodayReports = reportRepository.findReportsByReportDateAndPet_Kind(LocalDate.now(), DOG).stream()
+                    .map(r -> r.getPetOwner().getIdCO())
                     .collect(Collectors.toSet());
-            Set<Long> allDogsYesterdayReports = reportRepository.findReportByReportDate(LocalDate.now().minusDays(1)).stream()
-                    .filter(r -> r.getPetOwner().getPet().getKind() == Kind.DOG).map(r -> r.getPetOwner().getIdCO())
+            Set<Long> allDogsYesterdayReports = reportRepository.findReportsByReportDateAndPet_Kind(LocalDate.now().minusDays(1), DOG).stream()
+                    .map(r -> r.getPetOwner().getIdCO())
                     .collect(Collectors.toSet());
             List<Long> allDogOwnerId = ownerRepository.findAll().stream()
                     .filter(s -> s.getStatusOwner() == StatusOwner.PROBATION && s.getPet().getKind() == Kind.DOG).map(PetOwner::getChatId).toList();
@@ -123,11 +124,11 @@ public class ReminderTimer {
 
             Long catVolunteer = catsShelter.getChatId();
 
-                Set<Long> allCatsTodayReports = reportRepository.findReportByReportDate(LocalDate.now()).stream()
-                        .filter(r -> r.getPetOwner().getPet().getKind() == CAT).map(r -> r.getPetOwner().getIdCO())
+                Set<Long> allCatsTodayReports = reportRepository.findReportsByReportDateAndPet_Kind(LocalDate.now(), CAT).stream()
+                        .map(r -> r.getPetOwner().getIdCO())
                         .collect(Collectors.toSet());
-                Set<Long> allCatsYesterdayReports = reportRepository.findReportByReportDate(LocalDate.now().minusDays(1)).stream()
-                        .filter(r -> r.getPetOwner().getPet().getKind() == CAT).map(r -> r.getPetOwner().getIdCO())
+                Set<Long> allCatsYesterdayReports = reportRepository.findReportsByReportDateAndPet_Kind(LocalDate.now().minusDays(1),CAT).stream()
+                        .map(r -> r.getPetOwner().getIdCO())
                         .collect(Collectors.toSet());
                 List<Long> allCatOwnerId = ownerRepository.findAll().stream()
                         .filter(s -> s.getStatusOwner() == StatusOwner.PROBATION).filter(s -> s.getPet().getKind() == CAT).map(PetOwner::getChatId).toList();
