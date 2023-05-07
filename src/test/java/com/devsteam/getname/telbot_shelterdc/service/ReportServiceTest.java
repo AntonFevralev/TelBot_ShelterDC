@@ -42,12 +42,12 @@ public class ReportServiceTest {
 
     @BeforeEach
     public void setUp(){
-        PetDTO pet1 = new PetDTO(0, 2020, "Chad", "mixed", "feisty", Color.SPOTTED, Status.FREE, 0, CAT);
-        PetDTO pet2 = new PetDTO(0, 2021, "Dach", "labr", "feisty", Color.BLACK, Status.FREE, 0, CAT);
+        PetDTO pet1 = new PetDTO(0L, 2020, "Chad", "mixed", "feisty", Color.SPOTTED, Status.FREE, 0, CAT);
+        PetDTO pet2 = new PetDTO(0L, 2021, "Dach", "labr", "feisty", Color.BLACK, Status.FREE, 0, CAT);
         petService.addPet(pet1);
         petService.addPet(pet2);
-        PetOwnerDTO owner1 = new PetOwnerDTO(0, 405441405, "fullName", "phone", "address", StatusOwner.PROBATION, LocalDate.now(), 1);
-        PetOwnerDTO owner2 = new PetOwnerDTO(0, 999, "fullName", "phone", "address", StatusOwner.PROBATION, LocalDate.now(), 2);
+        PetOwnerDTO owner1 = new PetOwnerDTO(0L, 405441405L, "fullName", "phone", "address", StatusOwner.PROBATION, LocalDate.now(), 1L);
+        PetOwnerDTO owner2 = new PetOwnerDTO(0L, 999L, "fullName", "phone", "address", StatusOwner.PROBATION, LocalDate.now(), 2L);
         petOwnerService.creatPetOwner(owner1);
         petOwnerService.creatPetOwner(owner2);
     }
@@ -146,7 +146,7 @@ public class ReportServiceTest {
 
     @Test
     public void gettingReportsByNonExistingInDBKindAndExistingDateThrowsNoSuchEntityException(){
-        PetDTO pet2 = new PetDTO(0, 2021, "Lara", "Labrador", "kind", Color.WHITE, Status.FREE, 0, DOG);
+        PetDTO pet2 = new PetDTO(0L, 2021, "Lara", "Labrador", "kind", Color.WHITE, Status.FREE, 0, DOG);
         long chatId = 405441405;
         ReportDTO reportDTO = reportService.addReport(chatId,"mealsAndStuff", "photo");
         List<ReportDTO> reportDTOS = new ArrayList<>();
@@ -167,7 +167,7 @@ public class ReportServiceTest {
 
     @Test
     public void gettingAllReportsByNonExistingInDBKindThrowsReportListIsEmptyException(){
-        PetDTO pet2 = new PetDTO(0, 2021, "Lara", "Labrador", "kind", Color.WHITE, Status.FREE, 0, DOG);
+        PetDTO pet2 = new PetDTO(0L, 2021, "Lara", "Labrador", "kind", Color.WHITE, Status.FREE, 0, DOG);
         long chatId = 405441405;
         ReportDTO reportDTO = reportService.addReport(chatId,"mealsAndStuff", "photo");
         List<ReportDTO> reportDTOS = new ArrayList<>();
