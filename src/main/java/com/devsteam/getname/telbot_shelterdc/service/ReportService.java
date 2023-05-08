@@ -9,12 +9,13 @@ import com.devsteam.getname.telbot_shelterdc.model.Report;
 import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.ReportRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.PetRepository;
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class ReportService {
@@ -22,11 +23,13 @@ public class ReportService {
     private ReportRepository reportRepository;
     private OwnerRepository ownerRepository;
     private PetRepository petRepository;
+    private final TelegramBot telegramBot;
 
-    public ReportService(ReportRepository reportRepository, OwnerRepository ownerRepository, PetRepository petRepository) {
+    public ReportService(ReportRepository reportRepository, OwnerRepository ownerRepository, PetRepository petRepository, TelegramBot telegramBot) {
         this.reportRepository = reportRepository;
         this.ownerRepository = ownerRepository;
         this.petRepository = petRepository;
+        this.telegramBot = telegramBot;
     }
 
     private ReportDTO petReportToDTO(Report report) {
@@ -196,7 +199,7 @@ public class ReportService {
     }
 
     /**
-     * Отметить отчёт как НЕзавершённый
+     * Отметить отчёт как НЕзавершённый и отправить уведомление владельцу о НЕзавершенном отчете
      *
      * @param reportId id отчёта
      * @throws NoSuchEntityException при попытке передать id несуществующего отчёта
@@ -206,6 +209,10 @@ public class ReportService {
             Report report = reportRepository.findById(reportId).orElseThrow();
             report.setReportIsComplete(false);
             reportRepository.save(report);
+            telegramBot.execute(new SendMessage(report.getPetOwner().getChatId(),
+                    "Дорогой усыновитель, мы заметили, что ты заполняешь отчет не так подробно, как необходимо. " +
+                            "Пожалуйста, подойди ответственнее к этому занятию. В противном случае волонтеры приюта " +
+                            "будут обязаны самолично проверять условия содержания животного"));
         } catch (Exception e) {
             throw new NoSuchEntityException("No report with such ID");
         }
