@@ -96,10 +96,10 @@ public class PetOwnerServiceTest {
     public void checkIfPetOwnerIsAddedToRepository() {
         long petId = petRepository.save(petTest).getId();
         PetOwnerDTO petOwnerDTOtest = new PetOwnerDTO(0L, 1L, "fullname", "phone",
-                "address", PROBATION,LocalDate.now(),petId);
+                "address", PROBATION,LocalDate.now().plusDays(30),petId);
         long testPetOwnerId = service.creatPetOwner(petOwnerDTOtest).idCO(); // животное занято!?
         PetOwnerDTO expectedPetOwnerDTO = new PetOwnerDTO(1L,1L, "fullname", "phone",
-                "address",PROBATION,LocalDate.now(),1L );
+                "address",PROBATION,LocalDate.now().plusDays(30),1L );
         assertEquals(expectedPetOwnerDTO, service.getPetOwner(testPetOwnerId));
     }
 
@@ -135,6 +135,20 @@ public class PetOwnerServiceTest {
     @Test
     public void checkListOwnersIfListIsEmptyThrowsException() {
         Assertions.assertThrows(OwnerListIsEmptyException.class, () -> service.getAllPetOwners());
+    }
+
+    @Test
+    public void checkIfFinishProbaIsUpdated() {
+        long petId = petRepository.save(petTest).getId();
+        PetOwnerDTO petOwnerDTO = new PetOwnerDTO(0L,1L, "fullname", "phone",
+                "address",PROBATION,LocalDate.now().plusDays(30),petId );
+        PetOwnerDTO exOwnerDTO = service.creatPetOwner(petOwnerDTO);
+        LocalDate expected = exOwnerDTO.finishProba().plusDays(15);
+        long testIdCO = exOwnerDTO.idCO();
+        int plusDays = 15;
+        PetOwner actualOwner = service.updataFinishProba(testIdCO,plusDays);
+        LocalDate actual = actualOwner.getFinishProba();
+        assertEquals(expected, actual);
     }
 }
 

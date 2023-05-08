@@ -47,13 +47,15 @@ public class PetOwnerControllerTest {
     @Autowired
     PetOwnerService petOwnerService;
 
+    private final LocalDate finishProba = LocalDate.now().plusDays(30);
+
     @Test
     void givenPetOwnersInDatabase_whenOwnerAddedItIsAddedCorrectly() throws Exception {
         Pet testPet = new Pet(1L, 2019, "Pusheen", "tabby",
                 "very friendly", Color.BLACK_AND_WHITE, FREE, CAT);
         Long petId = petRepository.save(testPet).getId();
         PetOwnerDTO test = new PetOwnerDTO(0L, 112L, "fullName", "phone",
-                "address", PROBATION, LocalDate.now(), petId);
+                "address", PROBATION, finishProba, petId);
 
         mockMvc.perform(post("http://localhost:8080/petowner")
                         .content(objectMapper.writeValueAsString(test))
@@ -63,13 +65,13 @@ public class PetOwnerControllerTest {
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.idCO").isNotEmpty())
                 .andExpect(jsonPath("$.idCO").isNumber())
-                .andExpect(jsonPath("$.idCO").value(1L)) // Роли не играет - м.б. любое значение
+                .andExpect(jsonPath("$.idCO").value(1L)) // Роли не играет!!!
                 .andExpect(jsonPath("$.chatId").value(112L))
                 .andExpect(jsonPath("$.fullName").value("fullName"))
                 .andExpect(jsonPath("$.phone").value("phone"))
                 .andExpect(jsonPath("$.address").value("address"))
                 .andExpect(jsonPath("$.statusOwner").value("PROBATION"))
-                .andExpect(jsonPath("$.start").value(LocalDate.now().toString()))
+                .andExpect(jsonPath("$.start").value(finishProba.toString()))
                 .andExpect(jsonPath("$.petId").value(petId));
     }
 
@@ -79,7 +81,7 @@ public class PetOwnerControllerTest {
                 "very friendly", Color.BLACK_AND_WHITE, FREE, CAT);
         Long petId = petRepository.save(testPet).getId();
         PetOwnerDTO test = new PetOwnerDTO(0L, 112L, "fullName", "phone",
-                "address", PROBATION, LocalDate.now(), petId);
+                "address", PROBATION, finishProba, petId);
 
         mockMvc.perform(post("http://localhost:8080/petowner")
                         .content(objectMapper.writeValueAsString(test))
@@ -93,7 +95,7 @@ public class PetOwnerControllerTest {
                 .andExpect(jsonPath("$.phone").value("phone"))
                 .andExpect(jsonPath("$.address").value("address"))
                 .andExpect(jsonPath("$.statusOwner").value("PROBATION"))
-                .andExpect(jsonPath("$.start").value(LocalDate.now().toString()))
+                .andExpect(jsonPath("$.start").value(finishProba.toString()))
                 .andExpect(jsonPath("$.petId").value(petId));
 
         mockMvc.perform(get("http://localhost:8080/petowner/1"))
@@ -106,7 +108,7 @@ public class PetOwnerControllerTest {
                 .andExpect(jsonPath("$.phone").value("phone"))
                 .andExpect(jsonPath("$.address").value("address"))
                 .andExpect(jsonPath("$.statusOwner").value("PROBATION"))
-                .andExpect(jsonPath("$.start").value(LocalDate.now().toString()))
+                .andExpect(jsonPath("$.start").value(finishProba.toString()))
                 .andExpect(jsonPath("$.petId").value(petId));
     }
 
@@ -116,7 +118,7 @@ public class PetOwnerControllerTest {
                 "very friendly", Color.BLACK_AND_WHITE, FREE, CAT);
         Long petId = petRepository.save(testPet).getId();
         PetOwnerDTO test = new PetOwnerDTO(0L, 112L, "fullName", "phone",
-                "address", PROBATION, LocalDate.now(), petId);
+                "address", PROBATION, finishProba, petId);
 
         long idCOtest = petOwnerService.creatPetOwner(test).idCO();
 

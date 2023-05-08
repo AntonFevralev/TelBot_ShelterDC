@@ -12,14 +12,15 @@ import java.time.LocalDate;
  * @param phone № телефона.
  * @param address адрес проживания человека.
  * @param statusOwner статус человека в приюте.
+ * @param finishProba дата завершения испытательного периода.
  * @param petId животного.
  */
-public record PetOwnerDTO(Long idCO, Long chatId, String fullName, String phone, String address, StatusOwner statusOwner, LocalDate start, Long petId) {
+public record PetOwnerDTO(Long idCO, Long chatId, String fullName, String phone, String address, StatusOwner statusOwner, LocalDate finishProba, Long petId) {
 
 
     public static PetOwnerDTO petOwnerToDTO(PetOwner petOwner){
         return new PetOwnerDTO(petOwner.getIdCO(), petOwner.getChatId(), petOwner.getFullName(), petOwner.getPhone(),
-                petOwner.getAddress(), petOwner.getStatusOwner(), petOwner.getStart(), petOwner.getPet() != null ? petOwner.getPet().getId() : 0L);
+                petOwner.getAddress(), petOwner.getStatusOwner(), petOwner.getFinishProba(), petOwner.getPet() != null ? petOwner.getPet().getId() : 0L);
 
     }
 }

@@ -1,6 +1,5 @@
 package com.devsteam.getname.telbot_shelterdc.controller;
 
-import com.devsteam.getname.telbot_shelterdc.dto.PetDTO;
 import com.devsteam.getname.telbot_shelterdc.dto.PetOwnerDTO;
 import com.devsteam.getname.telbot_shelterdc.model.StatusOwner;
 import com.devsteam.getname.telbot_shelterdc.service.PetOwnerService;
@@ -12,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /** Класс контроллера для редактирования информации о клиентах и персонале приюта кошек.
@@ -81,7 +81,7 @@ public class PetOwnerController {
         petOwnerService.changeStatusOwnerByIdCO(idCO, statusOwner);
     }
     @PutMapping("/add")
-    @Operation(summary = "Добавление или замена кота из БД приюта в карте человека по id человека с проверкой и сменой статуса кота.")
+    @Operation(summary = "Добавление или замена животного из БД приюта в карте человека по id человека с проверкой и сменой статуса кота.")
     @ApiResponses( {
             @ApiResponse( responseCode = "200",
                     description = "Животное добавлено (заменено) в карту клиента.",
@@ -122,5 +122,20 @@ public class PetOwnerController {
     } )
     public ResponseEntity<PetOwnerDTO> getPetOwner(@PathVariable ("idCO") Long idCO) {
         return ResponseEntity.ok().body(petOwnerService.getPetOwner(idCO));
+    }
+
+    @PutMapping("/proba")
+    @Operation(summary = "Изменение даты завершения испытательного срока усыновителя животного")
+    @ApiResponses( {
+            @ApiResponse( responseCode = "200",
+                    description = "Дата изменена.",
+                    content = {  @Content(mediaType = "application/json") } ),
+            @ApiResponse( responseCode = "400",
+                    description = "Параметры запроса отсутствуют или имеют некорректный формат."  ),
+            @ApiResponse( responseCode = "500",
+                    description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
+    } )
+    public void updateFinishProba(@RequestParam Long idCO, @RequestParam ("+N дней") int plusDays){
+        petOwnerService.updataFinishProba(idCO, plusDays);
     }
 }
