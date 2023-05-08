@@ -7,6 +7,8 @@ import com.devsteam.getname.telbot_shelterdc.exception.PetIsNotFreeException;
 import com.devsteam.getname.telbot_shelterdc.model.*;
 import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.PetRepository;
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.request.SendMessage;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,8 +19,7 @@ import static com.devsteam.getname.telbot_shelterdc.Utils.stringValidation;
 import static com.devsteam.getname.telbot_shelterdc.dto.PetOwnerDTO.petOwnerToDTO;
 import static com.devsteam.getname.telbot_shelterdc.model.Status.BUSY;
 import static com.devsteam.getname.telbot_shelterdc.model.Status.FREE;
-import static com.devsteam.getname.telbot_shelterdc.model.StatusOwner.PROBATION;
-import static com.devsteam.getname.telbot_shelterdc.model.StatusOwner.SEARCH;
+import static com.devsteam.getname.telbot_shelterdc.model.StatusOwner.*;
 
 
 @Service
@@ -26,11 +27,13 @@ public class PetOwnerService {
 
     private final OwnerRepository ownerRepository;
     private final PetRepository petRepository;
+    private final TelegramBot telegramBot;
 
-     public PetOwnerService(OwnerRepository ownerRepository, PetRepository petRepository) {
+     public PetOwnerService(OwnerRepository ownerRepository, PetRepository petRepository, TelegramBot telegramBot) {
         this.ownerRepository = ownerRepository;
         this.petRepository = petRepository;
-    }
+         this.telegramBot = telegramBot;
+     }
 
     /** Метод добавления человека в БД, меняет статус животного и id его усыновителя.
      */
@@ -67,6 +70,16 @@ public class PetOwnerService {
         PetOwner owner = ownerRepository.findById(idCO).orElseThrow(NoOwnerWithSuchIdException::new);
         owner.setStatusOwner(status);
         ownerRepository.save(owner);
+        String message = "";
+        switch (status){
+            case SEARCH -> message ="Постараемся подобрать Вам питомца";
+            case OWNER -> message = "Вы прошли испытательный срок, поздравляем!";
+            case REJECTION -> message = "Вам отказано в усыновлении, свяжитесь с волонтером";
+            case BLACKLISTED -> message = "Вы внесены в черный список нашего приюта";
+            case PROBATION -> message = "Вам будет выдан питомец и назначен испытательный срок до "+owner.getStart()+
+                    " В течение испытательного срока Вы должны присылать ежедневный отчет о состоянии питомца";
+        }
+        telegramBot.execute(new SendMessage(owner.getChatId(), message));
         return owner;
     }
 
