@@ -12,6 +12,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.LocalDate;
 
@@ -19,6 +20,7 @@ import static com.devsteam.getname.telbot_shelterdc.model.Kind.CAT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class NotificationTest {
 
     @Autowired
@@ -29,7 +31,8 @@ public class NotificationTest {
 
     @Autowired
     OwnerRepository ownerRepository;
-
+    @Autowired
+    ReportService reportService;
 
     @SpyBean
     TelegramBot telegramBot;
@@ -47,13 +50,13 @@ public class NotificationTest {
         cat.setBreed("siam");
         cat.setColor(Color.BLACK_AND_WHITE);
         petRepository.save(cat);
-        catOwner = new PetOwner(306336303L, "FIO", "900","address", StatusOwner.PROBATION, LocalDate.now(), cat);
+        catOwner = new PetOwner(306336303L, "FIO", "900", "address", StatusOwner.PROBATION, LocalDate.now(), cat);
         cat.setPetOwner(catOwner);
         ownerRepository.save(catOwner);
     }
 
     @Test
-    public void ifPetOwnerStatusChangesToSEARCHbyIdCONotifyPO(){
+    public void ifPetOwnerStatusChangesToSEARCHbyIdCONotifyPO() {
         petOwnerService.changeStatusOwnerByIdCO(catOwner.getIdCO(), StatusOwner.SEARCH);
         ArgumentCaptor<SendMessage> argumentCaptor = ArgumentCaptor.forClass(SendMessage.class);
         Mockito.verify(telegramBot).execute(argumentCaptor.capture());
@@ -63,7 +66,7 @@ public class NotificationTest {
     }
 
     @Test
-    public void ifPetOwnerStatusChangesToPROBATIONbyIdCONotifyPO(){
+    public void ifPetOwnerStatusChangesToPROBATIONbyIdCONotifyPO() {
         petOwnerService.changeStatusOwnerByIdCO(catOwner.getIdCO(), StatusOwner.PROBATION);
         ArgumentCaptor<SendMessage> argumentCaptor = ArgumentCaptor.forClass(SendMessage.class);
         Mockito.verify(telegramBot).execute(argumentCaptor.capture());
@@ -75,7 +78,7 @@ public class NotificationTest {
     }
 
     @Test
-    public void ifPetOwnerStatusChangesToOWNERbyIdCONotifyPO(){
+    public void ifPetOwnerStatusChangesToOWNERbyIdCONotifyPO() {
         petOwnerService.changeStatusOwnerByIdCO(catOwner.getIdCO(), StatusOwner.OWNER);
         ArgumentCaptor<SendMessage> argumentCaptor = ArgumentCaptor.forClass(SendMessage.class);
         Mockito.verify(telegramBot).execute(argumentCaptor.capture());
@@ -85,7 +88,7 @@ public class NotificationTest {
     }
 
     @Test
-    public void ifPetOwnerStatusChangesToREJECTIONbyIdCONotifyPO(){
+    public void ifPetOwnerStatusChangesToREJECTIONbyIdCONotifyPO() {
         petOwnerService.changeStatusOwnerByIdCO(catOwner.getIdCO(), StatusOwner.REJECTION);
         ArgumentCaptor<SendMessage> argumentCaptor = ArgumentCaptor.forClass(SendMessage.class);
         Mockito.verify(telegramBot).execute(argumentCaptor.capture());
@@ -96,7 +99,7 @@ public class NotificationTest {
 
 
     @Test
-    public void ifPetOwnerStatusChangesToBLACKLISTEDbyIdCONotifyPO(){
+    public void ifPetOwnerStatusChangesToBLACKLISTEDbyIdCONotifyPO() {
         petOwnerService.changeStatusOwnerByIdCO(catOwner.getIdCO(), StatusOwner.BLACKLISTED);
         ArgumentCaptor<SendMessage> argumentCaptor = ArgumentCaptor.forClass(SendMessage.class);
         Mockito.verify(telegramBot).execute(argumentCaptor.capture());
@@ -106,13 +109,27 @@ public class NotificationTest {
     }
 
     @Test
-    public void RemindIfFinishProbaDateChanged(){
-         petOwnerService.updateFinishProba(catOwner.getIdCO(), 10);
+    public void remindIfFinishProbaDateChanged() {
+        petOwnerService.updateFinishProba(catOwner.getIdCO(), 10);
         ArgumentCaptor<SendMessage> argumentCaptor = ArgumentCaptor.forClass(SendMessage.class);
         Mockito.verify(telegramBot).execute(argumentCaptor.capture());
         SendMessage actual = argumentCaptor.getValue();
         assertThat(actual.getParameters().get("chat_id")).isEqualTo(catOwner.getChatId());
         assertThat(actual.getParameters().get("text")).isEqualTo("Вам продлен испытательный срок до "
                 + catOwner.getFinishProba().plusDays(10));
+    }
+
+    @Test
+    public void remindOwnerIfReportIsNotFull() {
+        Long reportID = reportService.addReport(catOwner.getChatId(), "meals", "photo").id();
+        reportService.setReportAsIncomplete(reportID);
+        ArgumentCaptor<SendMessage> argumentCaptor = ArgumentCaptor.forClass(SendMessage.class);
+        Mockito.verify(telegramBot).execute(argumentCaptor.capture());
+        SendMessage actual = argumentCaptor.getValue();
+        assertThat(actual.getParameters().get("chat_id")).isEqualTo(catOwner.getChatId());
+        assertThat(actual.getParameters().get("text")).isEqualTo("Дорогой усыновитель, мы заметили, что ты " +
+                "заполняешь отчет не так подробно, как необходимо. Пожалуйста, подойди ответственнее к этому занятию. " +
+                "В противном случае волонтеры приюта будут обязаны самолично проверять условия содержания животного");
+
     }
 }
