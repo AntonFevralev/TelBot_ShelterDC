@@ -17,6 +17,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.devsteam.getname.telbot_shelterdc.dto.PetDTO.petToDTO;
+import static com.devsteam.getname.telbot_shelterdc.model.Gender.FEMALE;
+import static com.devsteam.getname.telbot_shelterdc.model.Gender.MALE;
 import static com.devsteam.getname.telbot_shelterdc.model.Status.*;
 
 /**
@@ -47,12 +49,12 @@ public class PetService {
      */
     public PetDTO addPet(PetDTO petDTO) {
         if(!Utils.stringValidation(petDTO.name()) || !Utils.stringValidation(petDTO.breed()) || !Utils.stringValidation(petDTO.description())) {
-            throw new WrongPetException("Необходимо заполнить следующие поля: имя животного, порода, описание.");
+            throw new WrongPetException("Необходимо заполнить следующие поля: имя животного, порода, описание, пол.");
         }
         if (petDTO.birthYear() <= 2000 || petDTO.birthYear() > LocalDate.now().getYear()) {
             throw new WrongPetException("Год рождения животного не может быть меньше 2000 и больше текущего!");
         }
-        Pet pet = new Pet(petDTO.birthYear(), petDTO.name(), petDTO.breed(), petDTO.description(), petDTO.color(), FREE, petDTO.kind());
+        Pet pet = new Pet(petDTO.birthYear(), petDTO.name(), petDTO.breed(), petDTO.description(), petDTO.color(), FREE, petDTO.kind(), petDTO.gender());
         return petToDTO(petRepository.save(pet));
     }
 
@@ -108,6 +110,9 @@ public class PetService {
         }
         if(petDTO.status()==FREE||petDTO.status()==BUSY||petDTO.status()==ADOPTED){
             pet.setStatus(petDTO.status());
+        }
+        if(petDTO.gender()==MALE||petDTO.gender()==FEMALE){
+            pet.setGender(petDTO.gender());
         }
 
         return petToDTO(petRepository.save(pet));

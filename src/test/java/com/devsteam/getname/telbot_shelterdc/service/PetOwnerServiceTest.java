@@ -15,6 +15,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.time.LocalDate;
 
 import static com.devsteam.getname.telbot_shelterdc.model.Color.RED;
+import static com.devsteam.getname.telbot_shelterdc.model.Gender.MALE;
 import static com.devsteam.getname.telbot_shelterdc.model.Kind.CAT;
 import static com.devsteam.getname.telbot_shelterdc.model.Status.BUSY;
 import static com.devsteam.getname.telbot_shelterdc.model.Status.FREE;
@@ -40,8 +41,8 @@ public class PetOwnerServiceTest {
     PetRepository petRepository;
 
 
-        Pet petTest = new Pet(1L, 2017, "Cat", "tabby", "very friendly", RED, FREE, CAT);
-        Pet petBASY = new Pet(2L, 2017, "Mat", "tabby", "no friendly", RED, BUSY, CAT);
+        Pet petTest = new Pet(1L, 2017, "Cat", "tabby", "very friendly", RED, FREE, CAT, MALE);
+        Pet petBASY = new Pet(2L, 2017, "Mat", "tabby", "no friendly", RED, BUSY, CAT, MALE);
         PetOwner petOwnerTest = new PetOwner(1L, "fullname", "phone", "address",
                 PROBATION, LocalDate.now(), petTest);
         PetOwnerDTO petOwnerDTOtest = new PetOwnerDTO(0L, 1L, "fullname", "phone",

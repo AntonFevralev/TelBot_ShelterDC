@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.devsteam.getname.telbot_shelterdc.model.Gender.MALE;
 import static com.devsteam.getname.telbot_shelterdc.model.Kind.CAT;
 import static com.devsteam.getname.telbot_shelterdc.model.Kind.DOG;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -42,8 +43,8 @@ public class ReportServiceTest {
 
     @BeforeEach
     public void setUp(){
-        PetDTO pet1 = new PetDTO(0L, 2020, "Chad", "mixed", "feisty", Color.SPOTTED, Status.FREE, 0, CAT);
-        PetDTO pet2 = new PetDTO(0L, 2021, "Dach", "labr", "feisty", Color.BLACK, Status.FREE, 0, CAT);
+        PetDTO pet1 = new PetDTO(0L, 2020, "Chad", "mixed", "feisty", Color.SPOTTED, Status.FREE, 0, CAT, MALE);
+        PetDTO pet2 = new PetDTO(0L, 2021, "Dach", "labr", "feisty", Color.BLACK, Status.FREE, 0, CAT, MALE);
         petService.addPet(pet1);
         petService.addPet(pet2);
         PetOwnerDTO owner1 = new PetOwnerDTO(0L, 405441405L, "fullName", "phone", "address", StatusOwner.PROBATION, LocalDate.now(), 1L);
@@ -146,7 +147,7 @@ public class ReportServiceTest {
 
     @Test
     public void gettingReportsByNonExistingInDBKindAndExistingDateThrowsNoSuchEntityException(){
-        PetDTO pet2 = new PetDTO(0L, 2021, "Lara", "Labrador", "kind", Color.WHITE, Status.FREE, 0, DOG);
+        PetDTO pet2 = new PetDTO(0L, 2021, "Lara", "Labrador", "kind", Color.WHITE, Status.FREE, 0, DOG, MALE);
         long chatId = 405441405;
         ReportDTO reportDTO = reportService.addReport(chatId,"mealsAndStuff", "photo");
         List<ReportDTO> reportDTOS = new ArrayList<>();
@@ -167,7 +168,7 @@ public class ReportServiceTest {
 
     @Test
     public void gettingAllReportsByNonExistingInDBKindThrowsReportListIsEmptyException(){
-        PetDTO pet2 = new PetDTO(0L, 2021, "Lara", "Labrador", "kind", Color.WHITE, Status.FREE, 0, DOG);
+        PetDTO pet2 = new PetDTO(0L, 2021, "Lara", "Labrador", "kind", Color.WHITE, Status.FREE, 0, DOG, MALE);
         long chatId = 405441405;
         ReportDTO reportDTO = reportService.addReport(chatId,"mealsAndStuff", "photo");
         List<ReportDTO> reportDTOS = new ArrayList<>();
