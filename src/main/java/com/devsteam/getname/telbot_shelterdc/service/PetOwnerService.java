@@ -63,8 +63,8 @@ public class PetOwnerService {
         } else throw new OwnerListIsEmptyException();
     }
 
-    /** Метод изменения статуса "усыновителя" животного.
-     * @param idCO id "усыновителя" кошки.
+    /** Метод изменения статуса "усыновителя" животного, а также уведомление "усыновителя" о смене его статуса
+     * @param idCO id "усыновителя" животного.
      */
     public PetOwner changeStatusOwnerByIdCO(Long idCO, StatusOwner status) {
         PetOwner owner = ownerRepository.findById(idCO).orElseThrow(NoOwnerWithSuchIdException::new);
