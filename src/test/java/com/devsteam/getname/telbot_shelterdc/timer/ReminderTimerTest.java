@@ -5,6 +5,7 @@ import com.devsteam.getname.telbot_shelterdc.model.*;
 import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.PetRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.ReportRepository;
+import com.devsteam.getname.telbot_shelterdc.service.PetOwnerService;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.junit.jupiter.api.*;
@@ -16,6 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.*;
 
+import static com.devsteam.getname.telbot_shelterdc.model.Kind.CAT;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
@@ -33,6 +35,9 @@ class ReminderTimerTest {
     @Autowired
     private ReportRepository reportRepository;
 
+    @Autowired
+    private PetOwnerService petOwnerService;
+
     // mock your tested class
     @SpyBean
     private ReminderTimer reminderTimer;
@@ -43,24 +48,22 @@ class ReminderTimerTest {
     private PetOwner catOwner;
     private PetOwner dogOwner;
     private Pet cat;
-
     private Pet dog;
-
+    private Long catId;
+    private Long POId;
     @BeforeEach
     public void setUp() {
         cat = new Pet();
         cat.setName("Muska");
         cat.setStatus(Status.FREE);
         cat.setDescription("Good");
-        cat.setKind(Kind.CAT);
+        cat.setKind(CAT);
         cat.setBreed("siam");
         cat.setColor(Color.BLACK_AND_WHITE);
         petRepository.save(cat);
-        catOwner = new PetOwner(306336303L, "FIO", "900","address", StatusOwner.PROBATION);
+        catOwner = new PetOwner(306336303L, "FIO", "900","address", StatusOwner.PROBATION, LocalDate.now(), cat);
         cat.setPetOwner(catOwner);
-        catOwner.setPet(cat);
         ownerRepository.save(catOwner);
-
         dog = new Pet();
         dog.setName("Muhtar");
         dog.setStatus(Status.FREE);
@@ -69,7 +72,7 @@ class ReminderTimerTest {
         dog.setBreed("ovcharka");
         dog.setColor(Color.BLACK_AND_WHITE);
         petRepository.save(dog);
-        dogOwner = new PetOwner(306336303L, "FIO", "900","address", StatusOwner.PROBATION);
+        dogOwner = new PetOwner(306336303L, "FIO", "900","address", StatusOwner.PROBATION, LocalDate.now(), dog);
         dog.setPetOwner(dogOwner);
         dogOwner.setPet(dog);
         ownerRepository.save(dogOwner);
@@ -148,6 +151,21 @@ class ReminderTimerTest {
         reminderTimer.remind();
         ArgumentCaptor <SendMessage> argumentCaptor = ArgumentCaptor.forClass(SendMessage.class);
         Mockito.verify(telegramBot, times(0)).execute(argumentCaptor.capture());
+    }
+
+    @Test
+    public void remindIfProbationIsFinished(){
+        dogOwner.setPet(null);
+        dog.setPetOwner(null);
+        ownerRepository.delete(dogOwner);
+        petRepository.delete(dog);
+        TimeMachine.useFixedClockAt(LocalTime.of(21, 10, 0));
+        reminderTimer.remindIfProbationFinished();
+        ArgumentCaptor <SendMessage> argumentCaptor = ArgumentCaptor.forClass(SendMessage.class);
+        Mockito.verify(telegramBot).execute(argumentCaptor.capture());
+        SendMessage actual = argumentCaptor.getValue();
+        assertThat(actual.getParameters().get("chat_id")).isEqualTo(306336303L);
+        assertThat(actual.getParameters().get("text")).isEqualTo("У владельца с id " + catOwner.getIdCO() + " закончился испытательный срок");
     }
 
 

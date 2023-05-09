@@ -146,7 +146,7 @@ public class PetOwnerServiceTest {
         LocalDate expected = exOwnerDTO.finishProba().plusDays(15);
         long testIdCO = exOwnerDTO.idCO();
         int plusDays = 15;
-        PetOwner actualOwner = service.updataFinishProba(testIdCO,plusDays);
+        PetOwner actualOwner = service.updateFinishProba(testIdCO,plusDays);
         LocalDate actual = actualOwner.getFinishProba();
         assertEquals(expected, actual);
     }
