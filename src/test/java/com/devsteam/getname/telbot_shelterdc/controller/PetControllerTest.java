@@ -15,7 +15,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 
-
+import static com.devsteam.getname.telbot_shelterdc.model.Gender.MALE;
 import static com.devsteam.getname.telbot_shelterdc.model.Kind.CAT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -48,7 +48,7 @@ public class PetControllerTest {
     @Test
     void givenNoPetsInDatabase_whenPetAddedItIsAddedCorrectly() throws Exception {
         PetDTO testPet = new PetDTO(1L, 2019, "Pusheen", "tabby",
-                "very friendly", Color.BLACK_AND_WHITE, Status.FREE, 0, CAT);
+                "very friendly", Color.BLACK_AND_WHITE, Status.FREE, 0, CAT, MALE);
 
         mockMvc.perform(post("http://localhost:8080/pets/addPet")
                         .content(objectMapper.writeValueAsString(testPet))
@@ -72,7 +72,7 @@ public class PetControllerTest {
     @Test
     void givenPetsInDatabase_thenItIsFoundById() throws Exception {
         PetDTO testPet = new PetDTO(1L, 2019, "Pusheen", "tabby",
-                "very friendly", Color.BLACK_AND_WHITE, Status.FREE, 0, CAT);
+                "very friendly", Color.BLACK_AND_WHITE, Status.FREE, 0, CAT, MALE);
         mockMvc.perform(post("http://localhost:8080/pets/addPet")
                         .content(objectMapper.writeValueAsString(testPet))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -92,7 +92,7 @@ public class PetControllerTest {
     @Test
     void givenPetsInDatabase_thenItIsDeletedByIdCorrectly() throws Exception {
         PetDTO testPet = new PetDTO(1L, 2019, "Pusheen", "tabby",
-                "very friendly", Color.BLACK_AND_WHITE, Status.FREE, 0, CAT);
+                "very friendly", Color.BLACK_AND_WHITE, Status.FREE, 0, CAT, MALE);
         mockMvc.perform(post("http://localhost:8080/pets/addPet")
                         .content(objectMapper.writeValueAsString(testPet))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -113,7 +113,7 @@ public class PetControllerTest {
     @Test
     void givenThereIsOnePetCreated_whenPetIsEdited_thenItIsChangedInDatabase() throws Exception {
         PetDTO testPet = new PetDTO(1L, 2019, "Pusheen", "tabby",
-                "very friendly", Color.BLACK_AND_WHITE, Status.FREE, 0, CAT);
+                "very friendly", Color.BLACK_AND_WHITE, Status.FREE, 0, CAT, MALE);
         mockMvc.perform(post("http://localhost:8080/pets/addPet")
                         .content(objectMapper.writeValueAsString(testPet))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -126,7 +126,7 @@ public class PetControllerTest {
         long id = testPet.id();
 
         PetDTO updatedPet = new PetDTO(1L, 2019, "Marusya", "tabby",
-                "very friendly", Color.BLACK_AND_WHITE, Status.FREE, 0, CAT);
+                "very friendly", Color.BLACK_AND_WHITE, Status.FREE, 0, CAT, MALE);
         mockMvc.perform(put("/pets/{id}", id)
                         .content(objectMapper.writeValueAsString(updatedPet))
                         .contentType(MediaType.APPLICATION_JSON))

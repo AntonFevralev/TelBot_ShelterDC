@@ -36,10 +36,15 @@ public class Pet {
     @Enumerated(EnumType.STRING)
     private Kind kind;
 
+    @Column(name = "gender")
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
     public Pet() {
     }
 
-    public Pet(long id, int birthYear, String name, String breed, String description, Color color, Status status, PetOwner petOwner, Kind kind) {
+    public Pet(long id, int birthYear, String name, String breed, String description, Color color,
+               Status status, PetOwner petOwner, Kind kind, Gender gender) {
         this.id = id;
         this.birthYear = birthYear;
         this.name = name;
@@ -49,8 +54,9 @@ public class Pet {
         this.status = status;
         this.petOwner = petOwner;
         this.kind = kind;
+        this.gender = gender;
     }
-    public Pet(long id, int birthYear, String name, String breed, String description, Color color, Status status, Kind kind) {
+    public Pet(long id, int birthYear, String name, String breed, String description, Color color, Status status, Kind kind, Gender gender) {
         this.id = id;
         this.birthYear = birthYear;
         this.name = name;
@@ -59,9 +65,10 @@ public class Pet {
         this.color = color;
         this.status = status;
         this.kind = kind;
+        this.gender = gender;
     }
 
-    public Pet(int birthYear, String name, String breed, String description, Color color, Status status, Kind kind) {
+    public Pet(int birthYear, String name, String breed, String description, Color color, Status status, Kind kind, Gender gender) {
         this.birthYear = birthYear;
         this.name = name;
         this.breed = breed;
@@ -69,6 +76,7 @@ public class Pet {
         this.color = color;
         this.status = status;
         this.kind = kind;
+        this.gender = gender;
     }
 
     public Long getId() {
@@ -148,4 +156,11 @@ public class Pet {
         this.kind = kind;
     }
 
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
 }
