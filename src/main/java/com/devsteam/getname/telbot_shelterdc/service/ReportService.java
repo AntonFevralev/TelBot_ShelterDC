@@ -5,23 +5,23 @@ import com.devsteam.getname.telbot_shelterdc.dto.ReportDTO;
 import com.devsteam.getname.telbot_shelterdc.exception.*;
 import com.devsteam.getname.telbot_shelterdc.model.Kind;
 import com.devsteam.getname.telbot_shelterdc.model.PetOwner;
-import com.devsteam.getname.telbot_shelterdc.model.Report;
+import com.devsteam.getname.telbot_shelterdc.model.report.Report;
 import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
-import com.devsteam.getname.telbot_shelterdc.repository.ReportRepository;
+import com.devsteam.getname.telbot_shelterdc.repository.report.ReportRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.PetRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class ReportService {
 
-    private ReportRepository reportRepository;
-    private OwnerRepository ownerRepository;
-    private PetRepository petRepository;
+    private final ReportRepository reportRepository;
+    private final OwnerRepository ownerRepository;
+    private final PetRepository petRepository;
 
     public ReportService(ReportRepository reportRepository, OwnerRepository ownerRepository, PetRepository petRepository) {
         this.reportRepository = reportRepository;
@@ -254,6 +254,7 @@ public class ReportService {
         }
         reportRepository.deleteAllInBatch(reportRepository.findByPet_Id(petId));
 
-
     }
+
+
 }

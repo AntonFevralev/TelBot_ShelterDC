@@ -8,7 +8,7 @@ import com.devsteam.getname.telbot_shelterdc.exception.ReportListIsEmptyExceptio
 import com.devsteam.getname.telbot_shelterdc.model.*;
 import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.PetRepository;
-import com.devsteam.getname.telbot_shelterdc.repository.ReportRepository;
+import com.devsteam.getname.telbot_shelterdc.repository.report.ReportRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

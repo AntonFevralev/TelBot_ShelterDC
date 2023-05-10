@@ -3,8 +3,9 @@ package com.devsteam.getname.telbot_shelterdc.listener;
 import com.devsteam.getname.telbot_shelterdc.model.*;
 
 import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
-import com.devsteam.getname.telbot_shelterdc.repository.ReportRepository;
+import com.devsteam.getname.telbot_shelterdc.repository.report.ReportRepository;
 
+import com.devsteam.getname.telbot_shelterdc.service.ReportFileService;
 import com.devsteam.getname.telbot_shelterdc.service.ReportService;
 
 import com.google.gson.Gson;
@@ -46,11 +47,14 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private final ReportService reportService;
 
+    private final ReportFileService reportFileService;
+
     private final OwnerRepository ownerRepository;
 
     private final Map<Long, String> waitingForContact = new HashMap<>();
 
-    public TelegramBotUpdatesListener(TelegramBot telegramBot, ReportService reportService, ReportRepository reportRepository, OwnerRepository ownerRepository) throws IOException {
+    public TelegramBotUpdatesListener(TelegramBot telegramBot, ReportService reportService, ReportRepository reportRepository, ReportFileService reportFileService, OwnerRepository ownerRepository) throws IOException {
+        this.reportFileService = reportFileService;
         this.ownerRepository = ownerRepository;
 
         this.dogsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "dogShelter.json")), Shelter.class);
@@ -99,9 +103,10 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     }
 
                     else if (message.caption() != null&&message.caption().startsWith("/report")&& (message.photo() != null||message.document().mimeType().equals("image/jpeg"))) {
+
                         reportService.addReport(chatId, message.caption().substring(7), "photo");
                         telegramBot.execute(new SendMessage(chatId, "добавляем отчёт"));
-                        //initiateReportDialog(chatId);
+                        reportFileService.processDocument(message);
                     }
                     if (message.contact() != null&&waitingForContact.get(chatId).equals("Dog")) {
                         sendContact(message, chatId, dogsShelter);

@@ -1,4 +1,7 @@
-package com.devsteam.getname.telbot_shelterdc.model;
+package com.devsteam.getname.telbot_shelterdc.model.report;
+
+import com.devsteam.getname.telbot_shelterdc.model.Pet;
+import com.devsteam.getname.telbot_shelterdc.model.PetOwner;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -47,22 +50,7 @@ public class Report {
     public Report() {
     }
 
-//    public Report(Pet pet,
-//                  PetOwner petOwner,
-//                  String photo,
-//                  String mealsWellBeingAndAdaptationBehaviorChanges,
-//                  LocalDate reportDate, LocalTime reportTime,
-//                  boolean reportIsComplete,
-//                  boolean reportIsInspected) {
-//        this.pet = pet;
-//        this.petOwner = petOwner;
-//        this.photo = photo;
-//        this.mealsWellBeingAndAdaptationBehaviorChanges = mealsWellBeingAndAdaptationBehaviorChanges;
-//        this.reportDate = reportDate;
-//        this.reportTime = reportTime;
-//        this.reportIsComplete = reportIsComplete;
-//        this.reportIsInspected = reportIsInspected;
-//    }
+
 
     public long getId() {
         return id;
