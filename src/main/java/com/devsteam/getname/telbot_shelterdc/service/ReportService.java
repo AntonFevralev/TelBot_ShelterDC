@@ -37,7 +37,7 @@ public class ReportService {
     private PetRepository petRepository;
     private final TelegramBot telegramBot;
 
-    @Value("${token}")
+    @Value("${telegram.bot.token}")
     private String token;
 
     @Value("${service.file_info.uri}")
