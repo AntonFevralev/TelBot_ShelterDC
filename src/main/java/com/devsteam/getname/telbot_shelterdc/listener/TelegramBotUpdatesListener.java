@@ -233,7 +233,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         recommendedCynologist.callbackData("cynologists");
         InlineKeyboardButton rejectionList = new InlineKeyboardButton("Причины отказа в усыновлении");
         rejectionList.callbackData("DogRejectionList");
-        InlineKeyboardButton sendContacts = new InlineKeyboardButton("Обустройство дома для собаки-инвалида");
+        InlineKeyboardButton sendContacts = new InlineKeyboardButton("Оставить контакты");
         sendContacts.callbackData("DogsShelterContact");
         InlineKeyboardButton back = new InlineKeyboardButton("Назад");
         back.callbackData("Dogs");
@@ -241,7 +241,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         mainMenu.callbackData("MainMenu");
         Keyboard keyboard = new InlineKeyboardMarkup().addRow(meetAndGreet).addRow(docList).addRow(transportingRecommendations)
                 .addRow(recommendations).addRow(recommendationsAdult).addRow(recommendationsDisabled).addRow(cynologistAdvice)
-                .addRow(recommendedCynologist).addRow(rejectionList).addRow(back).addRow(mainMenu)
+                .addRow(recommendedCynologist).addRow(rejectionList).addRow(sendContacts).addRow(back).addRow(mainMenu)
                 .addRow( new InlineKeyboardButton("Позвать волонтера").url("https://t.me/fevralevanton"));
         sendMessage.replyMarkup(keyboard);
         telegramBot.execute(sendMessage);
@@ -264,7 +264,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         recommendationsDisabled.callbackData("CatRecommendationsDisabled");
         InlineKeyboardButton rejectionList = new InlineKeyboardButton("Причины отказа в усыновлении");
         rejectionList.callbackData("CatRejectionList");
-        InlineKeyboardButton sendContacts = new InlineKeyboardButton("Обустройство дома для кошки-инвалида");
+        InlineKeyboardButton sendContacts = new InlineKeyboardButton("Оставить контакты");
         sendContacts.callbackData("CatsShelterContact");
         InlineKeyboardButton back = new InlineKeyboardButton("Назад");
         back.callbackData("Cats");
@@ -272,7 +272,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         mainMenu.callbackData("MainMenu");
         Keyboard keyboard = new InlineKeyboardMarkup().addRow(meetAndGreet).addRow(docList).addRow(transportingRecommendations)
                 .addRow(recommendations).addRow(recommendationsAdult).addRow(recommendationsDisabled).
-                addRow(rejectionList).addRow(back).addRow(mainMenu)
+                addRow(rejectionList).addRow(sendContacts).addRow(back).addRow(mainMenu)
                 .addRow( new InlineKeyboardButton("Позвать волонтера").url("https://t.me/fevralevanton"));
         sendMessage.replyMarkup(keyboard);
         telegramBot.execute(sendMessage);
