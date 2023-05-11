@@ -44,7 +44,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     private final Shelter catsShelter;
     private final TelegramBot telegramBot;
 
-
     private final ReportService reportService;
 
     private final ReportFileService reportFileService;
@@ -103,10 +102,12 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     }
 
                     else if (message.caption() != null&&message.caption().startsWith("/report")&& (message.photo() != null||message.document().mimeType().equals("image/jpeg"))) {
-
-                        reportService.addReport(chatId, message.caption().substring(7), "photo");
+                        byte[] photoAsByteArray = reportService.processPhoto(message);
+                        if (photoAsByteArray == null){
+                            throw new RuntimeException("no photo from tg downloaded");
+                        }
+                        reportService.addReport(chatId, message.caption().substring(7), "photo", photoAsByteArray);
                         telegramBot.execute(new SendMessage(chatId, "добавляем отчёт"));
-                        reportFileService.processDocument(message);
                     }
                     if (message.contact() != null&&waitingForContact.get(chatId).equals("Dog")) {
                         sendContact(message, chatId, dogsShelter);
@@ -317,6 +318,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 """);
         telegramBot.execute(sendMessage);
     }
+
+
 
 
 }

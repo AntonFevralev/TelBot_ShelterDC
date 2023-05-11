@@ -7,10 +7,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,13 +32,13 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-    @PostMapping
-    @Operation(summary = "Добавление отчёта",
-            description = "Здесь можно добавить отчёт в БД")
-    public ResponseEntity addPetReport(long chatId, String mealsWellBeingAndAdaptationBehaviorChanges, String photo) {
-        reportService.addReport(chatId, mealsWellBeingAndAdaptationBehaviorChanges, photo);
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping
+//    @Operation(summary = "Добавление отчёта",
+//            description = "Здесь можно добавить отчёт в БД")
+//    public ResponseEntity addPetReport(long chatId, String mealsWellBeingAndAdaptationBehaviorChanges, String photo) {
+//        reportService.addReport(chatId, mealsWellBeingAndAdaptationBehaviorChanges, photo);
+//        return ResponseEntity.ok().build();
+//    }
 
     @GetMapping("/reportId")
     @Operation(summary = "Получение отчёта по его id",
@@ -55,6 +60,42 @@ public class ReportController {
     )
     public ResponseEntity<ReportDTO> getPetReportById(@RequestParam(name = "reportId") long reportId) {
         return ResponseEntity.ok().body(reportService.getReportByReportId(reportId));
+    }
+    @GetMapping("/reportIdPhoto")
+    @Operation(summary = "Получение отчёта по его id",
+            description = "Здесь можно получить фото, привязанное к существующему в БД отчёту по id отчёта")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Отчёт найден"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Введите правильный ID"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Отчёт не найден"
+            )
+    }
+    )
+    public ResponseEntity<Resource> downloadPetReportPhotoByReportId(@RequestParam(name = "reportId") long reportId) {
+        ReportDTO reportDTO = reportService.getReportByReportId(reportId);
+        byte[] bytes = reportDTO.photoInBytes();
+        InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(bytes));
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Disposition", String.format("attachment; filename="
+                +"report_id "
+                +reportDTO.id()
+                +" from "
+                +reportDTO.reportDate()
+                +" "+reportDTO.reportTime()
+                +".jpg"));
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(bytes.length)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
     }
 
     @GetMapping("/petId")

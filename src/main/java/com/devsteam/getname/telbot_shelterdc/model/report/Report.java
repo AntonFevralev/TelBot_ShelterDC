@@ -44,8 +44,11 @@ public class Report {
     @Column
     /**Поле, отмечающее завершённость(полноценность) отчёта*/
     private boolean reportIsComplete;
+    @Column
     /**Поле, указывающее на факт просмотра отчёта волонтёром*/
     private boolean reportIsInspected;
+    @Column(columnDefinition="BLOB")
+    private byte[] photoAsArrayOfBytes;
 
     public Report() {
     }
@@ -80,6 +83,10 @@ public class Report {
 
     public boolean isReportIsInspected() {
         return reportIsInspected;
+    }
+
+    public byte[] getPhotoAsArrayOfBytes() {
+        return photoAsArrayOfBytes;
     }
 
     public void setId(long id) {
@@ -126,5 +133,9 @@ public class Report {
 
     public void setReportTime(LocalTime reportTime) {
         this.reportTime = reportTime.truncatedTo(ChronoUnit.SECONDS);
+    }
+
+    public void setPhotoAsArrayOfBytes(byte[] photoAsArrayOfBytes) {
+        this.photoAsArrayOfBytes = photoAsArrayOfBytes;
     }
 }
