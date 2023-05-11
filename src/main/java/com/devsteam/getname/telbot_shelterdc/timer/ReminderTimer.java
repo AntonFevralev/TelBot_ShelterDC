@@ -141,4 +141,22 @@ public class ReminderTimer {
                 idCatOwnerList.forEach(id -> telegramBot.execute(new SendMessage(catVolunteer, "Владелец с id " + id + " не отправлял отчет 2 дня")));
             }
         }
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.MINUTES)
+    public void remindIfProbationFinished() {
+        LocalTime now = TimeMachine.now();
+        if (now.truncatedTo(ChronoUnit.MINUTES).equals(LocalTime.of(21, 10)
+                .truncatedTo(ChronoUnit.MINUTES))) {
+            Long catVolunteer = catsShelter.getChatId();
+            Long dogVolunteer = dogsShelter.getChatId();
+            Set<PetOwner> listToSend = ownerRepository.findAll().stream().filter(o->o.getFinishProba()
+                    .equals(LocalDate.now())).collect(Collectors.toSet());
+            List<Long> catsOwnersList = listToSend.stream().filter(o->o.getPet().getKind()==CAT).map(PetOwner::getIdCO).toList();
+            List<Long> dogsOwnersList = listToSend.stream().filter(o->o.getPet().getKind()==DOG).map(PetOwner::getIdCO).toList();
+            catsOwnersList.forEach(id -> telegramBot.execute(new SendMessage(catVolunteer, "У владельца с id " + id + " закончился испытательный срок")));
+            dogsOwnersList.forEach(id -> telegramBot.execute(new SendMessage(dogVolunteer, "У владельца с id " + id + " закончился испытательный срок")));
+
+        }
+    }
+
+
     }

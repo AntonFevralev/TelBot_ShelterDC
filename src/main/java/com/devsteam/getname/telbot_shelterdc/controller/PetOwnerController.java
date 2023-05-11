@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 /** Класс контроллера для редактирования информации о клиентах и персонале приюта кошек.
@@ -136,6 +135,6 @@ public class PetOwnerController {
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
     public void updateFinishProba(@RequestParam Long idCO, @RequestParam ("+N дней") int plusDays){
-        petOwnerService.updataFinishProba(idCO, plusDays);
+        petOwnerService.updateFinishProba(idCO, plusDays);
     }
 }
