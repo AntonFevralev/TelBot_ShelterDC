@@ -147,13 +147,13 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         CallbackQuery callbackQuery = update.callbackQuery();
         String data = callbackQuery.data();
         switch (data) {
-            case "MainMenu", "BackFromDogsShelter" -> startMessageWithoutGreeting(chatId);
-            case "Dogs", "BackFromDogsInfo" -> shelter(chatId, "InfoDogs", "HowToTakeDog", "BackFromDogsShelter", dogsShelter);
-            case "Cats", "BackFromCatsInfo" -> shelter(chatId, "InfoCats","HowToTakeCat",  "BackFromCatsShelter", catsShelter);
+            case "MainMenu" -> startMessageWithoutGreeting(chatId);
+            case "Dogs" -> shelter(chatId, "InfoDogs", "HowToTakeDog", "MainMenu", dogsShelter);
+            case "Cats" -> shelter(chatId, "InfoCats","HowToTakeCat",  "MainMenu", catsShelter);
             case "InfoDogs" -> shelterInfo(chatId, "InfoDogsShelter", "ScheduleDogs",  "DogsShelterSecurity",
-                    "SafetyRecommendationsDogsShelter","DogsShelterContact", "BackFromDogsInfo", dogsShelter);
+                    "SafetyRecommendationsDogsShelter","DogsShelterContact", "Dogs", dogsShelter);
             case "InfoCats" -> shelterInfo(chatId, "InfoCatsShelter", "ScheduleCats",  "CatsShelterSecurity",
-                    "SafetyRecommendationsCatsShelter","CatsShelterContact", "BackFromCatsInfo", catsShelter);
+                    "SafetyRecommendationsCatsShelter","CatsShelterContact", "Cats", catsShelter);
             /* case "HowToTakeDog"-> howToTakeDog(chatId);*/
             case "InfoDogsShelter" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId, dogsShelter.getInfo(), "InfoDogs");
             case "InfoCatsShelter" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId, catsShelter.getInfo(), "InfoCats");
@@ -171,9 +171,113 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                                             waitingForContact.put(chatId, "Dog");}
             case "CatsShelterContact" -> {shelterContact(chatId);
             waitingForContact.put(chatId, "Cat");}
+            case "SendReport" -> initiateReportDialog(chatId);
+            case "HowToTakeDog"->howToTakeDog(chatId);
+            case "HowToTakeCat"->howToTakeCat(chatId);
+            case "DogMeetAndGreetRules" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId,
+                    dogsShelter.getMeetAndGreatRules(), "HowToTakeDog");
+            case "DogDocList" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId,
+                    dogsShelter.getDocList(), "HowToTakeDog");
+            case "DogTransportingRecommendations" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId,
+                    dogsShelter.getTransportingRules(), "HowToTakeDog");
+            case "DogRecommendations" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId,
+                    dogsShelter.getRecommendations(), "HowToTakeDog");
+            case "DogRecommendationsAdult" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId,
+                    dogsShelter.getRecommendationsAdult(), "HowToTakeDog");
+            case "DogRecommendationsDisabled" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId,
+                    dogsShelter.getRecommendationsDisabled(), "HowToTakeDog");
+            case "cynologistAdvice" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId,
+                    dogsShelter.getCynologistAdvice(), "HowToTakeDog");
+            case "cynologists" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId,
+                    dogsShelter.getRecommendedCynologists(), "HowToTakeDog");
+            case "DogRejectionList" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId,
+                    dogsShelter.getRejectReasonsList(), "HowToTakeDog");
+            case "CatMeetAndGreetRules" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId,
+                    catsShelter.getMeetAndGreatRules(), "HowToTakeCat");
+            case "CatRecommendations" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId,
+                    catsShelter.getRecommendations(), "HowToTakeCat");
+            case "CatDocList" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId,
+                    catsShelter.getDocList(), "HowToTakeCat");
+            case "CatTransportingRecommendations" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId,
+                    catsShelter.getTransportingRules(), "HowToTakeCat");
+            case "CatRecommendationsAdult" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId,
+                    catsShelter.getRecommendationsAdult(), "HowToTakeCat");
+            case "CatRecommendationsDisabled" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId,
+                    catsShelter.getRecommendationsDisabled(), "HowToTakeCat");
+            case "CatRejectionList" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId,
+                    catsShelter.getRejectReasonsList(), "HowToTakeCat");
+
         }
 
     }
+
+    private void howToTakeDog(Long chatId) {
+        SendMessage sendMessage = new SendMessage(chatId, "Здравствуйте! Здесь вы можете узнать о том, как взять " +
+                "кошку из нашего приюта"
+    );
+        InlineKeyboardButton meetAndGreet = new InlineKeyboardButton("Правила знакомства с животным");
+        meetAndGreet.callbackData("DogMeetAndGreetRules");
+        InlineKeyboardButton docList = new InlineKeyboardButton("Список документов для усыновления");
+        docList.callbackData("DogDocList");
+        InlineKeyboardButton transportingRecommendations = new InlineKeyboardButton("Рекомендации по транспортировке");
+        transportingRecommendations.callbackData("DogTransportingRecommendations");
+        InlineKeyboardButton recommendations = new InlineKeyboardButton("Обустройство дома для щенка");
+        recommendations.callbackData("DogRecommendations");
+        InlineKeyboardButton recommendationsAdult = new InlineKeyboardButton("Обустройство дома для взрослой собаки");
+        recommendationsAdult.callbackData("DogRecommendationsAdult");
+        InlineKeyboardButton recommendationsDisabled = new InlineKeyboardButton("Обустройство дома для собаки-инвалида");
+        recommendationsDisabled.callbackData("DogRecommendationsDisabled");
+        InlineKeyboardButton cynologistAdvice = new InlineKeyboardButton("Первичные рекомендации кинолога");
+        cynologistAdvice.callbackData("cynologistAdvice");
+        InlineKeyboardButton recommendedCynologist = new InlineKeyboardButton("Рекомендуем кинологов");
+        recommendedCynologist.callbackData("cynologists");
+        InlineKeyboardButton rejectionList = new InlineKeyboardButton("Причины отказа в усыновлении");
+        rejectionList.callbackData("DogRejectionList");
+        InlineKeyboardButton sendContacts = new InlineKeyboardButton("Обустройство дома для собаки-инвалида");
+        sendContacts.callbackData("DogsShelterContact");
+        InlineKeyboardButton back = new InlineKeyboardButton("Назад");
+        back.callbackData("Dogs");
+        InlineKeyboardButton mainMenu = new InlineKeyboardButton("Главное меню");
+        mainMenu.callbackData("MainMenu");
+        Keyboard keyboard = new InlineKeyboardMarkup().addRow(meetAndGreet).addRow(docList).addRow(transportingRecommendations)
+                .addRow(recommendations).addRow(recommendationsAdult).addRow(recommendationsDisabled).addRow(cynologistAdvice)
+                .addRow(recommendedCynologist).addRow(rejectionList).addRow(back).addRow(mainMenu)
+                .addRow( new InlineKeyboardButton("Позвать волонтера").url("https://t.me/fevralevanton"));
+        sendMessage.replyMarkup(keyboard);
+        telegramBot.execute(sendMessage);
+    }
+    private void howToTakeCat(Long chatId) {
+        SendMessage sendMessage = new SendMessage(chatId, "Здравствуйте! Здесь вы можете узнать о том, как взять " +
+                "собаку из нашего приюта"
+        );
+        InlineKeyboardButton meetAndGreet = new InlineKeyboardButton("Правила знакомства с животным");
+        meetAndGreet.callbackData("CatMeetAndGreetRules");
+        InlineKeyboardButton docList = new InlineKeyboardButton("Список документов для усыновления");
+        docList.callbackData("CatDocList");
+        InlineKeyboardButton transportingRecommendations = new InlineKeyboardButton("Рекомендации по транспортировке");
+        transportingRecommendations.callbackData("CatTransportingRecommendations");
+        InlineKeyboardButton recommendations = new InlineKeyboardButton("Обустройство дома для котенка");
+        recommendations.callbackData("CatRecommendations");
+        InlineKeyboardButton recommendationsAdult = new InlineKeyboardButton("Обустройство дома для взрослой кошки");
+        recommendationsAdult.callbackData("CatRecommendationsAdult");
+        InlineKeyboardButton recommendationsDisabled = new InlineKeyboardButton("Обустройство дома для кошки-инвалида");
+        recommendationsDisabled.callbackData("CatRecommendationsDisabled");
+        InlineKeyboardButton rejectionList = new InlineKeyboardButton("Причины отказа в усыновлении");
+        rejectionList.callbackData("CatRejectionList");
+        InlineKeyboardButton sendContacts = new InlineKeyboardButton("Обустройство дома для кошки-инвалида");
+        sendContacts.callbackData("CatsShelterContact");
+        InlineKeyboardButton back = new InlineKeyboardButton("Назад");
+        back.callbackData("Cats");
+        InlineKeyboardButton mainMenu = new InlineKeyboardButton("Главное меню");
+        mainMenu.callbackData("MainMenu");
+        Keyboard keyboard = new InlineKeyboardMarkup().addRow(meetAndGreet).addRow(docList).addRow(transportingRecommendations)
+                .addRow(recommendations).addRow(recommendationsAdult).addRow(recommendationsDisabled).
+                addRow(rejectionList).addRow(back).addRow(mainMenu)
+                .addRow( new InlineKeyboardButton("Позвать волонтера").url("https://t.me/fevralevanton"));
+        sendMessage.replyMarkup(keyboard);
+        telegramBot.execute(sendMessage);
+    }
+
     /**
      * начальное меню без приветствия
      *
@@ -203,6 +307,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         howToTake.callbackData(howToTakeData);
         InlineKeyboardButton back = new InlineKeyboardButton("Назад");
         back.callbackData(backData);
+        InlineKeyboardButton sendReport = new InlineKeyboardButton("Отправить отчет о питомце");
+        sendReport.callbackData("SendReport");
         InlineKeyboardButton mainMenu = new InlineKeyboardButton("Главное меню");
         mainMenu.callbackData("MainMenu");
         Keyboard keyboard = new InlineKeyboardMarkup().addRow(mainInfo).addRow(howToTake).addRow(back).addRow(mainMenu).addRow(
