@@ -5,7 +5,6 @@ import com.devsteam.getname.telbot_shelterdc.model.*;
 import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.ReportRepository;
 
-import com.devsteam.getname.telbot_shelterdc.service.ReportFileService;
 import com.devsteam.getname.telbot_shelterdc.service.ReportService;
 
 import com.google.gson.Gson;
@@ -46,14 +45,12 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private final ReportService reportService;
 
-    private final ReportFileService reportFileService;
 
     private final OwnerRepository ownerRepository;
 
     private final Map<Long, String> waitingForContact = new HashMap<>();
 
-    public TelegramBotUpdatesListener(TelegramBot telegramBot, ReportService reportService, ReportRepository reportRepository, ReportFileService reportFileService, OwnerRepository ownerRepository) throws IOException {
-        this.reportFileService = reportFileService;
+    public TelegramBotUpdatesListener(TelegramBot telegramBot, ReportService reportService, ReportRepository reportRepository, OwnerRepository ownerRepository) throws IOException {
         this.ownerRepository = ownerRepository;
 
         this.dogsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "dogShelter.json")), Shelter.class);
