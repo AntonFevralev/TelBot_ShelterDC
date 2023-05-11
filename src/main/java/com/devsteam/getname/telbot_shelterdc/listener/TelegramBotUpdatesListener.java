@@ -3,7 +3,7 @@ package com.devsteam.getname.telbot_shelterdc.listener;
 import com.devsteam.getname.telbot_shelterdc.model.*;
 
 import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
-import com.devsteam.getname.telbot_shelterdc.repository.report.ReportRepository;
+import com.devsteam.getname.telbot_shelterdc.repository.ReportRepository;
 
 import com.devsteam.getname.telbot_shelterdc.service.ReportFileService;
 import com.devsteam.getname.telbot_shelterdc.service.ReportService;

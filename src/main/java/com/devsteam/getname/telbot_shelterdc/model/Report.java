@@ -1,4 +1,4 @@
-package com.devsteam.getname.telbot_shelterdc.model.report;
+package com.devsteam.getname.telbot_shelterdc.model;
 
 import com.devsteam.getname.telbot_shelterdc.model.Pet;
 import com.devsteam.getname.telbot_shelterdc.model.PetOwner;

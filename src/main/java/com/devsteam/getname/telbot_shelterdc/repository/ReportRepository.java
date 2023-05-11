@@ -1,7 +1,7 @@
-package com.devsteam.getname.telbot_shelterdc.repository.report;
+package com.devsteam.getname.telbot_shelterdc.repository;
 
 import com.devsteam.getname.telbot_shelterdc.model.Kind;
-import com.devsteam.getname.telbot_shelterdc.model.report.Report;
+import com.devsteam.getname.telbot_shelterdc.model.Report;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
