@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 
+import static com.devsteam.getname.telbot_shelterdc.model.Gender.MALE;
 import static com.devsteam.getname.telbot_shelterdc.model.Kind.CAT;
 import static com.devsteam.getname.telbot_shelterdc.model.Status.FREE;
 import static com.devsteam.getname.telbot_shelterdc.model.StatusOwner.PROBATION;
@@ -52,7 +53,7 @@ public class PetOwnerControllerTest {
     @Test
     void givenPetOwnersInDatabase_whenOwnerAddedItIsAddedCorrectly() throws Exception {
         Pet testPet = new Pet(1L, 2019, "Pusheen", "tabby",
-                "very friendly", Color.BLACK_AND_WHITE, FREE, CAT);
+                "very friendly", Color.BLACK_AND_WHITE, FREE, CAT, MALE);
         Long petId = petRepository.save(testPet).getId();
         PetOwnerDTO test = new PetOwnerDTO(0L, 112L, "fullName", "phone",
                 "address", PROBATION, finishProba, petId);
@@ -78,7 +79,7 @@ public class PetOwnerControllerTest {
     @Test
     void givenPetOwnersInDatabase_thenItIsFoundById() throws Exception {
         Pet testPet = new Pet(2L, 2019, "Pusheen", "tabby",
-                "very friendly", Color.BLACK_AND_WHITE, FREE, CAT);
+                "very friendly", Color.BLACK_AND_WHITE, FREE, CAT, MALE);
         Long petId = petRepository.save(testPet).getId();
         PetOwnerDTO test = new PetOwnerDTO(0L, 112L, "fullName", "phone",
                 "address", PROBATION, finishProba, petId);
@@ -115,7 +116,7 @@ public class PetOwnerControllerTest {
     @Test
     void givenPetOwnersInDatabase_thenItIsDeletedById() throws Exception {
         Pet testPet = new Pet(3L, 2019, "Pusheen", "tabby",
-                "very friendly", Color.BLACK_AND_WHITE, FREE, CAT);
+                "very friendly", Color.BLACK_AND_WHITE, FREE, CAT, MALE);
         Long petId = petRepository.save(testPet).getId();
         PetOwnerDTO test = new PetOwnerDTO(0L, 112L, "fullName", "phone",
                 "address", PROBATION, finishProba, petId);
