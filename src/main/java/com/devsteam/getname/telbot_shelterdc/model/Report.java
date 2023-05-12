@@ -28,7 +28,7 @@ public class Report {
     /**Поле владельца животного, который пишет отчёт*/
     private PetOwner petOwner;
 
-    @Column(length = 5000)
+    @Column(length = 1024)
     /**Поле с описанием рациона и режима питания, адаптации и состояния, а также изменений в поведении животного*/
     private String mealsWellBeingAndAdaptationBehaviorChanges;
     @Column()
