@@ -103,7 +103,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                         if (photoAsByteArray == null){
                             throw new RuntimeException("no photo from tg downloaded");
                         }
-                        reportService.addReport(chatId, message.caption().substring(7), "photo", photoAsByteArray);
+                        reportService.addReport(chatId, message.caption().substring(7),  photoAsByteArray);
                         telegramBot.execute(new SendMessage(chatId, "добавляем отчёт"));
                     }
                     if (message.contact() != null&&waitingForContact.get(chatId).equals("Dog")) {

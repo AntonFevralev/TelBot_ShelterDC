@@ -29,9 +29,6 @@ public class Report {
     private PetOwner petOwner;
 
     @Column
-    /**Поле содержащее ссылку на фото животного, которое прилагается к отчёту*/
-    private String photo;
-    @Column
     /**Поле с описанием рациона и режима питания, адаптации и состояния, а также изменений в поведении животного*/
     private String mealsWellBeingAndAdaptationBehaviorChanges;
     @Column()
@@ -67,9 +64,6 @@ public class Report {
         return petOwner;
     }
 
-    public String getPhoto() {
-        return photo;
-    }
 
     public String getMealsWellBeingAndAdaptationBehaviorChanges() {
         return mealsWellBeingAndAdaptationBehaviorChanges;
@@ -101,9 +95,6 @@ public class Report {
         this.petOwner = petOwner;
     }
 
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
 
     public void setMealsWellBeingAndAdaptationBehaviorChanges(String meals) {
         this.mealsWellBeingAndAdaptationBehaviorChanges = meals;
