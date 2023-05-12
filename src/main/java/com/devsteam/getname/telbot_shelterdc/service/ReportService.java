@@ -305,8 +305,13 @@ public class ReportService {
         return restTemplate.exchange(fileInfoURI, HttpMethod.GET, request, String.class, token, fileId);
     }
 
-    public byte[] processPhoto(Message telegramMessage) {
-        String fileId = Arrays.stream(telegramMessage.photo()).max(Comparator.comparing(PhotoSize::height)).get().fileId();
+    public byte[] processAttachment(Message telegramMessage) {
+        String fileId = "";
+        if (telegramMessage.photo() != null) {
+            fileId = Arrays.stream(telegramMessage.photo()).max(Comparator.comparing(PhotoSize::height)).get().fileId();
+        } else if (telegramMessage.document()!=null) {
+            fileId = telegramMessage.document().fileId();
+        }
         ResponseEntity<String> response = getFilePath(fileId);
         if (response.getStatusCode() == HttpStatus.OK) {
             JSONObject jsonObject = new JSONObject(response.getBody());
@@ -316,4 +321,6 @@ public class ReportService {
             throw new RuntimeException("Bad response from TG service" + response);
         }
     }
+
+
 }

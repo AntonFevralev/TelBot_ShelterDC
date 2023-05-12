@@ -110,7 +110,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     }
 
                     else if (message.caption() != null&& (message.photo() != null||message.document().mimeType().equals("image/jpeg"))&& waitingForReport.get(chatId)) {
-                        byte[] photoAsByteArray = reportService.processPhoto(message);
+                        byte[] photoAsByteArray = reportService.processAttachment(message);
                         if (photoAsByteArray == null){
                             throw new RuntimeException("no photo from tg downloaded");
                         }
