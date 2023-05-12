@@ -50,6 +50,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private final Map<Long, String> waitingForContact = new HashMap<>();
 
+    private final Map<Long, Boolean> waitingForReport = new HashMap<>();
+
     public TelegramBotUpdatesListener(TelegramBot telegramBot, ReportService reportService, ReportRepository reportRepository, OwnerRepository ownerRepository) throws IOException {
         this.ownerRepository = ownerRepository;
 
@@ -96,15 +98,25 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                         //если к сообщению прикреплен контакт и сообщение является ответом на сообщение, содержащее определенный текст
                     } else if ("/id".equals(text)) {
                         sendChatId(chatId);
+                    }else if(waitingForReport.get(chatId)==null){
+                        telegramBot.execute(new SendMessage(chatId, "Нажмите кнопку отправить отчет")
+                                .replyMarkup(new InlineKeyboardMarkup(new InlineKeyboardButton("Отправить отчет")
+                                        .callbackData("SendReport"))));
+                    }
+                    else if(message.text() != null&& (message.photo() == null&&message.document()==null)&&waitingForReport.get(chatId)){
+                        telegramBot.execute(new SendMessage(chatId, "Вы не приложили фото к отчету"));
+                    }else if(message.caption() == null&& (message.photo() != null||message.document().mimeType().equals("image/jpeg"))&& waitingForReport.get(chatId)){
+                        telegramBot.execute(new SendMessage(chatId, "Вы не приложили отчет"));
                     }
 
-                    else if (message.caption() != null&&message.caption().startsWith("/report")&& (message.photo() != null||message.document().mimeType().equals("image/jpeg"))) {
+                    else if (message.caption() != null&& (message.photo() != null||message.document().mimeType().equals("image/jpeg"))&& waitingForReport.get(chatId)) {
                         byte[] photoAsByteArray = reportService.processPhoto(message);
                         if (photoAsByteArray == null){
                             throw new RuntimeException("no photo from tg downloaded");
                         }
-                        reportService.addReport(chatId, message.caption().substring(7),  photoAsByteArray);
+                        reportService.addReport(chatId, message.caption(),  photoAsByteArray);
                         telegramBot.execute(new SendMessage(chatId, "добавляем отчёт"));
+                        waitingForReport.remove(chatId);
                     }
                     if (message.contact() != null&&waitingForContact.get(chatId).equals("Dog")) {
                         sendContact(message, chatId, dogsShelter);
@@ -154,7 +166,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     "SafetyRecommendationsDogsShelter","DogsShelterContact", "Dogs", dogsShelter);
             case "InfoCats" -> shelterInfo(chatId, "InfoCatsShelter", "ScheduleCats",  "CatsShelterSecurity",
                     "SafetyRecommendationsCatsShelter","CatsShelterContact", "Cats", catsShelter);
-            /* case "HowToTakeDog"-> howToTakeDog(chatId);*/
             case "InfoDogsShelter" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId, dogsShelter.getInfo(), "InfoDogs");
             case "InfoCatsShelter" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId, catsShelter.getInfo(), "InfoCats");
             case "ScheduleDogs" ->
@@ -171,7 +182,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                                             waitingForContact.put(chatId, "Dog");}
             case "CatsShelterContact" -> {shelterContact(chatId);
             waitingForContact.put(chatId, "Cat");}
-            case "SendReport" -> initiateReportDialog(chatId);
+            case "SendReport" -> {initiateReportDialog(chatId); waitingForReport.put(chatId, true);}
             case "HowToTakeDog"->howToTakeDog(chatId);
             case "HowToTakeCat"->howToTakeCat(chatId);
             case "DogMeetAndGreetRules" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId,
@@ -213,7 +224,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private void howToTakeDog(Long chatId) {
         SendMessage sendMessage = new SendMessage(chatId, "Здравствуйте! Здесь вы можете узнать о том, как взять " +
-                "кошку из нашего приюта"
+                "собаку из нашего приюта"
     );
         InlineKeyboardButton meetAndGreet = new InlineKeyboardButton("Правила знакомства с животным");
         meetAndGreet.callbackData("DogMeetAndGreetRules");
@@ -248,7 +259,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     }
     private void howToTakeCat(Long chatId) {
         SendMessage sendMessage = new SendMessage(chatId, "Здравствуйте! Здесь вы можете узнать о том, как взять " +
-                "собаку из нашего приюта"
+                "кошку из нашего приюта"
         );
         InlineKeyboardButton meetAndGreet = new InlineKeyboardButton("Правила знакомства с животным");
         meetAndGreet.callbackData("CatMeetAndGreetRules");
@@ -311,7 +322,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         sendReport.callbackData("SendReport");
         InlineKeyboardButton mainMenu = new InlineKeyboardButton("Главное меню");
         mainMenu.callbackData("MainMenu");
-        Keyboard keyboard = new InlineKeyboardMarkup().addRow(mainInfo).addRow(howToTake).addRow(back).addRow(mainMenu).addRow(
+        Keyboard keyboard = new InlineKeyboardMarkup().addRow(mainInfo).addRow(howToTake).addRow(sendReport).addRow(back).addRow(mainMenu).addRow(
                 new InlineKeyboardButton("Позвать волонтера").url("https://t.me/fevralevanton"));
         sendMessage.replyMarkup(keyboard);
         telegramBot.execute(sendMessage);
@@ -413,10 +424,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     public void initiateReportDialog(long chatId) {
         SendMessage sendMessage = new SendMessage(chatId, """
                 Пожалуйста, заполните отчёт по следующим пунктам:
-                1) id животного.
-                2) Рацион животного.
-                3) Общее самочувствие и привыкание к новому месту.
-                4) Изменение в поведении: отказ от старых привычек, приобретение новых.
+                1) Рацион животного.
+                2) Общее самочувствие и привыкание к новому месту.
+                3) Изменение в поведении: отказ от старых привычек, приобретение новых.
                 Также, не забудьте прикрепить к сообщению фото животного.
                 """);
         telegramBot.execute(sendMessage);
