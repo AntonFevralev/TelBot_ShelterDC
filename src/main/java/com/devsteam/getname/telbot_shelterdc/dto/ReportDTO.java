@@ -6,7 +6,6 @@ import java.time.LocalTime;
 public record ReportDTO(long id,
                         long petId,
                         long petOwnerId,
-                        String photo,
                         String mealsWellBeingAndAdaptationBehaviorChanges,
                         LocalDate reportDate,
                         LocalTime reportTime,

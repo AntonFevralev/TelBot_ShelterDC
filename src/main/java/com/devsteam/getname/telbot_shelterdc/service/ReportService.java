@@ -57,7 +57,6 @@ public class ReportService {
                 report.getId(),
                 report.getPet().getId(),
                 report.getPetOwner().getIdCO(),
-                report.getPhoto(),
                 report.getMealsWellBeingAndAdaptationBehaviorChanges(),
                 report.getReportDate(),
                 report.getReportTime(),
@@ -73,7 +72,7 @@ public class ReportService {
      * @param mealsWellBeingAndAdaptationBehaviorChanges,
      * @param photo
      */
-    public ReportDTO addReport(long chatId, String mealsWellBeingAndAdaptationBehaviorChanges, String photo, byte[] photoAsBytesArray) {
+    public ReportDTO addReport(long chatId, String mealsWellBeingAndAdaptationBehaviorChanges, byte[] photoAsBytesArray) {
         Report report = new Report();
         PetOwner owner = ownerRepository.findPetOwnerByChatId(chatId);
         if (owner == null) {
@@ -90,10 +89,6 @@ public class ReportService {
             throw new IllegalArgumentException();
         }
         report.setMealsWellBeingAndAdaptationBehaviorChanges(mealsWellBeingAndAdaptationBehaviorChanges);
-        if (!Utils.stringValidation(photo)) {
-            throw new IllegalArgumentException();
-        }
-        report.setPhoto(photo);
         report.setReportIsComplete(true);
         report.setReportIsInspected(false);
         report.setReportDate(LocalDateTime.now().toLocalDate());
