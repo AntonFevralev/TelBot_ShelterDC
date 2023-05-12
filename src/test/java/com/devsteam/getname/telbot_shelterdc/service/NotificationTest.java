@@ -39,7 +39,7 @@ public class NotificationTest {
 
     private PetOwner catOwner;
     private Pet cat;
-
+    private byte[] bytes= {1, 2, 3};
     @BeforeEach
     public void setUp() {
         cat = new Pet();
@@ -121,7 +121,7 @@ public class NotificationTest {
 
     @Test
     public void remindOwnerIfReportIsNotFull() {
-        Long reportID = reportService.addReport(catOwner.getChatId(), "meals", "photo").id();
+        Long reportID = reportService.addReport(catOwner.getChatId(), "meals", bytes).id();
         reportService.setReportAsIncomplete(reportID);
         ArgumentCaptor<SendMessage> argumentCaptor = ArgumentCaptor.forClass(SendMessage.class);
         Mockito.verify(telegramBot).execute(argumentCaptor.capture());
