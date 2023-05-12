@@ -70,7 +70,7 @@ public class ReportService {
      *
      * @param chatId,
      * @param mealsWellBeingAndAdaptationBehaviorChanges,
-     * @param photo
+     * @param photoAsBytesArray
      */
     public ReportDTO addReport(long chatId, String mealsWellBeingAndAdaptationBehaviorChanges, byte[] photoAsBytesArray) {
         Report report = new Report();
