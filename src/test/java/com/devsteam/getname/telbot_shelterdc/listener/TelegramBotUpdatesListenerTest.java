@@ -6,6 +6,7 @@ import com.devsteam.getname.telbot_shelterdc.service.ReportService;
 import com.google.gson.Gson;
 import com.pengrad.telegrambot.BotUtils;
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
@@ -18,8 +19,11 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Collections;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.assertj.core.api.Assertions;
+import org.h2.command.dml.MergeUsing;
+import org.hibernate.service.spi.InjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,11 +31,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import static java.nio.file.Files.readString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 
 
 @ExtendWith(MockitoExtension.class)
@@ -58,7 +68,6 @@ public class TelegramBotUpdatesListenerTest {
     @BeforeEach
     void setUp() throws IOException {
         this.dogsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "dogShelter.json")), Shelter.class);
-
         this.catsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "catShelter.json")), Shelter.class);
     }
 
@@ -147,7 +156,7 @@ public class TelegramBotUpdatesListenerTest {
         handleButtonCallBackData("cynologistAdvice", dogsShelter.getCynologistAdvice());
     } @Test
     public void handleButtonCynologists() throws URISyntaxException, IOException {
-        handleButtonCallBackData("cynologists", dogsShelter.getRecommendationsAdult());
+        handleButtonCallBackData("cynologists", dogsShelter.getRecommendedCynologists());
     }
     @Test
     public void handleButtonDogRejectionList() throws URISyntaxException, IOException {
@@ -195,6 +204,8 @@ public class TelegramBotUpdatesListenerTest {
         String json = Files.readString(
                 Paths.get(TelegramBotUpdatesListenerTest.class.getResource("photo_update.json").toURI()));
         Update update = getUpdate(json, "test");
+        when(reportService.processAttachment(any())).thenReturn("sss".getBytes());
+        telegramBotUpdatesListener.waitingForReport.put(306336303L, true);
         telegramBotUpdatesListener.process(Collections.singletonList(update));
 
         ArgumentCaptor<SendMessage> sendMessageArgumentCaptor = ArgumentCaptor.forClass(
@@ -218,11 +229,43 @@ public class TelegramBotUpdatesListenerTest {
         Assertions.assertThat(actualDescription)
                 .isEqualTo("test");
         Assertions.assertThat(actualPhoto).isNotEmpty();
-        Assertions.assertThat(actualLong).isEqualTo(123L);
+        Assertions.assertThat(actualLong).isEqualTo(306336303L);
+        Assertions.assertThat(actualSendMessage.getParameters().get("text")).isEqualTo(
+                "добавляем отчёт");
+    }
+    @Test
+    public void handleReportWithoutPhoto() throws URISyntaxException, IOException {
+        String json = Files.readString(
+                Paths.get(TelegramBotUpdatesListenerTest.class.getResource("text_update.json").toURI()));
+        Update update = getUpdate(json, "test");
+        telegramBotUpdatesListener.waitingForReport.put(123L, true);
+        telegramBotUpdatesListener.process(Collections.singletonList(update));
+
+        ArgumentCaptor<SendMessage> sendMessageArgumentCaptor = ArgumentCaptor.forClass(
+                SendMessage.class);
+        Mockito.verify(telegramBot).execute(sendMessageArgumentCaptor.capture());
+        SendMessage actualSendMessage = sendMessageArgumentCaptor.getValue();
+        Assertions.assertThat(actualSendMessage.getParameters().get("chat_id")).isEqualTo(123L);
+        Assertions.assertThat(actualSendMessage.getParameters().get("text")).isEqualTo(
+                "Вы не приложили фото к отчету");
+    }
+
+    @Test
+    public void handleReportWithoutText() throws URISyntaxException, IOException {
+        String json = Files.readString(
+                Paths.get(TelegramBotUpdatesListenerTest.class.getResource("empty_caption_update.json").toURI()));
+        Update update = getUpdate(json, "");
+        telegramBotUpdatesListener.waitingForReport.put(123L, true);
+        telegramBotUpdatesListener.process(Collections.singletonList(update));
+
+        ArgumentCaptor<SendMessage> sendMessageArgumentCaptor = ArgumentCaptor.forClass(
+                SendMessage.class);
+        Mockito.verify(telegramBot).execute(sendMessageArgumentCaptor.capture());
+        SendMessage actualSendMessage = sendMessageArgumentCaptor.getValue();
 
         Assertions.assertThat(actualSendMessage.getParameters().get("chat_id")).isEqualTo(123L);
         Assertions.assertThat(actualSendMessage.getParameters().get("text")).isEqualTo(
-                "добавляем отчёт");
+                "Вы не приложили отчет");
     }
 
     public void handleButtonCallBackData(String callBackData, String menuMessage) throws URISyntaxException, IOException {

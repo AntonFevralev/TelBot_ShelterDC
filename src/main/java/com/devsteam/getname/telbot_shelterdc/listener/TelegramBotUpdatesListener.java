@@ -50,7 +50,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private final Map<Long, String> waitingForContact = new HashMap<>();
 
-    private final Map<Long, Boolean> waitingForReport = new HashMap<>();
+    public Map<Long, Boolean> waitingForReport = new HashMap<>();
 
     public TelegramBotUpdatesListener(TelegramBot telegramBot, ReportService reportService, ReportRepository reportRepository, OwnerRepository ownerRepository) throws IOException {
         this.ownerRepository = ownerRepository;
@@ -88,7 +88,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 if (update.callbackQuery() != null) {
                     callBackQueryHandler(update);
                 }//если сообщение не пустое
-                if (update.message() != null) {
+                if (update.message() != null&&update.callbackQuery()==null) {
                     Message message = update.message();
                     String text = message.text();
                     long chatId = message.chat().id();
@@ -96,8 +96,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     if ("/start".equals(text)) {
                         startMessage(chatId);
                         //если к сообщению прикреплен контакт и сообщение является ответом на сообщение, содержащее определенный текст
-                    } else if ("/id".equals(text)) {
-                        sendChatId(chatId);
                     }else if(waitingForReport.get(chatId)==null){
                         telegramBot.execute(new SendMessage(chatId, "Нажмите кнопку отправить отчет")
                                 .replyMarkup(new InlineKeyboardMarkup(new InlineKeyboardButton("Отправить отчет")
@@ -171,7 +169,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             case "ScheduleDogs" ->
                     sendMessageWithMainMenuButtonFromInfoMenu(chatId, dogsShelter.getAddress() + "\n\n" + dogsShelter.getSchedule() + "\n\n " + "<a href=\"" + dogsShelter.getMapLink() + "\">Ссылка на Google Maps</a>", "InfoDogs");
             case "ScheduleCats" ->
-                    sendMessageWithMainMenuButtonFromInfoMenu(chatId, catsShelter.getAddress() + "\n\n" + catsShelter.getSchedule() + "\n\n " + "<a href=\"" + catsShelter.getMapLink() + "\">Ссылка на Google Maps</a>", "InfoDogs");
+                    sendMessageWithMainMenuButtonFromInfoMenu(chatId, catsShelter.getAddress() + "\n\n" + catsShelter.getSchedule() + "\n\n " + "<a href=\"" + catsShelter.getMapLink() + "\">Ссылка на Google Maps</a>", "InfoCats");
             case "DogsShelterSecurity" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId, dogsShelter.getSecurity(), "InfoDogs");
             case "CatsShelterSecurity" -> sendMessageWithMainMenuButtonFromInfoMenu(chatId, catsShelter.getSecurity(), "InfoCats");
             case "SafetyRecommendationsDogsShelter" ->
