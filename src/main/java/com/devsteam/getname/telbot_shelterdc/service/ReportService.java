@@ -61,8 +61,7 @@ public class ReportService {
                 report.getReportDate(),
                 report.getReportTime(),
                 report.isReportIsComplete(),
-                report.isReportIsInspected(),
-                report.getPhotoAsArrayOfBytes());
+                report.isReportIsInspected());
     }
 
     /**
@@ -115,6 +114,10 @@ public class ReportService {
         } catch (Exception e) {
             throw new NoSuchEntityException("No report with such ID");
         }
+    }
+
+    public byte[] getReportPhotoBytesArray(long id) {
+        return reportRepository.findById(id).get().getPhotoAsArrayOfBytes();
     }
 
     /**
@@ -321,6 +324,4 @@ public class ReportService {
             throw new RuntimeException("Bad response from TG service" + response);
         }
     }
-
-
 }

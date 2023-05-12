@@ -10,7 +10,6 @@ public record ReportDTO(long id,
                         LocalDate reportDate,
                         LocalTime reportTime,
                         boolean reportIsComplete,
-                        boolean reportIsInspected,
-                        byte[]photoInBytes) {
+                        boolean reportIsInspected) {
 
 }
