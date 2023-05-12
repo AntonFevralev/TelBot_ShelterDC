@@ -139,7 +139,7 @@ public class TelegramBotUpdatesListenerTest {
 
         ArgumentCaptor<String> descriptionArgumentCaptor = ArgumentCaptor.forClass(
                 String.class);
-        ArgumentCaptor<String> photoArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<byte[]> photoArgumentCaptor = ArgumentCaptor.forClass(byte[].class);
         ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
         Mockito.verify(reportService).addReport(
                 longArgumentCaptor.capture(),
@@ -147,12 +147,12 @@ public class TelegramBotUpdatesListenerTest {
                 photoArgumentCaptor.capture()
         );
         String actualDescription = descriptionArgumentCaptor.getValue();
-        String actualPhoto = photoArgumentCaptor.getValue();
+        byte[] actualPhoto = photoArgumentCaptor.getValue();
         Long actualLong = longArgumentCaptor.getValue();
 
         Assertions.assertThat(actualDescription)
                 .isEqualTo(" test");
-        Assertions.assertThat(actualPhoto).isEqualTo("photo");
+        Assertions.assertThat(actualPhoto).isNotEmpty();
         Assertions.assertThat(actualLong).isEqualTo(123L);
 
         Assertions.assertThat(actualSendMessage.getParameters().get("chat_id")).isEqualTo(123L);

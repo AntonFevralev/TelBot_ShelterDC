@@ -99,7 +99,6 @@ class ReminderTimerTest {
         report.setReportIsInspected(true);
         report.setReportDate(LocalDate.now());
         report.setReportTime(LocalTime.now());
-        report.setPhoto("photo");
         report.setMealsWellBeingAndAdaptationBehaviorChanges("meal");
         report.setPet(cat);
         report.setPetOwner(catOwner);
@@ -142,7 +141,6 @@ class ReminderTimerTest {
         report.setReportIsInspected(true);
         report.setReportDate(LocalDate.now().minusDays(1));
         report.setReportTime(LocalTime.now());
-        report.setPhoto("photo");
         report.setMealsWellBeingAndAdaptationBehaviorChanges("meal");
         report.setPet(cat);
         report.setPetOwner(catOwner);

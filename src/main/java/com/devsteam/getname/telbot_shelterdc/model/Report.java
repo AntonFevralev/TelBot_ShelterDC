@@ -1,5 +1,8 @@
 package com.devsteam.getname.telbot_shelterdc.model;
 
+import com.devsteam.getname.telbot_shelterdc.model.Pet;
+import com.devsteam.getname.telbot_shelterdc.model.PetOwner;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -25,10 +28,7 @@ public class Report {
     /**Поле владельца животного, который пишет отчёт*/
     private PetOwner petOwner;
 
-    @Column
-    /**Поле содержащее ссылку на фото животного, которое прилагается к отчёту*/
-    private String photo;
-    @Column
+    @Column(length = 1024)
     /**Поле с описанием рациона и режима питания, адаптации и состояния, а также изменений в поведении животного*/
     private String mealsWellBeingAndAdaptationBehaviorChanges;
     @Column()
@@ -41,28 +41,16 @@ public class Report {
     @Column
     /**Поле, отмечающее завершённость(полноценность) отчёта*/
     private boolean reportIsComplete;
+    @Column
     /**Поле, указывающее на факт просмотра отчёта волонтёром*/
     private boolean reportIsInspected;
+    @Column(columnDefinition="BLOB")
+    private byte[] photoAsArrayOfBytes;
 
     public Report() {
     }
 
-//    public Report(Pet pet,
-//                  PetOwner petOwner,
-//                  String photo,
-//                  String mealsWellBeingAndAdaptationBehaviorChanges,
-//                  LocalDate reportDate, LocalTime reportTime,
-//                  boolean reportIsComplete,
-//                  boolean reportIsInspected) {
-//        this.pet = pet;
-//        this.petOwner = petOwner;
-//        this.photo = photo;
-//        this.mealsWellBeingAndAdaptationBehaviorChanges = mealsWellBeingAndAdaptationBehaviorChanges;
-//        this.reportDate = reportDate;
-//        this.reportTime = reportTime;
-//        this.reportIsComplete = reportIsComplete;
-//        this.reportIsInspected = reportIsInspected;
-//    }
+
 
     public long getId() {
         return id;
@@ -76,9 +64,6 @@ public class Report {
         return petOwner;
     }
 
-    public String getPhoto() {
-        return photo;
-    }
 
     public String getMealsWellBeingAndAdaptationBehaviorChanges() {
         return mealsWellBeingAndAdaptationBehaviorChanges;
@@ -94,6 +79,10 @@ public class Report {
         return reportIsInspected;
     }
 
+    public byte[] getPhotoAsArrayOfBytes() {
+        return photoAsArrayOfBytes;
+    }
+
     public void setId(long id) {
         this.id = id;
     }
@@ -106,9 +95,6 @@ public class Report {
         this.petOwner = petOwner;
     }
 
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
 
     public void setMealsWellBeingAndAdaptationBehaviorChanges(String meals) {
         this.mealsWellBeingAndAdaptationBehaviorChanges = meals;
@@ -138,5 +124,9 @@ public class Report {
 
     public void setReportTime(LocalTime reportTime) {
         this.reportTime = reportTime.truncatedTo(ChronoUnit.SECONDS);
+    }
+
+    public void setPhotoAsArrayOfBytes(byte[] photoAsArrayOfBytes) {
+        this.photoAsArrayOfBytes = photoAsArrayOfBytes;
     }
 }

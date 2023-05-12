@@ -7,14 +7,26 @@ import com.devsteam.getname.telbot_shelterdc.model.Kind;
 import com.devsteam.getname.telbot_shelterdc.model.PetOwner;
 import com.devsteam.getname.telbot_shelterdc.model.Report;
 import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
-import com.devsteam.getname.telbot_shelterdc.repository.ReportRepository;
 import com.devsteam.getname.telbot_shelterdc.repository.PetRepository;
+import com.devsteam.getname.telbot_shelterdc.repository.ReportRepository;
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.Message;
+import com.pengrad.telegrambot.model.PhotoSize;
 import com.pengrad.telegrambot.request.SendMessage;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -24,6 +36,14 @@ public class ReportService {
     private OwnerRepository ownerRepository;
     private PetRepository petRepository;
     private final TelegramBot telegramBot;
+
+    @Value("${telegram.bot.token}")
+    private String token;
+
+    @Value("${service.file_info.uri}")
+    private String fileInfoURI;
+    @Value("${service.file_storage.uri}")
+    private String fileStorageUri;
 
     public ReportService(ReportRepository reportRepository, OwnerRepository ownerRepository, PetRepository petRepository, TelegramBot telegramBot) {
         this.reportRepository = reportRepository;
@@ -37,7 +57,6 @@ public class ReportService {
                 report.getId(),
                 report.getPet().getId(),
                 report.getPetOwner().getIdCO(),
-                report.getPhoto(),
                 report.getMealsWellBeingAndAdaptationBehaviorChanges(),
                 report.getReportDate(),
                 report.getReportTime(),
@@ -50,9 +69,9 @@ public class ReportService {
      *
      * @param chatId,
      * @param mealsWellBeingAndAdaptationBehaviorChanges,
-     * @param photo
+     * @param photoAsBytesArray
      */
-    public ReportDTO addReport(long chatId, String mealsWellBeingAndAdaptationBehaviorChanges, String photo) {
+    public ReportDTO addReport(long chatId, String mealsWellBeingAndAdaptationBehaviorChanges, byte[] photoAsBytesArray) {
         Report report = new Report();
         PetOwner owner = ownerRepository.findPetOwnerByChatId(chatId);
         if (owner == null) {
@@ -69,14 +88,11 @@ public class ReportService {
             throw new IllegalArgumentException();
         }
         report.setMealsWellBeingAndAdaptationBehaviorChanges(mealsWellBeingAndAdaptationBehaviorChanges);
-        if (!Utils.stringValidation(photo)) {
-            throw new IllegalArgumentException();
-        }
-        report.setPhoto(photo);
         report.setReportIsComplete(true);
         report.setReportIsInspected(false);
         report.setReportDate(LocalDateTime.now().toLocalDate());
         report.setReportTime(LocalDateTime.now().toLocalTime());
+        report.setPhotoAsArrayOfBytes(photoAsBytesArray);
         try {
             reportRepository.save(report);
         } catch (IllegalArgumentException e) {
@@ -98,6 +114,10 @@ public class ReportService {
         } catch (Exception e) {
             throw new NoSuchEntityException("No report with such ID");
         }
+    }
+
+    public byte[] getReportPhotoBytesArray(long id) {
+        return reportRepository.findById(id).get().getPhotoAsArrayOfBytes();
     }
 
     /**
@@ -262,5 +282,46 @@ public class ReportService {
         reportRepository.deleteAllInBatch(reportRepository.findByPet_Id(petId));
 
 
+    }
+
+    private byte[] downloadFile(String filePath) {
+        String fullURI = fileStorageUri.replace("{token}", token)
+                .replace("{filePath}", filePath);
+        URL urlObj;
+        try {
+            urlObj = new URL(fullURI);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException();
+        }
+
+        try (InputStream is = urlObj.openStream()){
+            return is.readAllBytes();
+        }catch (IOException e){
+            throw new RuntimeException();
+        }
+    }
+
+    private ResponseEntity<String> getFilePath(String fileId) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        HttpEntity<String> request = new HttpEntity<>(httpHeaders);
+        return restTemplate.exchange(fileInfoURI, HttpMethod.GET, request, String.class, token, fileId);
+    }
+
+    public byte[] processAttachment(Message telegramMessage) {
+        String fileId = "";
+        if (telegramMessage.photo() != null) {
+            fileId = Arrays.stream(telegramMessage.photo()).max(Comparator.comparing(PhotoSize::height)).get().fileId();
+        } else if (telegramMessage.document()!=null) {
+            fileId = telegramMessage.document().fileId();
+        }
+        ResponseEntity<String> response = getFilePath(fileId);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            JSONObject jsonObject = new JSONObject(response.getBody());
+            String filePath = String.valueOf(jsonObject.getJSONObject("result").getString("file_path"));
+            return downloadFile(filePath);
+        } else {
+            throw new RuntimeException("Bad response from TG service" + response);
+        }
     }
 }

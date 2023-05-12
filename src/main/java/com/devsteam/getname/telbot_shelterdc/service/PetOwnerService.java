@@ -172,7 +172,8 @@ public class PetOwnerService {
         PetOwner owner = ownerRepository.findById(idCO).orElseThrow(NoOwnerWithSuchIdException::new);
         owner.setFinishProba(owner.getFinishProba().plusDays(plusDays));
         ownerRepository.save(owner);
-        telegramBot.execute(new SendMessage(owner.getChatId(), "Вам продлен испытательный срок до " + owner.getFinishProba().toString()));
+        telegramBot.execute(new SendMessage(owner.getChatId(), "Вам продлен испытательный срок до "
+                + owner.getFinishProba().toString()));
         return owner;
     }
 
