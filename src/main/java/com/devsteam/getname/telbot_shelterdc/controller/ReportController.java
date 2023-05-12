@@ -2,6 +2,7 @@ package com.devsteam.getname.telbot_shelterdc.controller;
 
 import com.devsteam.getname.telbot_shelterdc.dto.ReportDTO;
 import com.devsteam.getname.telbot_shelterdc.model.Kind;
+import com.devsteam.getname.telbot_shelterdc.service.PetOwnerService;
 import com.devsteam.getname.telbot_shelterdc.service.ReportService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,9 +28,11 @@ import java.util.List;
 public class ReportController {
 
     private final ReportService reportService;
+    private final PetOwnerService petOwnerService;
 
-    public ReportController(ReportService reportService) {
+    public ReportController(ReportService reportService, PetOwnerService petOwnerService) {
         this.reportService = reportService;
+        this.petOwnerService = petOwnerService;
     }
 
 //    @PostMapping
@@ -81,13 +84,15 @@ public class ReportController {
     )
     public ResponseEntity<Resource> downloadPetReportPhotoByReportId(@RequestParam(name = "reportId") long reportId) {
         ReportDTO reportDTO = reportService.getReportByReportId(reportId);
-        byte[] bytes = reportDTO.photoInBytes();
+        byte[] bytes = reportService.getReportPhotoBytesArray(reportId);
         InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(bytes));
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Disposition", String.format("attachment; filename="
-                +"report_id "
+                +"report id "
                 +reportDTO.id()
-                +" from "
+                +" owner "
+                +petOwnerService.getPetOwner(reportDTO.petOwnerId()).fullName()
+                +" date "
                 +reportDTO.reportDate()
                 +" "+reportDTO.reportTime()
                 +".jpg"));
