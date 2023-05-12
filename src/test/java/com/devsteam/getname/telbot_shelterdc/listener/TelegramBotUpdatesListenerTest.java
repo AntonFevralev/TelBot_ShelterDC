@@ -84,9 +84,12 @@ public class TelegramBotUpdatesListenerTest {
     @ParameterizedTest
     @CsvSource(value = {
             "Dogs? Вы выбрали приют Лучший друг",
+            "Cats? Вы выбрали приют Пушистик",
+            "HowToTakeDog? Здравствуйте! Здесь вы можете узнать о том, как взять собаку из нашего приюта",
+            "HowToTakeCat? Здравствуйте! Здесь вы можете узнать о том, как взять кошку из нашего приюта",
             "InfoDogsShelter? Приют был основан в 1999 году, на данный момент в нем находится более 10 собак разных пород. За животными ухаживают волонтеры",
             "DogsShelterSecurity? +79999999999 Федор",
-            "BackFromDogsInfo? Вы выбрали приют Лучший друг",
+            "CatsShelterSecurity? +79999999998 Иван",
             "MainMenu? Выберите приют",
             "InfoDogs? Приют Лучший друг",
             "InfoCats? Приют Пушистик",
@@ -120,6 +123,68 @@ public class TelegramBotUpdatesListenerTest {
     public void handleButtonSafetyRecommendationsCatsShelter() throws URISyntaxException, IOException {
         handleButtonCallBackData("SafetyRecommendationsCatsShelter", catsShelter.getSafetyPrecautions());
     }
+    @Test
+    public void handleButtonDogDocList() throws URISyntaxException, IOException {
+        handleButtonCallBackData("DogDocList", dogsShelter.getDocList());
+    }    @Test
+    public void handleButtonDogMeetAndGreetRules() throws URISyntaxException, IOException {
+        handleButtonCallBackData("DogMeetAndGreetRules", dogsShelter.getMeetAndGreatRules());
+    }    @Test
+    public void handleButtonDogTransportingRecommendations() throws URISyntaxException, IOException {
+        handleButtonCallBackData("DogTransportingRecommendations", dogsShelter.getTransportingRules());
+    }    @Test
+    public void handleButtonDogRecommendations() throws URISyntaxException, IOException {
+        handleButtonCallBackData("DogRecommendations", dogsShelter.getRecommendations());
+    }    @Test
+    public void handleButtonDogRecommendationsAdult() throws URISyntaxException, IOException {
+        handleButtonCallBackData("DogRecommendationsAdult", dogsShelter.getRecommendationsAdult());
+    }
+    @Test
+    public void handleButtonDogRecommendationsDisabled() throws URISyntaxException, IOException {
+        handleButtonCallBackData("DogRecommendationsDisabled", dogsShelter.getRecommendationsDisabled());
+    } @Test
+    public void handleButtonCynologistAdvice() throws URISyntaxException, IOException {
+        handleButtonCallBackData("cynologistAdvice", dogsShelter.getCynologistAdvice());
+    } @Test
+    public void handleButtonCynologists() throws URISyntaxException, IOException {
+        handleButtonCallBackData("cynologists", dogsShelter.getRecommendationsAdult());
+    }
+    @Test
+    public void handleButtonDogRejectionList() throws URISyntaxException, IOException {
+        handleButtonCallBackData("DogRejectionList", dogsShelter.getRejectReasonsList());
+    }
+    @Test
+    public void handleButtonCatMeetAndGreetRules() throws URISyntaxException, IOException {
+        handleButtonCallBackData("CatMeetAndGreetRules", catsShelter.getMeetAndGreatRules());
+    }
+
+    @Test
+    public void handleButtonCatDocList() throws URISyntaxException, IOException {
+        handleButtonCallBackData("CatDocList", catsShelter.getDocList());
+    }
+    @Test
+    public void handleButtonCatTransportingRecommendations() throws URISyntaxException, IOException {
+        handleButtonCallBackData("CatTransportingRecommendations", catsShelter.getTransportingRules());
+    }
+    @Test
+    public void handleButtonCatRecommendations() throws URISyntaxException, IOException {
+        handleButtonCallBackData("CatRecommendations", catsShelter.getRecommendations());
+    }
+
+    @Test
+    public void handleButtonCatRecommendationsAdult() throws URISyntaxException, IOException {
+        handleButtonCallBackData("CatRecommendationsAdult", catsShelter.getRecommendationsAdult());
+    }
+    @Test
+    public void handleButtonCatRecommendationsDisabled() throws URISyntaxException, IOException {
+        handleButtonCallBackData("CatRecommendationsDisabled", catsShelter.getRecommendationsDisabled());
+    }
+    @Test
+    public void handleButtonCatRejectionList() throws URISyntaxException, IOException {
+        handleButtonCallBackData("CatRejectionList", catsShelter.getRejectReasonsList());
+    }
+
+
 
     private Update getUpdate(String json, String replaced) {
         return BotUtils.fromJson(json.replace("%command%", replaced), Update.class);
@@ -129,7 +194,7 @@ public class TelegramBotUpdatesListenerTest {
     public void handleValidReport() throws URISyntaxException, IOException {
         String json = Files.readString(
                 Paths.get(TelegramBotUpdatesListenerTest.class.getResource("photo_update.json").toURI()));
-        Update update = getUpdate(json, "/report test");
+        Update update = getUpdate(json, "test");
         telegramBotUpdatesListener.process(Collections.singletonList(update));
 
         ArgumentCaptor<SendMessage> sendMessageArgumentCaptor = ArgumentCaptor.forClass(
@@ -151,7 +216,7 @@ public class TelegramBotUpdatesListenerTest {
         Long actualLong = longArgumentCaptor.getValue();
 
         Assertions.assertThat(actualDescription)
-                .isEqualTo(" test");
+                .isEqualTo("test");
         Assertions.assertThat(actualPhoto).isNotEmpty();
         Assertions.assertThat(actualLong).isEqualTo(123L);
 
