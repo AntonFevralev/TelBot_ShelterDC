@@ -6,6 +6,7 @@ import com.devsteam.getname.telbot_shelterdc.service.ReportService;
 import com.google.gson.Gson;
 import com.pengrad.telegrambot.BotUtils;
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
@@ -18,8 +19,11 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Collections;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.assertj.core.api.Assertions;
+import org.h2.command.dml.MergeUsing;
+import org.hibernate.service.spi.InjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,11 +31,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import static java.nio.file.Files.readString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 
 
 @ExtendWith(MockitoExtension.class)
@@ -58,7 +68,6 @@ public class TelegramBotUpdatesListenerTest {
     @BeforeEach
     void setUp() throws IOException {
         this.dogsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "dogShelter.json")), Shelter.class);
-
         this.catsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "catShelter.json")), Shelter.class);
     }
 
@@ -84,9 +93,12 @@ public class TelegramBotUpdatesListenerTest {
     @ParameterizedTest
     @CsvSource(value = {
             "Dogs? Вы выбрали приют Лучший друг",
+            "Cats? Вы выбрали приют Пушистик",
+            "HowToTakeDog? Здравствуйте! Здесь вы можете узнать о том, как взять собаку из нашего приюта",
+            "HowToTakeCat? Здравствуйте! Здесь вы можете узнать о том, как взять кошку из нашего приюта",
             "InfoDogsShelter? Приют был основан в 1999 году, на данный момент в нем находится более 10 собак разных пород. За животными ухаживают волонтеры",
             "DogsShelterSecurity? +79999999999 Федор",
-            "BackFromDogsInfo? Вы выбрали приют Лучший друг",
+            "CatsShelterSecurity? +79999999998 Иван",
             "MainMenu? Выберите приют",
             "InfoDogs? Приют Лучший друг",
             "InfoCats? Приют Пушистик",
@@ -120,6 +132,68 @@ public class TelegramBotUpdatesListenerTest {
     public void handleButtonSafetyRecommendationsCatsShelter() throws URISyntaxException, IOException {
         handleButtonCallBackData("SafetyRecommendationsCatsShelter", catsShelter.getSafetyPrecautions());
     }
+    @Test
+    public void handleButtonDogDocList() throws URISyntaxException, IOException {
+        handleButtonCallBackData("DogDocList", dogsShelter.getDocList());
+    }    @Test
+    public void handleButtonDogMeetAndGreetRules() throws URISyntaxException, IOException {
+        handleButtonCallBackData("DogMeetAndGreetRules", dogsShelter.getMeetAndGreatRules());
+    }    @Test
+    public void handleButtonDogTransportingRecommendations() throws URISyntaxException, IOException {
+        handleButtonCallBackData("DogTransportingRecommendations", dogsShelter.getTransportingRules());
+    }    @Test
+    public void handleButtonDogRecommendations() throws URISyntaxException, IOException {
+        handleButtonCallBackData("DogRecommendations", dogsShelter.getRecommendations());
+    }    @Test
+    public void handleButtonDogRecommendationsAdult() throws URISyntaxException, IOException {
+        handleButtonCallBackData("DogRecommendationsAdult", dogsShelter.getRecommendationsAdult());
+    }
+    @Test
+    public void handleButtonDogRecommendationsDisabled() throws URISyntaxException, IOException {
+        handleButtonCallBackData("DogRecommendationsDisabled", dogsShelter.getRecommendationsDisabled());
+    } @Test
+    public void handleButtonCynologistAdvice() throws URISyntaxException, IOException {
+        handleButtonCallBackData("cynologistAdvice", dogsShelter.getCynologistAdvice());
+    } @Test
+    public void handleButtonCynologists() throws URISyntaxException, IOException {
+        handleButtonCallBackData("cynologists", dogsShelter.getRecommendedCynologists());
+    }
+    @Test
+    public void handleButtonDogRejectionList() throws URISyntaxException, IOException {
+        handleButtonCallBackData("DogRejectionList", dogsShelter.getRejectReasonsList());
+    }
+    @Test
+    public void handleButtonCatMeetAndGreetRules() throws URISyntaxException, IOException {
+        handleButtonCallBackData("CatMeetAndGreetRules", catsShelter.getMeetAndGreatRules());
+    }
+
+    @Test
+    public void handleButtonCatDocList() throws URISyntaxException, IOException {
+        handleButtonCallBackData("CatDocList", catsShelter.getDocList());
+    }
+    @Test
+    public void handleButtonCatTransportingRecommendations() throws URISyntaxException, IOException {
+        handleButtonCallBackData("CatTransportingRecommendations", catsShelter.getTransportingRules());
+    }
+    @Test
+    public void handleButtonCatRecommendations() throws URISyntaxException, IOException {
+        handleButtonCallBackData("CatRecommendations", catsShelter.getRecommendations());
+    }
+
+    @Test
+    public void handleButtonCatRecommendationsAdult() throws URISyntaxException, IOException {
+        handleButtonCallBackData("CatRecommendationsAdult", catsShelter.getRecommendationsAdult());
+    }
+    @Test
+    public void handleButtonCatRecommendationsDisabled() throws URISyntaxException, IOException {
+        handleButtonCallBackData("CatRecommendationsDisabled", catsShelter.getRecommendationsDisabled());
+    }
+    @Test
+    public void handleButtonCatRejectionList() throws URISyntaxException, IOException {
+        handleButtonCallBackData("CatRejectionList", catsShelter.getRejectReasonsList());
+    }
+
+
 
     private Update getUpdate(String json, String replaced) {
         return BotUtils.fromJson(json.replace("%command%", replaced), Update.class);
@@ -129,7 +203,9 @@ public class TelegramBotUpdatesListenerTest {
     public void handleValidReport() throws URISyntaxException, IOException {
         String json = Files.readString(
                 Paths.get(TelegramBotUpdatesListenerTest.class.getResource("photo_update.json").toURI()));
-        Update update = getUpdate(json, "/report test");
+        Update update = getUpdate(json, "test");
+        when(reportService.processAttachment(any())).thenReturn("sss".getBytes());
+        telegramBotUpdatesListener.waitingForReport.put(306336303L, true);
         telegramBotUpdatesListener.process(Collections.singletonList(update));
 
         ArgumentCaptor<SendMessage> sendMessageArgumentCaptor = ArgumentCaptor.forClass(
@@ -151,13 +227,45 @@ public class TelegramBotUpdatesListenerTest {
         Long actualLong = longArgumentCaptor.getValue();
 
         Assertions.assertThat(actualDescription)
-                .isEqualTo(" test");
+                .isEqualTo("test");
         Assertions.assertThat(actualPhoto).isNotEmpty();
-        Assertions.assertThat(actualLong).isEqualTo(123L);
+        Assertions.assertThat(actualLong).isEqualTo(306336303L);
+        Assertions.assertThat(actualSendMessage.getParameters().get("text")).isEqualTo(
+                "добавляем отчёт");
+    }
+    @Test
+    public void handleReportWithoutPhoto() throws URISyntaxException, IOException {
+        String json = Files.readString(
+                Paths.get(TelegramBotUpdatesListenerTest.class.getResource("text_update.json").toURI()));
+        Update update = getUpdate(json, "test");
+        telegramBotUpdatesListener.waitingForReport.put(123L, true);
+        telegramBotUpdatesListener.process(Collections.singletonList(update));
+
+        ArgumentCaptor<SendMessage> sendMessageArgumentCaptor = ArgumentCaptor.forClass(
+                SendMessage.class);
+        Mockito.verify(telegramBot).execute(sendMessageArgumentCaptor.capture());
+        SendMessage actualSendMessage = sendMessageArgumentCaptor.getValue();
+        Assertions.assertThat(actualSendMessage.getParameters().get("chat_id")).isEqualTo(123L);
+        Assertions.assertThat(actualSendMessage.getParameters().get("text")).isEqualTo(
+                "Вы не приложили фото к отчету");
+    }
+
+    @Test
+    public void handleReportWithoutText() throws URISyntaxException, IOException {
+        String json = Files.readString(
+                Paths.get(TelegramBotUpdatesListenerTest.class.getResource("empty_caption_update.json").toURI()));
+        Update update = getUpdate(json, "");
+        telegramBotUpdatesListener.waitingForReport.put(123L, true);
+        telegramBotUpdatesListener.process(Collections.singletonList(update));
+
+        ArgumentCaptor<SendMessage> sendMessageArgumentCaptor = ArgumentCaptor.forClass(
+                SendMessage.class);
+        Mockito.verify(telegramBot).execute(sendMessageArgumentCaptor.capture());
+        SendMessage actualSendMessage = sendMessageArgumentCaptor.getValue();
 
         Assertions.assertThat(actualSendMessage.getParameters().get("chat_id")).isEqualTo(123L);
         Assertions.assertThat(actualSendMessage.getParameters().get("text")).isEqualTo(
-                "добавляем отчёт");
+                "Вы не приложили отчет");
     }
 
     public void handleButtonCallBackData(String callBackData, String menuMessage) throws URISyntaxException, IOException {
