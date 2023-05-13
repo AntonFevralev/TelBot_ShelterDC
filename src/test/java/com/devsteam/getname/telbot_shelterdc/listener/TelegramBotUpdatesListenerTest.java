@@ -192,6 +192,27 @@ public class TelegramBotUpdatesListenerTest {
     public void handleButtonCatRejectionList() throws URISyntaxException, IOException {
         handleButtonCallBackData("CatRejectionList", catsShelter.getRejectReasonsList());
     }
+    @Test
+    public void handleButtonSendReport() throws URISyntaxException, IOException {
+        String json = Files.readString(
+                Paths.get(TelegramBotUpdatesListenerTest.class.getResource("callback_data_update.json").toURI()));
+        Update update = getUpdate(json, "SendReport");
+        telegramBotUpdatesListener.process(Collections.singletonList(update));
+
+        ArgumentCaptor<SendMessage> argumentCaptor = ArgumentCaptor.forClass(SendMessage.class);
+        Mockito.verify(telegramBot).execute(argumentCaptor.capture());
+        SendMessage actual = argumentCaptor.getValue();
+
+        Assertions.assertThat(actual.getParameters().get("chat_id")).isEqualTo(123L);
+        Assertions.assertThat(actual.getParameters().get("text")).isEqualTo(
+                """
+                Пожалуйста, заполните отчёт по следующим пунктам:
+                1) Рацион животного.
+                2) Общее самочувствие и привыкание к новому месту.
+                3) Изменение в поведении: отказ от старых привычек, приобретение новых.
+                Также, не забудьте прикрепить к сообщению фото животного.
+                """);
+    }
 
 
 
