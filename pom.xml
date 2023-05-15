@@ -64,6 +64,12 @@
 			<version>20230227</version>
 		</dependency>
 
+		<!-- Liquibase dependency-->
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="creat-petReports-table.1" author="Dmitry Rubtsov">
+        <preConditions>
+            <not>
+                <tableExists tableName="pet_reports"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="pet_reports">
+
+            <column name="id" autoIncrement="true" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="meals_well_being_and_adaptation_behavior_changes" type="CHARACTER VARYING(1024)"/>
+            <column name="photo_as_array_of_bytes" type="BLOB"/>
+            <column name="report_date" type="DATE"/>
+            <column name="report_is_complete" type="BOOLEAN"/>
+            <column name="report_is_inspected" type="BOOLEAN"/>
+            <column name="report_time" type="TIME"/>
+            <column name="pet_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="pet_owner_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+    </changeSet>
+
+    <!--Создание внешнего ключа для связи с таблицей pet -->
+    <changeSet id="creat-petReports-table.2" author="Dmitry Rubtsov">
+
+        <preConditions>
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="FK_PET_ID_FROM_REPORTS"/>
+            </not>
+        </preConditions>
+
+        <addForeignKeyConstraint baseTableName="pet_reports" baseColumnNames="pet_id"
+                                 constraintName="FK_PET_ID_FROM_REPORTS"
+                                 referencedTableName="pet"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <!--Создание внешнего ключа для связи с таблицей pet_owner -->
+    <changeSet id="creat-petReports-table.3" author="Dmitry Rubtsov">
+
+        <preConditions>
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="FK_PET_OWNER_ID_FROM_REPORTS"/>
+            </not>
+        </preConditions>
+
+        <addForeignKeyConstraint baseTableName="pet_reports" baseColumnNames="pet_owner_id"
+                                 constraintName="FK_PET_OWNER_ID_FROM_REPORTS"
+                                 onDelete="CASCADE"
+                                 referencedTableName="pet_owner"
+                                 referencedColumnNames="id_co"/>
+
+    </changeSet>
+
+</databaseChangeLog>
