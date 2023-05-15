@@ -166,6 +166,26 @@ public class ReportService {
     }
 
     /**
+     * Получить список отчётов по дате отправки (по типу животного)
+     *
+     * @param date дата отправки отчётов
+     * @param kind тип животного
+     * @return список отчётов на указанную дату
+     * @throws NoSuchEntityException при попытке передать дату, в которую не существует отчётов
+     */
+    public List<ReportDTO> getReportsByDateAndPetId(LocalDate date, long petId) {
+        List<ReportDTO> reportDTOS = reportRepository
+                .findReportsByReportDateAndAndPet_Id(date, petId)
+                .stream()
+                .map(this::petReportToDTO).toList();
+        if (!reportDTOS.isEmpty()) {
+            return reportDTOS;
+        } else {
+            throw new NoSuchEntityException("No reports on this date for that pet");
+        }
+    }
+
+    /**
      * Получить все отчёты
      *
      * @return список всех отчётов по типу животного
@@ -286,6 +306,7 @@ public class ReportService {
 
 
     }
+
 
     private byte[] downloadFile(String filePath) {
         String fullURI = fileStorageUri.replace("{token}", token)

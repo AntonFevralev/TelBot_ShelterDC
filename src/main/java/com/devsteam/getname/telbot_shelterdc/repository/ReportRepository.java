@@ -13,5 +13,7 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 
     List<Report> findReportsByReportDateAndPet_Kind(LocalDate date, Kind kind);
 
-    List<Report> findAllByReportDate(LocalDate now);
+    List<Report> findAllByReportDate(LocalDate date);
+
+    List<Report> findReportsByReportDateAndAndPet_Id(LocalDate date, Long petId);
 }
