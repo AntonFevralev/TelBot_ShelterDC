@@ -72,7 +72,7 @@ public class PetOwnerControllerTest {
                 .andExpect(jsonPath("$.phone").value("phone"))
                 .andExpect(jsonPath("$.address").value("address"))
                 .andExpect(jsonPath("$.statusOwner").value("PROBATION"))
-                .andExpect(jsonPath("$.start").value(finishProba.toString()))
+                .andExpect(jsonPath("$.finishProba").value(finishProba.toString()))
                 .andExpect(jsonPath("$.petId").value(petId));
     }
 
@@ -96,7 +96,7 @@ public class PetOwnerControllerTest {
                 .andExpect(jsonPath("$.phone").value("phone"))
                 .andExpect(jsonPath("$.address").value("address"))
                 .andExpect(jsonPath("$.statusOwner").value("PROBATION"))
-                .andExpect(jsonPath("$.start").value(finishProba.toString()))
+                .andExpect(jsonPath("$.finishProba").value(finishProba.toString()))
                 .andExpect(jsonPath("$.petId").value(petId));
 
         mockMvc.perform(get("http://localhost:8080/petowner/1"))
@@ -109,7 +109,7 @@ public class PetOwnerControllerTest {
                 .andExpect(jsonPath("$.phone").value("phone"))
                 .andExpect(jsonPath("$.address").value("address"))
                 .andExpect(jsonPath("$.statusOwner").value("PROBATION"))
-                .andExpect(jsonPath("$.start").value(finishProba.toString()))
+                .andExpect(jsonPath("$.finishProba").value(finishProba.toString()))
                 .andExpect(jsonPath("$.petId").value(petId));
     }
 
