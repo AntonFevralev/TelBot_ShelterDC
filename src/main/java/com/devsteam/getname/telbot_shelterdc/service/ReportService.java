@@ -87,6 +87,9 @@ public class ReportService {
         if (!Utils.stringValidation(mealsWellBeingAndAdaptationBehaviorChanges)) {
             throw new IllegalArgumentException();
         }
+        if (photoAsBytesArray == null || photoAsBytesArray.length == 0) {
+            throw new IllegalArgumentException("Failed to get report photo, check DB");
+        }
         report.setMealsWellBeingAndAdaptationBehaviorChanges(mealsWellBeingAndAdaptationBehaviorChanges);
         report.setReportIsComplete(true);
         report.setReportIsInspected(false);
