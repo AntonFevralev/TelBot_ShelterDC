@@ -44,6 +44,7 @@ public class Report {
     @Column
     /**Поле, указывающее на факт просмотра отчёта волонтёром*/
     private boolean reportIsInspected;
+    @Lob
     @Column(columnDefinition="BLOB")
     private byte[] photoAsArrayOfBytes;
 
