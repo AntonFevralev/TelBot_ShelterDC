@@ -30,6 +30,7 @@
         </createTable>
 
     </changeSet>
+    <include file="creat-petOwner-table.xml" relativeToChangelogFile="true"></include>
 
     <changeSet id="creat-pet-table.2" author="Dmitry Rubtsov">
 
