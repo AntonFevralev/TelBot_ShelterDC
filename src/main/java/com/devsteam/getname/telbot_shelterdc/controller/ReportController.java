@@ -171,6 +171,30 @@ public class ReportController {
         return ResponseEntity.ok().body(reportService.getReportsByDate(date, kind));
     }
 
+    @GetMapping("/dateAndPetId")
+    @Operation(summary = "Получение списка отчётов конкретного питомца по выбранной дате",
+            description = "Здесь можно получить список существующих в БД отчётов по конкретному питомцу и по дате их добавления")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Отчёты найдены"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Введите дату/id питомца в правильном формате"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Отчёты не найдены"
+            )
+    }
+    )
+    public ResponseEntity<List<ReportDTO>> getReportsByDate(@RequestParam("date")
+                                                            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                                                            @RequestParam("petId") long petId) {
+        return ResponseEntity.ok().body(reportService.getReportsByDateAndPetId(date, petId));
+    }
+
     @GetMapping
     @Operation(summary = "Получение всех отчётов",
             description = "Здесь можно получить все существующие в БД отчёты")

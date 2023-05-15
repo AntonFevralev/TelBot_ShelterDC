@@ -43,7 +43,7 @@ public class ReportControllerTest {
     @Test
     void givenReportIsInDatabase_thenItIsFoundById() throws Exception {
         mockMvc.perform(post("http://localhost:8080/pets/report")
-                        .content(objectMapper.writeValueAsString(reportService.addReport(405441405, "string", "string")))
+                        .content(objectMapper.writeValueAsString(reportService.addReport(405441405, "string", new byte[0])))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
