@@ -159,6 +159,50 @@ public class ReportServiceTest {
     }
 
     @Test
+    public void gettingReportsByExistingDateAndPetIdReturnsCorrectReportDTOList() {
+        long chatId = 405441405;
+        ReportDTO reportDTO = reportService.addReport(chatId, "mealsAndStuff", new byte[1]);
+        List<ReportDTO> reportDTOS = new ArrayList<>();
+        reportDTOS.add(reportDTO);
+        long petId = petService.getPet(reportDTO.petId()).id();
+        LocalDate date = reportDTO.reportDate();
+        assertEquals(reportDTOS, reportService.getReportsByDateAndPetId(date, petId));
+    }
+
+    @Test
+    public void gettingReportsByNonExistingInDBDateAndExistingPetIdThrowsNoSuchEntityException() {
+        long chatId = 405441405;
+        ReportDTO reportDTO = reportService.addReport(chatId, "mealsAndStuff", new byte[1]);
+        List<ReportDTO> reportDTOS = new ArrayList<>();
+        reportDTOS.add(reportDTO);
+        long petId = petService.getPet(reportDTO.petId()).id();
+        LocalDate date = reportDTO.reportDate();
+        assertThrows(NoSuchEntityException.class, () -> reportService.getReportsByDateAndPetId(date.plusDays(1), petId));
+    }
+
+    @Test
+    public void gettingReportsByNonExistingInDBPetIdAndExistingDateThrowsNoSuchEntityException() {
+        PetDTO pet2 = new PetDTO(0L, 2021, "Lara", "Labrador", "kind", Color.WHITE, Status.FREE, 0, DOG, MALE);
+        long chatId = 405441405;
+        ReportDTO reportDTO = reportService.addReport(chatId, "mealsAndStuff", new byte[1]);
+        List<ReportDTO> reportDTOS = new ArrayList<>();
+        reportDTOS.add(reportDTO);
+        LocalDate date = reportDTO.reportDate();
+        assertThrows(NoSuchEntityException.class, () -> reportService.getReportsByDateAndPetId(date, pet2.id()));
+    }
+
+    @Test
+    public void gettingReportsByNonExistingInDBPetIdAndNonExistingDateThrowsNoSuchEntityException() {
+        PetDTO pet2 = new PetDTO(0L, 2021, "Lara", "Labrador", "kind", Color.WHITE, Status.FREE, 0, DOG, MALE);
+        long chatId = 405441405;
+        ReportDTO reportDTO = reportService.addReport(chatId, "mealsAndStuff", new byte[1]);
+        List<ReportDTO> reportDTOS = new ArrayList<>();
+        reportDTOS.add(reportDTO);
+        LocalDate date = reportDTO.reportDate();
+        assertThrows(NoSuchEntityException.class, () -> reportService.getReportsByDateAndPetId(date.plusDays(1), pet2.id()));
+    }
+
+    @Test
     public void gettingAllReportsByKindReturnsCorrectReportDTOList() {
         long chatId = 405441405;
         ReportDTO reportDTO = reportService.addReport(chatId, "mealsAndStuff", new byte[1]);
@@ -247,14 +291,13 @@ public class ReportServiceTest {
         assertThrows(NoSuchEntityException.class, () -> reportService.deleteReportByReportId(0));
     }
 
-    //    @Test
+    @Test
     public void deletingReportsByExistingPetIdDeletesAllReportsWithGivenPetId() {
         long chatId = 405441405;
-//        List<ReportDTO> reportDTOS = new ArrayList<>();
-        ReportDTO reportDTO = reportService.addReport(chatId, "mealsAndStuff", new byte[1]);
-//        long petId = reportService.getReportsByChatId(chatId).stream().findFirst().get().petId();
-        reportService.deleteReportsByPetId(1);
-        assertTrue(reportService.getReportsByChatId(chatId).isEmpty());
+        reportService.addReport(chatId, "mealsAndStuff", new byte[1]);
+        long petId = reportService.getReportsByChatId(chatId).stream().findFirst().get().petId();
+        reportService.deleteReportsByPetId(petId);
+        assertThrows(NoSuchEntityException.class, () -> reportService.getReportsByPetId(petId));
     }
 
     @Test
