@@ -9,5 +9,4 @@
    
 <h2>Front-end:</h2>
     Telegram
-<ul>
-<li><a href="https://skyengpublic.notion.site/47bcac1b049f4af6b351e2ab5d05afb4">Техническое задание на проект</a></li>
+
