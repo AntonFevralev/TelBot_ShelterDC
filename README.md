@@ -6,7 +6,8 @@
 
 <h2>Backend:</h2>
     Java 17, Maven, Spring Boot, Spring Web, Spring JPA, Spring Date, REST, Swagger, Stream API, SQL, Liquibase
-   
+ <h2>Testing:</h2>
+    JUnit, Mockito 
 <h2>Front-end:</h2>
     Telegram
     
