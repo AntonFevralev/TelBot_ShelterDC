@@ -93,7 +93,7 @@ public class PetOwnerController {
     public void changePet(@RequestParam Long idCO, @RequestParam Long id){
        petOwnerService.changePetByIdCO(idCO, id);
     }
-    @PutMapping("/delete")
+    @PutMapping("/delete/{idCO}")
     @Operation(summary = "Удаление животного из карты человека (по id человека) по какой-либо причине со сменой статуса кота.")
     @ApiResponses( {
             @ApiResponse( responseCode = "200",
@@ -104,7 +104,7 @@ public class PetOwnerController {
             @ApiResponse( responseCode = "500",
                     description = "Произошла ошибка, не зависящая от вызывающей стороны."  )
     } )
-    public void takeTheCatAway(@RequestParam Long idCO){
+    public void takeThePetAway(@PathVariable ("idCO") Long idCO){
         petOwnerService.takeThePetAwayByIdCO(idCO);
     }
 
