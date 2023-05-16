@@ -4,6 +4,7 @@
 
 Этот проект работает на фреймворке Spring. Взаимодействие с ботом происходит посредством библиотеки pengrad. Данные хранятся в БД h2.
 
+<a href=https://disk.yandex.ru/i/4jFAMZa7rtvLbg>ссылка</a>
 <h2>Backend:</h2>
     Java 17, Maven, Spring Boot, Spring Web, Spring JPA, REST, Swagger, Stream API, SQL
    
