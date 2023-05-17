@@ -17,10 +17,12 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +54,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     public Map<Long, Boolean> waitingForReport = new HashMap<>();
 
-    public TelegramBotUpdatesListener(TelegramBot telegramBot, ReportService reportService, ReportRepository reportRepository, OwnerRepository ownerRepository) throws IOException {
+    public TelegramBotUpdatesListener(TelegramBot telegramBot, ReportService reportService, ReportRepository reportRepository, OwnerRepository ownerRepository) throws IOException, URISyntaxException {
         this.ownerRepository = ownerRepository;
 
         this.dogsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "dogShelter.json")), Shelter.class);

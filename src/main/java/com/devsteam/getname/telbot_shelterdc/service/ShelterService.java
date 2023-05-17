@@ -18,12 +18,7 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Service
 public class ShelterService {
 
-    @Value("${path.to.data.file}")
-    private String dataFilePath;
-    @Value("${name.of.dog.data.file}")
-    private String dogShelterFileName;
-    @Value("${name.of.cat.data.file}")
-    private String catShelterFileName;
+
     @Value("${kByte}")
     private int KBYTE;
 
@@ -33,12 +28,12 @@ public class ShelterService {
      * @return
      */
     public File getDataFile(String fileName) {
-        return new File(dataFilePath + "/" + fileName);
+        return new File(Path.of("src/main/resources/"  + fileName).toUri());
     }
 
 
     public void uploadShelterFile(MultipartFile file, String fileName) throws IOException {
-        Path filePath = Path.of(dataFilePath, fileName);
+        Path filePath = Path.of(Path.of("src/main/resources/"+ fileName).toUri());
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
         try (
