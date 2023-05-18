@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 /*
 package com.devsteam.getname.telbot_shelterdc.controller;
@@ -69,7 +70,7 @@ public class ShelterController {
 
         try {
             service.uploadShelterFile(file, dogShelterFileName);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
 
@@ -96,6 +97,8 @@ public class ShelterController {
             service.uploadShelterFile(file, catShelterFileName);
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
 
         return ResponseEntity.ok().build();

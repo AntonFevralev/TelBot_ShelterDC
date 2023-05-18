@@ -55,8 +55,8 @@ public class TelegramBotUpdatesListenerTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        this.dogsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "dogShelter.json")), Shelter.class);
-        this.catsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "catShelter.json")), Shelter.class);
+        this.dogsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "src/main/dogShelter.json")), Shelter.class);
+        this.catsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "src/main/catShelter.json")), Shelter.class);
     }
 
     @Test
