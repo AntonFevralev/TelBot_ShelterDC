@@ -8,19 +8,16 @@ import com.devsteam.getname.telbot_shelterdc.service.ReportService;
 import com.google.gson.Gson;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.SendMessage;
-import com.pengrad.telegrambot.response.SendResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Path;
-import java.time.Clock;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -53,8 +50,15 @@ public class ReminderTimer {
         this.reportService = reportService;
         this.reportRepository = reportRepository;
         this.ownerRepository = ownerRepository;
-        this.dogsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "dogShelter.json")), Shelter.class);
-        this.catsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "catShelter.json")), Shelter.class);
+        try (InputStream in = getClass().getResourceAsStream("/dogShelter.json");
+             BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+            this.dogsShelter = new Gson().fromJson(reader, Shelter.class);
+        }
+        try (InputStream in = getClass().getResourceAsStream("/catShelter.json");
+             BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+            this.catsShelter = new Gson().fromJson(reader, Shelter.class);
+        }
+
     }
 
     /**

@@ -1,14 +1,21 @@
 package com.devsteam.getname.telbot_shelterdc.service;
 
 
+import liquibase.pro.packaged.C;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletContext;
 import java.io.*;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -18,12 +25,6 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Service
 public class ShelterService {
 
-    @Value("${path.to.data.file}")
-    private String dataFilePath;
-    @Value("${name.of.dog.data.file}")
-    private String dogShelterFileName;
-    @Value("${name.of.cat.data.file}")
-    private String catShelterFileName;
     @Value("${kByte}")
     private int KBYTE;
 
@@ -33,16 +34,28 @@ public class ShelterService {
      * @return
      */
     public File getDataFile(String fileName) {
-        return new File(dataFilePath + "/" + fileName);
+        try (InputStream in = Files.newInputStream(Path.of(fileName).toAbsolutePath());
+            ){
+            File targetFile = new File("ShelterTMP.json");
+
+            java.nio.file.Files.copy(
+                    in,
+                    targetFile.toPath(),
+                    StandardCopyOption.REPLACE_EXISTING);
+
+            IOUtils.closeQuietly(in);
+        return targetFile;} catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
-    public void uploadShelterFile(MultipartFile file, String fileName) throws IOException {
-        Path filePath = Path.of(dataFilePath, fileName);
+    public void uploadShelterFile(MultipartFile file, String fileName) throws IOException, URISyntaxException {
+        Path filePath = Path.of(fileName).toAbsolutePath();
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
-        try (
-                InputStream is = file.getInputStream();
+        try (  InputStream is = file.getInputStream();
+
                 OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
                 BufferedInputStream bis = new BufferedInputStream(is, KBYTE);
                 BufferedOutputStream bos = new BufferedOutputStream(os, KBYTE);

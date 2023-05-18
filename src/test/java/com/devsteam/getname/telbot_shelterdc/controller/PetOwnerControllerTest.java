@@ -126,6 +126,20 @@ public class PetOwnerControllerTest {
         mockMvc.perform(delete("/petowner/" + idCOtest))
                 .andExpect(status().isOk());
     }
+    
+    @Test
+    void givenPetOwnersInDatabase_thenItIsTakeThePetAway() throws Exception {
+        Pet testPet = new Pet(4L, 2019, "Pusheen", "tabby",
+                "very friendly", Color.BLACK_AND_WHITE, FREE, CAT, MALE);
+        Long petId = petRepository.save(testPet).getId();
+        PetOwnerDTO test = new PetOwnerDTO(0L, 112L, "fullName", "phone",
+                "address", PROBATION, finishProba, petId);
+
+        long idCOtest = petOwnerService.creatPetOwner(test).idCO();
+
+        mockMvc.perform(put("/petowner/delete/" + idCOtest))
+                .andExpect(status().isOk());
+    }
 
     @Test
     void givenPetOwnersInDatabase_thenItIsTakeThePetAway() throws Exception {
