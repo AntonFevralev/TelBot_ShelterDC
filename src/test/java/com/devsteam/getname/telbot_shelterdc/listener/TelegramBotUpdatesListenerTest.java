@@ -10,7 +10,10 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,6 +28,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import static java.nio.file.Files.readString;
 import static org.mockito.ArgumentMatchers.any;
@@ -55,8 +62,14 @@ public class TelegramBotUpdatesListenerTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        this.dogsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "src/main/dogShelter.json")), Shelter.class);
-        this.catsShelter = new Gson().fromJson(readString(Path.of("src/main/resources/", "src/main/catShelter.json")), Shelter.class);
+        try (InputStream in = Files.newInputStream(Path.of("src/main/resources/dogShelter.json").toAbsolutePath());
+             BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+            this.dogsShelter = new Gson().fromJson(reader, Shelter.class);
+        }
+        try (InputStream in = Files.newInputStream(Path.of("src/main/resources/catShelter.json").toAbsolutePath());
+             BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+            this.catsShelter = new Gson().fromJson(reader, Shelter.class);
+        }
     }
 
     @Test

@@ -3,7 +3,6 @@ package com.devsteam.getname.telbot_shelterdc.listener;
 import com.devsteam.getname.telbot_shelterdc.model.*;
 
 import com.devsteam.getname.telbot_shelterdc.repository.OwnerRepository;
-import com.devsteam.getname.telbot_shelterdc.repository.ReportRepository;
 
 import com.devsteam.getname.telbot_shelterdc.service.ReportService;
 
@@ -17,7 +16,9 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -31,6 +32,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PrimitiveIterator;
 
 import static java.nio.file.Files.readString;
 
@@ -50,21 +52,19 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     private final TelegramBot telegramBot;
     private final ReportService reportService;
 
-
     private final OwnerRepository ownerRepository;
 
     private final Map<Long, String> waitingForContact = new HashMap<>();
 
     public Map<Long, Boolean> waitingForReport = new HashMap<>();
 
-    public TelegramBotUpdatesListener(TelegramBot telegramBot, ReportService reportService, OwnerRepository ownerRepository,  @Value("${name.of.dog.data.file}")  String dogShelterFileName,
-    @Value("${name.of.cat.data.file}") String catShelterFileName) throws IOException, URISyntaxException {
+    public TelegramBotUpdatesListener(TelegramBot telegramBot, ReportService reportService, OwnerRepository ownerRepository) throws IOException, URISyntaxException {
         this.ownerRepository = ownerRepository;
-        try (InputStream in = Files.newInputStream(Path.of(dogShelterFileName).toAbsolutePath());
+        try (InputStream in = Files.newInputStream(Path.of("C:\\Users\\afevr\\IdeaProjects\\TelBot_ShelterDC\\src\\main\\resources\\dogShelter.json").toAbsolutePath());
              BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             this.dogsShelter = new Gson().fromJson(reader, Shelter.class);
         }
-        try (InputStream in = Files.newInputStream(Path.of(catShelterFileName).toAbsolutePath());
+        try (InputStream in = Files.newInputStream(Path.of("C:\\Users\\afevr\\IdeaProjects\\TelBot_ShelterDC\\src\\main\\resources\\catShelter.json").toAbsolutePath());
              BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             this.catsShelter = new Gson().fromJson(reader, Shelter.class);
         }
