@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,14 +24,14 @@ class ShelterServiceTest {
     @Test
     void getCorrectDataFile() {
         File actualFile = service.getDataFile(testFileName);
-        File expectedFile = new File("src\\main\\resources\\test.json");
+        File expectedFile = new File("ShelterTMP.json");
         Assertions.assertEquals(expectedFile, actualFile);
     }
 
     @Test
     void getInvalidDataFile() {
-        File actualFile = service.getDataFile("file.json");
-        assertThat(actualFile).doesNotExist();
+
+        assertThrows(RuntimeException.class, ()->service.getDataFile("test.json"));
     }
 
 }
