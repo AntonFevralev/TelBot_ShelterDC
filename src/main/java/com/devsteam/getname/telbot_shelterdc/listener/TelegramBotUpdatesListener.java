@@ -60,11 +60,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     public TelegramBotUpdatesListener(TelegramBot telegramBot, ReportService reportService, OwnerRepository ownerRepository) throws IOException, URISyntaxException {
         this.ownerRepository = ownerRepository;
-        try (InputStream in = Files.newInputStream(Path.of("C:\\Users\\afevr\\IdeaProjects\\TelBot_ShelterDC\\src\\main\\resources\\dogShelter.json").toAbsolutePath());
+        try (InputStream in = Files.newInputStream(Path.of("src/main/resources/dogShelter.json").toAbsolutePath());
              BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             this.dogsShelter = new Gson().fromJson(reader, Shelter.class);
         }
-        try (InputStream in = Files.newInputStream(Path.of("C:\\Users\\afevr\\IdeaProjects\\TelBot_ShelterDC\\src\\main\\resources\\catShelter.json").toAbsolutePath());
+        try (InputStream in = Files.newInputStream(Path.of("src/main/resources/catShelter.json").toAbsolutePath());
              BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             this.catsShelter = new Gson().fromJson(reader, Shelter.class);
         }
