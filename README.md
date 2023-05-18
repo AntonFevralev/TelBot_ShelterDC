@@ -14,4 +14,6 @@
     JUnit, Mockito 
 <h2>Frontend:</h2>
     Telegram
+ <h2>Запуск приложения</h2>
+    Для запуска приложения необходимо скопировать к себе код. Далее в файле src/main/resouces/application.properties прописать токен телеграм бота. В этом же файле прописать абсолютные пути к файлам src/main/resources/dogShelter.json и src/main/resources/catShelter.json в переменные name.of.dog.data.file и name.of.cat.data.file. После чего собрать проект с помощью Maven. Собранный Jar файл запустить из командной строки с помощью команды java -jar абсолютный_путь_к_файлу
    
