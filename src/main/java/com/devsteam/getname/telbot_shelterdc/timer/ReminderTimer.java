@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.SendMessage;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -45,19 +47,20 @@ public class ReminderTimer {
     Shelter catsShelter;
 
 
-    public ReminderTimer(TelegramBot telegramBot, ReportService reportService, ReportRepository reportRepository, OwnerRepository ownerRepository) throws IOException {
+    public ReminderTimer(TelegramBot telegramBot, ReportService reportService, ReportRepository reportRepository, OwnerRepository ownerRepository, @Value("${name.of.dog.data.file}") String dogShelterFileName,
+    @Value("${name.of.cat.data.file}") String catShelterFileName) throws IOException {
+        try (InputStream in = Files.newInputStream(Path.of(dogShelterFileName).toAbsolutePath());
+             BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+            this.dogsShelter = new Gson().fromJson(reader, Shelter.class);
+        }
+        try (InputStream in = Files.newInputStream(Path.of(catShelterFileName).toAbsolutePath());
+             BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+            this.catsShelter = new Gson().fromJson(reader, Shelter.class);
+        }
         this.telegramBot = telegramBot;
         this.reportService = reportService;
         this.reportRepository = reportRepository;
         this.ownerRepository = ownerRepository;
-        try (InputStream in = getClass().getResourceAsStream("/dogShelter.json");
-             BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-            this.dogsShelter = new Gson().fromJson(reader, Shelter.class);
-        }
-        try (InputStream in = getClass().getResourceAsStream("/catShelter.json");
-             BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-            this.catsShelter = new Gson().fromJson(reader, Shelter.class);
-        }
 
     }
 

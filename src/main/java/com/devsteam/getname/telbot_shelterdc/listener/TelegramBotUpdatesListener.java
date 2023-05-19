@@ -58,9 +58,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     public Map<Long, Boolean> waitingForReport = new HashMap<>();
 
-    public TelegramBotUpdatesListener(TelegramBot telegramBot, ReportService reportService, OwnerRepository ownerRepository,    @Value("${name.of.dog.data.file}") String dogShelterFileName,
-    @Value("${name.of.cat.data.file}" )String catShelterFileName) throws IOException {
-        this.ownerRepository = ownerRepository;
+    public TelegramBotUpdatesListener(TelegramBot telegramBot, ReportService reportService, OwnerRepository ownerRepository,
+                                      @Value("${name.of.dog.data.file}") String dogShelterFileName,
+                                      @Value("${name.of.cat.data.file}") String catShelterFileName) throws IOException {
         try (InputStream in = Files.newInputStream(Path.of(dogShelterFileName).toAbsolutePath());
              BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             this.dogsShelter = new Gson().fromJson(reader, Shelter.class);
@@ -69,6 +69,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
              BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             this.catsShelter = new Gson().fromJson(reader, Shelter.class);
         }
+        this.ownerRepository = ownerRepository;
 
 
         this.telegramBot = telegramBot;
