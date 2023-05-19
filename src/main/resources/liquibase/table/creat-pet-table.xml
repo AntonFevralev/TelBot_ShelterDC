@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="creat-pet-table.1" author="Dmitry Rubtsov">
+        <preConditions>
+            <not>
+                <tableExists tableName="pet"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="pet">
+
+            <column name="id" autoIncrement="true" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="birth_year" type="INTEGER"/>
+            <column name="breed" type="CHARACTER VARYING(100)"/>
+            <column name="color" type="CHARACTER VARYING(100)"/>
+            <column name="description" type="CHARACTER VARYING(255)"/>
+            <column name="kind" type="CHARACTER VARYING(10)"/>
+            <column name="name" type="CHARACTER VARYING(60)"/>
+            <column name="status" type="CHARACTER VARYING(12)"/>
+            <column name="id_co" type="BIGINT"/>
+            <column name="gender" type="CHARACTER VARYING(10)"/>
+
+        </createTable>
+
+    </changeSet>
+    <include file="creat-petOwner-table.xml" relativeToChangelogFile="true"></include>
+
+    <changeSet id="creat-pet-table.2" author="Dmitry Rubtsov">
+
+    <preConditions>
+        <not>
+            <foreignKeyConstraintExists foreignKeyName="FK_ID_CO_FROM_PET_TABLE"/>
+        </not>
+    </preConditions>
+
+        <addForeignKeyConstraint baseTableName="pet" baseColumnNames="id_co"
+                                 constraintName="FK_ID_CO_FROM_PET_TABLE"
+                                 referencedTableName="pet_owner"
+                                 referencedColumnNames="id_co"/>
+
+
+    </changeSet>
+
+</databaseChangeLog>

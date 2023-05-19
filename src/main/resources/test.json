@@ -1,0 +1,20 @@
+{
+  "ID": 2,
+  "title": "title",
+  "schedule": "schedule",
+  "address": "address",
+  "mapLink": "mapLink",
+  "security": "security",
+  "info": "security",
+  "safetyPrecautions": "safetyPrecautions",
+  "meetAndGreatRules": "meetAndGreatRules",
+  "docList": "docList",
+  "transportingRules": "transportingRules",
+  "recommendations":"recommendations",
+  "recommendationsAdult": "\"\"",
+  "recommendationsDisabled": "\"\"",
+  "cynologistAdvice": "",
+  "recommendedCynologists": "",
+  "rejectReasonsList":"rejectReasonsList",
+  "chatId": 306336303
+}
