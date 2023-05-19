@@ -30,6 +30,7 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
@@ -38,17 +39,17 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 
-
+@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 public class TelegramBotUpdatesListenerTest {
 
 
-    @Mock
+    @MockBean
     private TelegramBot telegramBot;
-    @Mock
+    @MockBean
     private ReportService reportService;
 
-    @InjectMocks
+    @Autowired
     private TelegramBotUpdatesListener telegramBotUpdatesListener;
 
     /**

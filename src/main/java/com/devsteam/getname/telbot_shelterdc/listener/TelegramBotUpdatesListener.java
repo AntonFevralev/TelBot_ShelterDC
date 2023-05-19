@@ -58,13 +58,14 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     public Map<Long, Boolean> waitingForReport = new HashMap<>();
 
-    public TelegramBotUpdatesListener(TelegramBot telegramBot, ReportService reportService, OwnerRepository ownerRepository) throws IOException, URISyntaxException {
+    public TelegramBotUpdatesListener(TelegramBot telegramBot, ReportService reportService, OwnerRepository ownerRepository,    @Value("${name.of.dog.data.file}") String dogShelterFileName,
+    @Value("${name.of.cat.data.file}" )String catShelterFileName) throws IOException {
         this.ownerRepository = ownerRepository;
-        try (InputStream in = Files.newInputStream(Path.of("src/main/resources/dogShelter.json").toAbsolutePath());
+        try (InputStream in = Files.newInputStream(Path.of(dogShelterFileName).toAbsolutePath());
              BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             this.dogsShelter = new Gson().fromJson(reader, Shelter.class);
         }
-        try (InputStream in = Files.newInputStream(Path.of("src/main/resources/catShelter.json").toAbsolutePath());
+        try (InputStream in = Files.newInputStream(Path.of(catShelterFileName).toAbsolutePath());
              BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             this.catsShelter = new Gson().fromJson(reader, Shelter.class);
         }
