@@ -52,8 +52,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     private final TelegramBot telegramBot;
     private final ReportService reportService;
 
-    private final OwnerRepository ownerRepository;
-
     private final Map<Long, String> waitingForContact = new HashMap<>();
 
     public Map<Long, Boolean> waitingForReport = new HashMap<>();
@@ -69,7 +67,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
              BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             this.catsShelter = new Gson().fromJson(reader, Shelter.class);
         }
-        this.ownerRepository = ownerRepository;
 
 
         this.telegramBot = telegramBot;
