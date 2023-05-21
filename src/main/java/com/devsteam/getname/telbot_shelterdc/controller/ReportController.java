@@ -90,8 +90,6 @@ public class ReportController {
         headers.set("Content-Disposition", String.format("attachment; filename="
                 +"report id "
                 +reportDTO.id()
-                +" owner "
-                +petOwnerService.getPetOwner(reportDTO.petOwnerId()).fullName()
                 +" date "
                 +reportDTO.reportDate()
                 +" "+reportDTO.reportTime()

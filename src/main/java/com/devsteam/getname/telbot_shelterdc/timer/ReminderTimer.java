@@ -49,6 +49,7 @@ public class ReminderTimer {
 
     public ReminderTimer(TelegramBot telegramBot, ReportService reportService, ReportRepository reportRepository, OwnerRepository ownerRepository, @Value("${name.of.dog.data.file}") String dogShelterFileName,
     @Value("${name.of.cat.data.file}") String catShelterFileName) throws IOException {
+
         try (InputStream in = Files.newInputStream(Path.of(dogShelterFileName).toAbsolutePath());
              BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             this.dogsShelter = new Gson().fromJson(reader, Shelter.class);
