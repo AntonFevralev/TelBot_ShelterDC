@@ -9,11 +9,11 @@
 Проект работает на фреймворке Spring. Взаимодействие с ботом происходит посредством библиотеки pengrad. База данных h2.
 
 <h2>Backend:</h2>
-    Java 17, Maven, Spring Boot, Spring Web, Spring JPA, Spring Date, REST, Swagger, Stream API, SQL, Liquibase
+    Java 17, Maven, Spring Boot, Spring Web, Spring JPA, Spring Date, REST, Stream API, SQL, Liquibase
  <h2>Testing:</h2>
     JUnit, Mockito 
 <h2>Frontend:</h2>
-    Telegram
+    Swagger, Telegram
  <h2>Запуск приложения</h2>
     Для развертывания приложения вам необходимо предоставить разработчикам только токен своего telegram bot, который будет выполнять роль вашего frontend.
     После этого мы предоставим вам zip-архив приложения, который вы распакуете и запустите TelBot_ShelterDC.bat, содержащийся в нём. 
